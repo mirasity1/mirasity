@@ -31,17 +31,17 @@ const Projects = () => {
     }
   };
 
-  const projects = t.projects.list.map((project, index) => ({
+  const projects = (t.projects?.list || []).map((project, index) => ({
     id: index + 1,
-    title: project.title,
-    description: project.description,
+    title: project.title || '',
+    description: project.description || '',
     image: index === 0 ? BooktrackImage : `https://images.unsplash.com/photo-${[
       '1556742049-0cfed4f6a45d',
       '1511512578047-dfb367046420',
       '1611224923853-80b023f02d71',
       '1467232004584-a241de8bcf5d',
       '1571019613454-1cb2f99b2d8b'
-    ][index]}?w=600&h=400&fit=crop`,
+    ][index] || '1556742049-0cfed4f6a45d'}?w=600&h=400&fit=crop`,
     video: index === 0 ? '/booktrack-demo.mp4' : 
            index === 1 ? '/viagens-demo.mp4' : 
            index === 2 ? '/badges-demo.mp4' : null,
@@ -51,11 +51,11 @@ const Projects = () => {
       ["Laravel", "PHP", "MySQL", "JavaScript", "CSS"],
       ["React", "TypeScript", "Laravel", "Python", "Freeswitch"],
       ["React", "Strapi", "Node.js", "SQL", "Analytics"]
-    ][index],
-    category: project.category,
+    ][index] || [],
+    category: project.category || '',
     year: "2024",
-    status: index < 2 ? t.projects.completed : t.projects.inProgress,
-    features: project.features,
+    status: index < 2 ? (t.projects?.completed || 'Completed') : (t.projects?.inProgress || 'In Progress'),
+    features: project.features || [],
     liveUrl: "https://mirasity.pt",
     githubUrl: index < 3 ? "https://github.com/mirasity1" : null, // Alguns projetos têm código privado
     isCodePrivate: index >= 3, // Projetos 4 e 5 têm código privado
@@ -65,7 +65,7 @@ const Projects = () => {
       "from-green-500 to-emerald-500",
       "from-orange-500 to-red-500",
       "from-indigo-500 to-purple-500"
-    ][index]
+    ][index] || "from-blue-500 to-cyan-500"
   }));
 
   const [selectedProject, setSelectedProject] = useState(null);
@@ -95,11 +95,11 @@ const Projects = () => {
         >
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              {t.projects.title} <span className="text-blue-600">{t.projects.subtitle}</span>
+              {t.projects?.title || 'My'} <span className="text-blue-600">{t.projects?.subtitle || 'Projects'}</span>
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-6"></div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t.projects.description}
+              {t.projects?.description || 'A selection of projects I\'ve worked on'}
             </p>
           </motion.div>
 
@@ -208,7 +208,7 @@ const Projects = () => {
                   {/* Technologies */}
                   <div className="mb-4">
                     <div className="flex flex-wrap gap-2">
-                      {project.technologies.slice(0, 4).map((tech, idx) => (
+                      {(project.technologies || []).slice(0, 4).map((tech, idx) => (
                         <span
                           key={idx}
                           className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium"
@@ -216,9 +216,9 @@ const Projects = () => {
                           {tech}
                         </span>
                       ))}
-                      {project.technologies.length > 4 && (
+                      {(project.technologies || []).length > 4 && (
                         <span className="px-2 py-1 bg-gray-200 text-gray-600 rounded text-xs">
-                          +{project.technologies.length - 4}
+                          +{(project.technologies || []).length - 4}
                         </span>
                       )}
                     </div>
@@ -226,9 +226,9 @@ const Projects = () => {
 
                   {/* Project Features */}
                   <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">{t.projects.features}</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-2">{t.projects?.features || 'Features:'}</h4>
                     <ul className="space-y-1">
-                      {project.features.slice(0, 3).map((feature, idx) => (
+                      {(project.features || []).slice(0, 3).map((feature, idx) => (
                         <li key={idx} className="text-xs text-gray-600 flex items-start">
                           <Award size={12} className="mr-2 mt-0.5 text-blue-500 flex-shrink-0" />
                           {feature}
@@ -248,7 +248,7 @@ const Projects = () => {
                       whileTap={{ scale: 0.95 }}
                       className="flex-1 bg-blue-500 text-white text-center py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-300"
                     >
-                      {t.projects.viewProject}
+                      {t.projects?.viewProject || 'View Project'}
                     </motion.a>
                     {!project.isCodePrivate ? (
                       <motion.a
@@ -261,7 +261,7 @@ const Projects = () => {
                         className="flex-1 border border-gray-300 text-gray-700 text-center py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-300 flex items-center justify-center"
                       >
                         <Github size={16} className="mr-1" />
-                        {t.projects.code}
+                        {t.projects?.code || 'Code'}
                       </motion.a>
                     ) : (
                       <motion.div
@@ -284,7 +284,7 @@ const Projects = () => {
             className="text-center mt-16"
           >
             <p className="text-gray-600 mb-6">
-              {t.projects.callToAction}
+              {t.projects?.callToAction || 'Interested in working together?'}
             </p>
             <motion.a
               href="#contact"
@@ -296,7 +296,7 @@ const Projects = () => {
                 document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              {t.projects.startProject}
+              {t.projects?.startProject || 'Start Project'}
               <ExternalLink className="ml-2" size={16} />
             </motion.a>
           </motion.div>
