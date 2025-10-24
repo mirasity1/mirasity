@@ -34,11 +34,10 @@ const Projects = () => {
     id: index + 1,
     title: project.title || '',
     description: project.description || '',
-    image: index === 0 ? `https://images.unsplash.com/photo-1461749280-e1d36dc340f6?w=600&h=400&fit=crop` : // Coding/Development
+    image: index === 0 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop` : // Law/Legal system
           index === 1 ? require('../imgs/leads.png') : // Real Vida Seguros - leads image
-          index === 2 ? `https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop` : // Badges/Awards
-          index === 3 ? require('../imgs/main.jpeg') : // Real Business Center local image
-          index === 4 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image
+          index === 2 ? require('../imgs/main.jpeg') : // Real Business Center local image
+          index === 3 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image
           `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop`,
     video: index === 0 ? { 
       type: 'youtube', 
@@ -52,38 +51,29 @@ const Projects = () => {
     } : 
     index === 2 ? { 
       type: 'youtube', 
-      id: 'JiblkDn6wgQ',
-      thumbnail: null
-    } : 
-    index === 3 ? { 
-      type: 'youtube', 
       id: 'AiA_qjZtYsc',
       thumbnail: null
     } : null, // Hexsicor sem vídeo (não pode mostrar desenvolvimento)
     technologies: [
       ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Advcatia - Sistema de Advocacia
       ["React", "Strapi", "HTML", "Markdown", "CMS"], // Sistema de Leads - Real Vida Seguros
-      ["Laravel", "PHP", "MySQL", "JavaScript", "CSS"], // Sistema de Gamificação
       ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Real Business Center
       ["Laravel", "PHP", "React", "TypeScript", "MySQL"] // Hexsicor CRM
     ][index] || [],
     category: project.category || '',
-    year: index === 4 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023
-    status: index === 0 ? (t.projects?.completed || 'Completed') : 
-            (t.projects?.completed || 'Completed'),
+    year: index === 3 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023
+    status: (t.projects?.completed || 'Completed'),
     features: project.features || [],
-    liveUrl: index === 3 ? "https://realbusinesscenter.pt/" : "https://mirasity.pt",
+    liveUrl: index === 2 ? "https://realbusinesscenter.pt/" : "https://mirasity.pt",
     githubUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia projeto público
              index === 1 ? "https://github.com/mirasity1" : // RealVida pode ser público
-             index === 2 ? null : // Sistema de gamificação (parte do Booktrack - privado)
-             index === 3 ? "https://github.com/mirasity1" : // Real Business Center
-             index === 4 ? null : // Hexsicor CRM (privado)
+             index === 2 ? "https://github.com/mirasity1" : // Real Business Center
+             index === 3 ? null : // Hexsicor CRM (privado)
              "https://github.com/mirasity1",
-    isCodePrivate: index === 2 || index === 4, // Apenas gamificação e Hexsicor são privados
+    isCodePrivate: index === 3, // Apenas Hexsicor é privado
     color: [
       "from-blue-500 to-cyan-500",
       "from-purple-500 to-pink-500",
-      "from-green-500 to-emerald-500",
       "from-orange-500 to-red-500",
       "from-indigo-500 to-purple-500"
     ][index] || "from-blue-500 to-cyan-500"

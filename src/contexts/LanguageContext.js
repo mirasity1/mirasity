@@ -242,18 +242,6 @@ export const translations = {
           ]
         },
         {
-          title: 'Sistema de Gamificação',
-          description: 'Sistema de badges e conquistas desenvolvido como parte de projeto maior. Código privado por questões de confidencialidade.',
-          category: 'Sistema de Gamificação (Privado)',
-          features: [
-            'Sistema de badges dinâmico',
-            'Engine de conquistas personalizáveis',
-            'Dashboard de progresso do utilizador',
-            'API RESTful para integração',
-            'Código privado - parte de projeto maior'
-          ]
-        },
-        {
           title: 'Real Business Center',
           description: 'Plataforma web empresarial completa desenvolvida para centro de negócios. Sistema robusto com gestão de utilizadores e funcionalidades administrativas avançadas.',
           category: 'Plataforma Empresarial',
@@ -585,18 +573,6 @@ export const translations = {
             'Conversion optimization',
             'Complete administrative interface',
             'Marketing campaign management'
-          ]
-        },
-        {
-          title: 'Gamification System',
-          description: 'Badge and achievement system developed as part of a larger project. Private code for confidentiality reasons.',
-          category: 'Gamification System (Private)',
-          features: [
-            'Dynamic badge system',
-            'Customizable achievement engine',
-            'User progress dashboard',
-            'RESTful API for integration',
-            'Private code - part of larger project'
           ]
         },
         {

@@ -158,12 +158,13 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                   >
                     {galleryMedia[currentImageIndex]?.type === 'youtube' ? (
                       <iframe
-                        src={`https://www.youtube.com/embed/${galleryMedia[currentImageIndex]?.src}?autoplay=0&mute=1&controls=1&showinfo=0&rel=0`}
+                        src={`https://www.youtube-nocookie.com/embed/${galleryMedia[currentImageIndex]?.src}?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1&cc_load_policy=0&iv_load_policy=3&autohide=0`}
                         title="Project Video"
                         frameBorder="0"
                         className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
+                        referrerPolicy="strict-origin-when-cross-origin"
                       />
                     ) : (
                       <video
