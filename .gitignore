@@ -13,6 +13,16 @@
 /build
 /dist
 
+# Large media files (keep originals local, use optimized versions)
+*.mov
+*.avi
+*.mkv
+**/*.mp4
+**/*.webm
+# But allow optimized videos in public folder
+!public/*.mp4
+!public/*.webm
+
 # environment variables
 .env
 .env.local
