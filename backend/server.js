@@ -121,22 +121,7 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Middleware para redirecionar todas as rotas não-API para o frontend
-app.use('*', (req, res, next) => {
-  // Permitir apenas rotas que começam com /api/ ou rotas específicas do backend
-  const allowedPaths = ['/api/', '/health'];
-  const isApiRoute = allowedPaths.some(path => req.originalUrl.startsWith(path));
-  
-  if (!isApiRoute) {
-    // Redirecionar para o frontend
-    const frontendUrl = process.env.FRONTEND_URL || 'https://mirasity.pt';
-    return res.redirect(301, frontendUrl + req.originalUrl);
-  }
-  
-  next();
-});
-
-// Rota 404 para APIs não encontradas
+// Rota 404 para APIs não encontradas - deve vir DEPOIS das rotas definidas
 app.use('/api/*', (req, res) => {
   res.status(404).json({
     error: 'API endpoint not found',
