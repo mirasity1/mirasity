@@ -42,7 +42,7 @@ const Projects = () => {
           `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop`,
     video: index === 0 ? { 
       type: 'youtube', 
-      id: 'bm0E1hvf12A',
+      id: 'JU3sQZHc9zQ',
       thumbnail: null
     } : 
     index === 1 ? { 
@@ -61,25 +61,25 @@ const Projects = () => {
       thumbnail: null
     } : null, // Hexsicor sem vídeo (não pode mostrar desenvolvimento)
     technologies: [
-      ["React", "TypeScript", "Node.js", "MySQL", "Private"], // Projeto em desenvolvimento
-      ["React", "Strapi", "HTML", "Markdown", "CMS"], // RealVida Travels
+      ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Advcatia - Sistema de Advocacia
+      ["React", "Strapi", "HTML", "Markdown", "CMS"], // Sistema de Leads - Real Vida Seguros
       ["Laravel", "PHP", "MySQL", "JavaScript", "CSS"], // Sistema de Gamificação
       ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Real Business Center
       ["Laravel", "PHP", "React", "TypeScript", "MySQL"] // Hexsicor CRM
     ][index] || [],
     category: project.category || '',
     year: index === 4 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023
-    status: index === 0 ? (t.projects?.inProgress || 'In Progress') : 
+    status: index === 0 ? (t.projects?.completed || 'Completed') : 
             (t.projects?.completed || 'Completed'),
     features: project.features || [],
     liveUrl: index === 3 ? "https://realbusinesscenter.pt/" : "https://mirasity.pt",
-    githubUrl: index === 0 ? null : // Projeto privado em desenvolvimento
+    githubUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia projeto público
              index === 1 ? "https://github.com/mirasity1" : // RealVida pode ser público
              index === 2 ? null : // Sistema de gamificação (parte do Booktrack - privado)
              index === 3 ? "https://github.com/mirasity1" : // Real Business Center
              index === 4 ? null : // Hexsicor CRM (privado)
              "https://github.com/mirasity1",
-    isCodePrivate: index === 0 || index === 2 || index === 4, // Primeiro, terceiro e Hexsicor são privados
+    isCodePrivate: index === 2 || index === 4, // Apenas gamificação e Hexsicor são privados
     color: [
       "from-blue-500 to-cyan-500",
       "from-purple-500 to-pink-500",

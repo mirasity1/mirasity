@@ -214,15 +214,17 @@ export const translations = {
       },
       list: [
         {
-          title: 'Projeto em Desenvolvimento',
-          description: 'Aplicação web completa em desenvolvimento com funcionalidades avançadas. Código privado por questões de confidencialidade.',
-          category: 'Desenvolvimento Web Full-Stack',
+          title: 'Advcatia - Sistema de Advocacia',
+          description: 'Aplicação web completa para gestão de escritórios de advocacia com funcionalidades avançadas de gestão de casos, clientes e documentos.',
+          category: 'Sistema de Gestão Jurídica',
           features: [
-            'Projeto em fase de desenvolvimento',
-            'Tecnologias modernas implementadas',
-            'Arquitetura escalável e robusta',
-            'Interface moderna e responsiva',
-            'Código privado - em desenvolvimento'
+            'Gestão completa de casos jurídicos',
+            'Sistema de clientes e contactos',
+            'Gestão de documentos e contratos',
+            'Dashboard analytics para advogados',
+            'Sistema de agenda e compromissos',
+            'Relatórios e estatísticas detalhadas',
+            'Interface moderna e responsiva'
           ]
         },
         {
@@ -558,15 +560,17 @@ export const translations = {
       },
       list: [
         {
-          title: 'Project in Development',
-          description: 'Complete web application in development with advanced features. Private code for confidentiality reasons.',
-          category: 'Full-Stack Web Development',
+          title: 'Advcatia - Legal System',
+          description: 'Complete web application for law firm management with advanced case, client and document management features.',
+          category: 'Legal Management System',
           features: [
-            'Project in development phase',
-            'Modern technologies implemented',
-            'Scalable and robust architecture',
-            'Modern and responsive interface',
-            'Private code - under development'
+            'Complete legal case management',
+            'Client and contact system',
+            'Document and contract management',
+            'Analytics dashboard for lawyers',
+            'Schedule and appointment system',
+            'Detailed reports and statistics',
+            'Modern and responsive interface'
           ]
         },
         {
