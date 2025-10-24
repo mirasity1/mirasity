@@ -70,7 +70,7 @@ const Projects = () => {
              index === 2 ? "https://github.com/mirasity1" : // Real Business Center
              index === 3 ? null : // Hexsicor CRM (privado)
              "https://github.com/mirasity1",
-    isCodePrivate: index === 3, // Apenas Hexsicor é privado
+    isCodePrivate: index === 3 && index === 2 && index === 1, // Apenas Hexsicor é privado
     color: [
       "from-blue-500 to-cyan-500",
       "from-purple-500 to-pink-500",

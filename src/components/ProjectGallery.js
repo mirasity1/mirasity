@@ -14,9 +14,6 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
       thumbnail: project.video.thumbnail || null 
     }] : []),
     { type: 'image', src: `https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop` },
-    { type: 'image', src: `https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop` },
-    { type: 'image', src: `https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=600&fit=crop` },
-    { type: 'image', src: `https://images.unsplash.com/photo-1527689368864-3a821dbccc34?w=800&h=600&fit=crop` }
   ].filter(item => item.src) : []; // Filter out any undefined sources
 
   // Reset current index when project changes
@@ -157,15 +154,17 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                     className="absolute inset-0 w-full h-full bg-black flex items-center justify-center"
                   >
                     {galleryMedia[currentImageIndex]?.type === 'youtube' ? (
-                      <iframe
-                        src={`https://www.youtube-nocookie.com/embed/${galleryMedia[currentImageIndex]?.src}?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1&cc_load_policy=0&iv_load_policy=3&autohide=0`}
-                        title="Project Video"
-                        frameBorder="0"
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        referrerPolicy="strict-origin-when-cross-origin"
-                      />
+                      <div className="w-full h-full bg-black flex items-center justify-center">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${galleryMedia[currentImageIndex]?.src}`}
+                          title="Project Video"
+                          frameBorder="0"
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                          onError={() => console.error('YouTube iframe error')}
+                        />
+                      </div>
                     ) : (
                       <video
                         key={galleryMedia[currentImageIndex]?.src}
