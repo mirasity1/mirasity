@@ -1,0 +1,12 @@
+[
+  {
+    "name": "backend",
+    "plan": "hobby",
+    "runtime": "nodejs",
+    "buildCommand": "npm install",
+    "startCommand": "npm start",
+    "variables": {
+      "NODE_ENV": "production"
+    }
+  }
+]

@@ -3,7 +3,7 @@ import { X, Shield, Eye, Database, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const PrivacyPolicy = ({ isOpen, onClose }) => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
 
   const privacyContent = {
     pt: {

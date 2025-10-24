@@ -3,7 +3,7 @@ import { X, FileText, AlertTriangle, Scale, Globe } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const TermsOfService = ({ isOpen, onClose }) => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
 
   const termsContent = {
     pt: {

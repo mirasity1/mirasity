@@ -121,8 +121,48 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Middleware para redirecionar todas as rotas não-API para o frontend
+app.use('*', (req, res, next) => {
+  // Permitir apenas rotas que começam com /api/ ou rotas específicas do backend
+  const allowedPaths = ['/api/', '/health'];
+  const isApiRoute = allowedPaths.some(path => req.originalUrl.startsWith(path));
+  
+  if (!isApiRoute) {
+    // Redirecionar para o frontend
+    const frontendUrl = process.env.FRONTEND_URL || 'https://mirasity.pt';
+    return res.redirect(301, frontendUrl + req.originalUrl);
+  }
+  
+  next();
+});
+
+// Rota 404 para APIs não encontradas
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    error: 'API endpoint not found',
+    message: `The endpoint ${req.originalUrl} does not exist`,
+    availableEndpoints: [
+      'POST /api/send-email',
+      'GET /api/test-smtp',
+      'GET /health'
+    ]
+  });
+});
+
+// Fallback final - redirecionar qualquer outra coisa para o frontend
+app.use('*', (req, res) => {
+  const frontendUrl = process.env.FRONTEND_URL || 'https://mirasity.pt';
+  res.redirect(301, frontendUrl);
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Frontend URL: ${process.env.FRONTEND_URL || 'https://mirasity.pt'}`);
+  console.log('Rotas disponíveis:');
+  console.log('  POST /api/send-email - Enviar email de contato');
+  console.log('  GET /api/test-smtp - Testar configuração SMTP');
+  console.log('  GET /health - Health check');
+  console.log('  * Qualquer outra rota → Redirect para frontend');
 });
 
 module.exports = app;

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const ProjectGallery = ({ project, isOpen, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -13,6 +13,14 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
     `https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=600&fit=crop`,
     `https://images.unsplash.com/photo-1527689368864-3a821dbccc34?w=800&h=600&fit=crop`
   ] : [];
+
+  const nextImage = useCallback(() => {
+    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+  }, [galleryImages.length]);
+
+  const prevImage = useCallback(() => {
+    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  }, [galleryImages.length]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -30,15 +38,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen]); // Removendo as dependências para evitar re-renders desnecessários
-
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
-  };
+  }, [isOpen, nextImage, prevImage, onClose]);
 
   const backdropVariants = {
     hidden: { opacity: 0 },
