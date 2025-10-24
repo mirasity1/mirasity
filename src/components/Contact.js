@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, MapPin, Send, Linkedin, Github, Download, MessageCircle, CheckCircle, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
@@ -16,6 +16,24 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStatus, setFormStatus] = useState(null); // 'success', 'error', null
   const [formErrors, setFormErrors] = useState({});
+  
+  // Verificação anti-bot - pergunta matemática simples
+  const [mathQuestion, setMathQuestion] = useState({ num1: 0, num2: 0, answer: 0 });
+  const [userMathAnswer, setUserMathAnswer] = useState('');
+
+  // Gerar nova pergunta matemática
+  const generateMathQuestion = () => {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    const answer = num1 + num2;
+    setMathQuestion({ num1, num2, answer });
+    setUserMathAnswer('');
+  };
+
+  // Gerar pergunta inicial
+  useEffect(() => {
+    generateMathQuestion();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -65,6 +83,13 @@ const Contact = () => {
     
     // Validação do formulário
     const errors = emailService.validateForm(formData);
+    
+    // Verificação anti-bot
+    if (parseInt(userMathAnswer) !== mathQuestion.answer) {
+      errors.mathVerification = t?.contact?.mathError || 'Resposta matemática incorreta. Tente novamente.';
+      generateMathQuestion(); // Gerar nova pergunta
+    }
+    
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       trackEvent('form_validation_error', 'Contact', 'Form Validation Failed');
@@ -92,6 +117,9 @@ const Contact = () => {
         subject: '',
         message: ''
       });
+      
+      // Reset verificação matemática
+      generateMathQuestion();
       
       // Rastrear sucesso
       trackEvent('form_submit_success', 'Contact', 'Contact Form Sent Successfully');
@@ -405,6 +433,45 @@ const Contact = () => {
                     />
                     {formErrors.message && (
                       <p className="mt-1 text-sm text-red-400">{formErrors.message}</p>
+                    )}
+                  </div>
+
+                  {/* Verificação Anti-Bot */}
+                  <div>
+                    <label htmlFor="mathVerification" className="block text-gray-300 text-sm font-medium mb-2">
+                      {t.contact?.form?.mathVerification || 'Verificação de Segurança'} *
+                    </label>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-white text-lg font-semibold bg-gray-700 px-3 py-2 rounded">
+                        {mathQuestion.num1} + {mathQuestion.num2} = ?
+                      </span>
+                      <motion.input
+                        whileFocus={{ scale: 1.02 }}
+                        type="number"
+                        id="mathVerification"
+                        value={userMathAnswer}
+                        onChange={(e) => setUserMathAnswer(e.target.value)}
+                        required
+                        className={`w-20 px-3 py-2 bg-gray-700 border rounded-lg text-white text-center focus:outline-none focus:ring-1 transition-all duration-300 ${
+                          formErrors.mathVerification 
+                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
+                            : 'border-gray-600 focus:border-blue-500 focus:ring-blue-500'
+                        }`}
+                        placeholder="?"
+                      />
+                      <motion.button
+                        type="button"
+                        onClick={generateMathQuestion}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="text-gray-400 hover:text-white transition-colors"
+                        title={t.contact?.form?.refreshMath || 'Gerar nova pergunta'}
+                      >
+                        🔄
+                      </motion.button>
+                    </div>
+                    {formErrors.mathVerification && (
+                      <p className="mt-1 text-sm text-red-400">{formErrors.mathVerification}</p>
                     )}
                   </div>
 

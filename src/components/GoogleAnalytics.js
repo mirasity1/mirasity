@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
 // Substitua por seu ID do Google Analytics
-const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID || 'G-XXXXXXXXXX';
+const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID || 'G-ET9PL2MG7D';
 
 // Função para inicializar o Google Analytics
 export const initGA = () => {
-  if (typeof window !== 'undefined' && GA_TRACKING_ID && GA_TRACKING_ID !== 'G-XXXXXXXXXX') {
+  if (typeof window !== 'undefined' && GA_TRACKING_ID) {
     // Carrega o script do Google Analytics
     const script = document.createElement('script');
     script.async = true;
@@ -24,6 +24,8 @@ export const initGA = () => {
       page_title: document.title,
       page_location: window.location.href,
       anonymize_ip: true, // Para GDPR compliance
+      allow_google_signals: false, // Desabilita sinais do Google por padrão
+      allow_ad_personalization_signals: false, // Desabilita personalização de anúncios
     });
   }
 };
@@ -41,7 +43,7 @@ export const trackEvent = (action, category = 'General', label = '', value = 0) 
 
 // Função para rastrear page views
 export const trackPageView = (path, title) => {
-  if (typeof window !== 'undefined' && window.gtag && GA_TRACKING_ID !== 'G-XXXXXXXXXX') {
+  if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('config', GA_TRACKING_ID, {
       page_title: title,
       page_location: window.location.origin + path,

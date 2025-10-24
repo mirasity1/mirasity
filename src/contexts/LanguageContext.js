@@ -296,12 +296,15 @@ export const translations = {
         emailPlaceholder: 'seu@email.com',
         subjectPlaceholder: 'Sobre o que você gostaria de falar?',
         messagePlaceholder: 'Conte-me sobre seu projeto ou ideia...',
+        mathVerification: 'Verificação de Segurança',
+        refreshMath: 'Gerar nova pergunta',
         sending: 'Enviando...',
         send: 'Enviar Mensagem',
         successMessage: 'Mensagem enviada com sucesso! Entrarei em contato em breve.',
         errorMessage: 'Erro ao enviar mensagem. Tente novamente ou entre em contato diretamente.',
         required: '*'
       },
+      mathError: 'Resposta matemática incorreta. Tente novamente.',
       contactTypes: {
         email: 'Email',
         linkedin: 'LinkedIn',
@@ -633,12 +636,15 @@ export const translations = {
         emailPlaceholder: 'your@email.com',
         subjectPlaceholder: 'What would you like to talk about?',
         messagePlaceholder: 'Tell me about your project or idea...',
+        mathVerification: 'Security Verification',
+        refreshMath: 'Generate new question',
         sending: 'Sending...',
         send: 'Send Message',
         successMessage: 'Message sent successfully! I\'ll get back to you soon.',
         errorMessage: 'Error sending message. Please try again or contact me directly.',
         required: '*'
       },
+      mathError: 'Incorrect math answer. Please try again.',
       contactTypes: {
         email: 'Email',
         linkedin: 'LinkedIn',
