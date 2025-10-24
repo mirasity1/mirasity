@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Mail, MapPin, Send, Linkedin, Github, Download, MessageCircle, CheckCircle, AlertCircle } from 'lucide-react';
+import { Mail, MapPin, Send, Linkedin, Github, Download, MessageCircle, CheckCircle, AlertCircle, Eye } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
 import emailService from '../services/emailService';
@@ -284,6 +284,19 @@ const Contact = () => {
                     href="/cv.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackEvent('cv_view', 'Contact', 'CV View')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center justify-center w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-600 hover:to-blue-600 transition-all duration-300"
+                  >
+                    <Eye className="mr-2" size={20} />
+                    {t.contact.viewResume}
+                  </motion.a>
+
+                  <motion.a
+                    href="/cv.pdf"
+                    download="Filipe_Braga_CV.pdf"
+                    onClick={() => trackEvent('cv_download', 'Contact', 'CV Download')}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center justify-center w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300"
@@ -301,7 +314,6 @@ const Contact = () => {
                     className="flex items-center justify-center w-full border-2 border-blue-500 text-blue-400 py-3 px-6 rounded-lg font-semibold hover:bg-blue-500 hover:text-white transition-all duration-300"
                   >
                     <MessageCircle className="mr-2" size={20} />
-                    {t.contact.viewFullPortfolio}
                   </motion.a>
                 </div>
               </motion.div>

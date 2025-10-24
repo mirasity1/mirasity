@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Skills = () => {
@@ -137,34 +138,14 @@ const Skills = () => {
                   </h3>
                 </div>
 
-                <div className="space-y-4">
+                  <div className="space-y-4">
                   {category.skills.map((skill, skillIndex) => (
-                    <motion.div
+                    <SkillItem
                       key={skillIndex}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: skillIndex * 0.1 }}
-                      viewport={{ once: true }}
-                      className="group"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-lg">{skill.icon}</span>
-                          <span className="text-white font-medium">{skill.name}</span>
-                        </div>
-                        <span className="text-gray-400 text-sm">{skill.level}%</span>
-                      </div>
-                      
-                      <div className="w-full bg-gray-700 rounded-full h-2">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${skill.level}%` }}
-                          transition={{ duration: 1, delay: skillIndex * 0.1 }}
-                          viewport={{ once: true }}
-                          className={`h-2 rounded-full bg-gradient-to-r ${category.color}`}
-                        />
-                      </div>
-                    </motion.div>
+                      skill={skill}
+                      skillIndex={skillIndex}
+                      categoryColor={category.color}
+                    />
                   ))}
                 </div>
               </motion.div>
@@ -191,4 +172,49 @@ const Skills = () => {
   );
 };
 
-export default Skills;
+      // Reusable SkillItem that falls back to visible state on small screens
+      const SkillItem = ({ skill, skillIndex, categoryColor }) => {
+        const [isMobile, setIsMobile] = useState(false);
+
+        useEffect(() => {
+          const check = () => setIsMobile(window.innerWidth <= 768);
+          check();
+          window.addEventListener('resize', check);
+          return () => window.removeEventListener('resize', check);
+        }, []);
+
+        const initialState = isMobile ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 };
+        const whileInViewState = isMobile ? undefined : { opacity: 1, x: 0 };
+        const progressInitial = isMobile ? { width: `${skill.level}%` } : { width: 0 };
+        const progressWhileInView = isMobile ? undefined : { width: `${skill.level}%` };
+
+        return (
+          <motion.div
+            initial={initialState}
+            whileInView={whileInViewState}
+            transition={{ delay: skillIndex * 0.1 }}
+            viewport={{ once: true }}
+            className="group"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center space-x-2">
+                <span className="text-lg">{skill.icon}</span>
+                <span className="text-white font-medium">{skill.name}</span>
+              </div>
+              <span className="text-gray-400 text-sm">{skill.level}%</span>
+            </div>
+
+            <div className="w-full bg-gray-700 rounded-full h-2">
+              <motion.div
+                initial={progressInitial}
+                whileInView={progressWhileInView}
+                transition={{ duration: 1, delay: skillIndex * 0.1 }}
+                viewport={{ once: true }}
+                className={`h-2 rounded-full bg-gradient-to-r ${categoryColor}`}
+              />
+            </div>
+          </motion.div>
+        );
+      };
+
+      export default Skills;

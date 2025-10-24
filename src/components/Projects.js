@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { ExternalLink, Github, Eye, Calendar, Image, Lock, Award } from 'lucide-react';
+import { ExternalLink, Github, Eye, Calendar, Image, Lock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
 import ProjectGallery from './ProjectGallery';
 
 const Projects = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -34,13 +35,13 @@ const Projects = () => {
     id: index + 1,
     title: project.title || '',
     description: project.description || '',
-    image: index === 0 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop` : // Law/Legal system - Advcatia
+    image: index === 0 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop&auto=format&q=75` : // Law/Legal system - Advcatia
           index === 1 ? require('../imgs/leads.png') : // Real Vida Seguros - leads image
-          index === 2 ? `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop` : // Travel/Trip - Real Vida Trip
-          index === 3 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=600&h=400&fit=crop` : // Wine/Restaurant - Wein.plus
+          index === 2 ? `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format&q=75` : // Travel/Trip - Real Vida Trip
+          index === 3 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=400&h=300&fit=crop&auto=format&q=75` : // Wine/Restaurant - Wein.plus
           index === 4 ? require('../imgs/main.jpeg') : // Real Business Center local image
           index === 5 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image (apenas imagem)
-          `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop`,
+          `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop&auto=format&q=75`,
     video: index === 0 ? { 
       type: 'youtube', 
       id: 'JU3sQZHc9zQ',
@@ -106,47 +107,50 @@ const Projects = () => {
   };
 
   return (
-    <section id="projects" className="py-20 bg-gray-50">
-      <div className="container mx-auto px-6">
+    <section id="projects" className="py-12 md:py-20 bg-gray-50 relative z-10">
+      <div className="container mx-auto px-4 md:px-6">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.1 }}
           className="max-w-7xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <motion.div variants={itemVariants} className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
               {t.projects?.title || 'My'} <span className="text-blue-600">{t.projects?.subtitle || 'Projects'}</span>
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-6"></div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <div className="w-20 md:w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-6"></div>
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               {t.projects?.description || 'A selection of projects I\'ve worked on'}
             </p>
           </motion.div>
 
           <motion.div
             variants={containerVariants}
-            className="grid lg:grid-cols-2 xl:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8"
           >
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
                 variants={itemVariants}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group"
+                whileHover={{ y: -5, scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group touch-manipulation"
               >
                 {/* Project Image */}
-                <div className="relative overflow-hidden h-48 cursor-pointer" onClick={() => openGallery(project)}>
+                <div className="relative overflow-hidden h-40 md:h-48 cursor-pointer" onClick={() => openGallery(project)}>
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                    decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 transition-opacity duration-300" />
                   
                   {/* Status badge */}
-                  <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-medium ${
+                  <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium ${
                     project.status === 'Concluído' 
                       ? 'bg-green-500 text-white' 
                       : 'bg-yellow-500 text-white'
@@ -155,12 +159,12 @@ const Projects = () => {
                   </div>
                   
                   {/* Gallery indicator */}
-                  <div className="absolute top-4 left-4 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Image size={16} />
+                  <div className="absolute top-3 left-3 bg-black/50 text-white p-2 rounded-full opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                    <Image size={14} />
                   </div>
                   
-                  {/* Hover overlay with buttons */}
-                  <div className="absolute inset-0 flex items-center justify-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {/* Hover overlay with buttons - Hidden on mobile, visible on tap */}
+                  <div className="absolute inset-0 flex items-center justify-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <motion.button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -168,9 +172,9 @@ const Projects = () => {
                       }}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="bg-white text-gray-900 p-3 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-300"
+                      className="bg-white text-gray-900 p-2.5 md:p-3 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-300"
                     >
-                      <Eye size={20} />
+                      <Eye size={16} className="md:w-5 md:h-5" />
                     </motion.button>
                     <motion.a
                       href={project.liveUrl}
@@ -179,9 +183,9 @@ const Projects = () => {
                       onClick={(e) => e.stopPropagation()}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="bg-white text-gray-900 p-3 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-300"
+                      className="bg-white text-gray-900 p-2.5 md:p-3 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-300"
                     >
-                      <ExternalLink size={20} />
+                      <ExternalLink size={16} className="md:w-5 md:h-5" />
                     </motion.a>
                     {!project.isCodePrivate ? (
                       <motion.a
@@ -191,24 +195,24 @@ const Projects = () => {
                         onClick={(e) => e.stopPropagation()}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        className="bg-white text-gray-900 p-3 rounded-full hover:bg-gray-900 hover:text-white transition-colors duration-300"
+                        className="bg-white text-gray-900 p-2.5 md:p-3 rounded-full hover:bg-gray-900 hover:text-white transition-colors duration-300"
                       >
-                        <Github size={20} />
+                        <Github size={16} className="md:w-5 md:h-5" />
                       </motion.a>
                     ) : (
                       <motion.div
                         whileHover={{ scale: 1.1 }}
-                        className="bg-gray-400 text-white p-3 rounded-full cursor-not-allowed"
+                        className="bg-gray-400 text-white p-2.5 md:p-3 rounded-full cursor-not-allowed"
                         title="Código Privado"
                       >
-                        <Lock size={20} />
+                        <Lock size={16} className="md:w-5 md:h-5" />
                       </motion.div>
                     )}
                   </div>
                 </div>
 
                 {/* Project Content */}
-                <div className="p-6">
+                <div className="p-4 md:p-6">
                   <div className="flex items-center justify-between mb-3">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${project.color} text-white`}>
                       {project.category}
@@ -219,43 +223,77 @@ const Projects = () => {
                     </div>
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
                     {project.title}
                   </h3>
                   
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                  <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4 line-clamp-3">
                     {project.description}
                   </p>
 
                   {/* Technologies */}
-                  <div className="mb-4">
-                    <div className="flex flex-wrap gap-2">
+                  <div className="mb-3 md:mb-4">
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
                       {(project.technologies || []).slice(0, 4).map((tech, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium"
+                          className="px-2 py-1 md:px-2 md:py-1 bg-blue-100 text-blue-700 rounded-full text-xs md:text-sm font-medium"
                         >
                           {tech}
                         </span>
                       ))}
                       {(project.technologies || []).length > 4 && (
-                        <span className="px-2 py-1 bg-gray-200 text-gray-600 rounded text-xs">
+                        <span className="px-2 py-1 md:px-2 md:py-1 bg-gray-200 text-gray-600 rounded-full text-xs md:text-sm">
                           +{(project.technologies || []).length - 4}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {/* Project Features */}
-                  <div className="mb-4">
+                  {/* Action buttons for mobile */}
+                  <div className="flex gap-2 mb-3 md:hidden">
+                    <button
+                      onClick={() => openGallery(project)}
+                      className="flex-1 bg-blue-500 text-white py-2.5 px-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center gap-2 touch-manipulation"
+                    >
+                      <Eye size={16} />
+                      {language === 'pt' ? 'Ver Detalhes' : 'View Details'}
+                    </button>
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-gray-100 text-gray-700 py-2.5 px-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center touch-manipulation"
+                    >
+                      <ExternalLink size={16} />
+                    </a>
+                    {!project.isCodePrivate && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gray-100 text-gray-700 py-2.5 px-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center touch-manipulation"
+                      >
+                        <Github size={16} />
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Project Features - Hidden on mobile for space */}
+                  <div className="hidden md:block mb-4">
                     <h4 className="text-sm font-semibold text-gray-900 mb-2">{t.projects?.features || 'Features:'}</h4>
                     <ul className="space-y-1">
                       {(project.features || []).slice(0, 3).map((feature, idx) => (
-                        <li key={idx} className="text-xs text-gray-600 flex items-start">
-                          <Award size={12} className="mr-2 mt-0.5 text-blue-500 flex-shrink-0" />
+                        <li key={idx} className="text-gray-600 text-sm flex items-start">
+                          <span className="text-blue-500 mr-2 text-xs">•</span>
                           {feature}
                         </li>
                       ))}
+                      {(project.features || []).length > 3 && (
+                        <li className="text-gray-500 text-xs">
+                          +{(project.features || []).length - 3} {language === 'pt' ? 'mais recursos' : 'more features'}
+                        </li>
+                      )}
                     </ul>
                   </div>
 

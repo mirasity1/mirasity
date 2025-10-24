@@ -1,9 +1,18 @@
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { Calendar, MapPin, Award, Users, Code, Target } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Experience = () => {
   const { t } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -106,7 +115,9 @@ const Experience = () => {
       icon: <Award className="w-6 h-6" />,
       description: t.experience.methodologyList[3].description
     }
-  ];  return (
+  ];
+
+  return (
     <section id="experience" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <motion.div
@@ -135,6 +146,8 @@ const Experience = () => {
               <motion.div
                 key={index}
                 variants={itemVariants}
+                initial={isMobile ? 'visible' : 'hidden'}
+                animate={isMobile ? 'visible' : undefined}
                 className={`relative flex items-center mb-12 ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}
