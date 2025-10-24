@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
+    "ajv": "^8.17.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.547.0",
     "react": "^18.2.0",
@@ -18,16 +19,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
-    "start:frontend": "react-scripts start",
-    "start:backend": "cd backend && npm run dev",
-    "start:frontend-only": "react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
-    "vercel-build": "npm run build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "install:backend": "cd backend && npm install",
-    "install:all": "npm install && npm run install:backend"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -48,8 +43,6 @@
     ]
   },
   "devDependencies": {
-    "ajv": "^7.2.4",
-    "concurrently": "^9.2.1",
     "tailwindcss": "^3.4.18"
   }
 }
