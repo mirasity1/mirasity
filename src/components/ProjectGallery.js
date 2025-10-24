@@ -155,16 +155,38 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                     className="absolute inset-0 w-full h-full bg-black flex items-center justify-center"
                   >
                     {galleryMedia[currentImageIndex]?.type === 'youtube' ? (
-                      <div className="w-full h-full bg-black flex items-center justify-center">
-                        <iframe
-                          src={`https://www.youtube.com/embed/${galleryMedia[currentImageIndex]?.src}${galleryMedia[currentImageIndex]?.si ? `?si=${galleryMedia[currentImageIndex]?.si}` : ''}`}
-                          title="YouTube video player"
-                          frameBorder="0"
-                          className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          allowFullScreen
+                      <div className="w-full h-full bg-black flex items-center justify-center relative cursor-pointer group"
+                           onClick={() => window.open(`https://www.youtube.com/watch?v=${galleryMedia[currentImageIndex]?.src}`, '_blank')}
+                      >
+                        {/* YouTube Thumbnail */}
+                        <img
+                          src={`https://img.youtube.com/vi/${galleryMedia[currentImageIndex]?.src}/maxresdefault.jpg`}
+                          alt="Video Thumbnail"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            // Fallback to medium quality thumbnail
+                            e.target.src = `https://img.youtube.com/vi/${galleryMedia[currentImageIndex]?.src}/mqdefault.jpg`;
+                          }}
                         />
+                        
+                        {/* Play Button Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors duration-300">
+                          <div className="bg-red-600 hover:bg-red-700 rounded-full p-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg className="w-12 h-12 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                          </div>
+                        </div>
+                        
+                        {/* YouTube Logo */}
+                        <div className="absolute top-4 right-4 bg-red-600 text-white px-2 py-1 rounded text-sm font-bold">
+                          YouTube
+                        </div>
+                        
+                        {/* Click to open message */}
+                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                          Clique para abrir no YouTube
+                        </div>
                       </div>
                     ) : (
                       <video
