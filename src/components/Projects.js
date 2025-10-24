@@ -34,10 +34,12 @@ const Projects = () => {
     id: index + 1,
     title: project.title || '',
     description: project.description || '',
-    image: index === 0 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop` : // Law/Legal system
+    image: index === 0 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop` : // Law/Legal system - Advcatia
           index === 1 ? require('../imgs/leads.png') : // Real Vida Seguros - leads image
-          index === 2 ? require('../imgs/main.jpeg') : // Real Business Center local image
-          index === 3 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image
+          index === 2 ? `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop` : // Travel/Trip - Real Vida Trip
+          index === 3 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=600&h=400&fit=crop` : // Wine/Restaurant - Wein.plus
+          index === 4 ? require('../imgs/main.jpeg') : // Real Business Center local image
+          index === 5 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image (apenas imagem)
           `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop`,
     video: index === 0 ? { 
       type: 'youtube', 
@@ -52,29 +54,37 @@ const Projects = () => {
     } : 
     index === 2 ? { 
       type: 'youtube', 
+      id: 'P0zdVl4JOGo',
+      thumbnail: null
+    } : 
+    index === 3 ? null : // Wein.plus - sem vídeo
+    index === 4 ? { 
+      type: 'youtube', 
       id: 'AiA_qjZtYsc',
       thumbnail: null
-    } : null, // Hexsicor sem vídeo (não pode mostrar desenvolvimento)
+    } : null, // Hexsicor sem vídeo (apenas imagem)
     technologies: [
-      ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Advcatia - Sistema de Advocacia
+      ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Advcatia
       ["React", "Strapi", "HTML", "Markdown", "CMS"], // Sistema de Leads - Real Vida Seguros
+      ["React", "Strapi", "HTML", "Markdown", "CMS"], // Real Vida Trip
+      ["Laravel", "PHP", "MySQL", "JavaScript", "Cron Jobs"], // Wein.plus
       ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Real Business Center
       ["Laravel", "PHP", "React", "TypeScript", "MySQL"] // Hexsicor CRM
     ][index] || [],
     category: project.category || '',
-    year: index === 3 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023
+    year: index === 5 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023
     status: (t.projects?.completed || 'Completed'),
     features: project.features || [],
-    liveUrl: index === 2 ? "https://realbusinesscenter.pt/" : "https://mirasity.pt",
-    githubUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia projeto público
-             index === 1 ? "https://github.com/mirasity1" : // RealVida pode ser público
-             index === 2 ? "https://github.com/mirasity1" : // Real Business Center
-             index === 3 ? null : // Hexsicor CRM (privado)
-             "https://github.com/mirasity1",
-    isCodePrivate: index === 3 && index === 2 && index === 1, // Apenas Hexsicor é privado
+    liveUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia - link para GitHub
+             index === 4 ? "https://realbusinesscenter.pt/" : // Real Business Center - único site visitável
+             "https://mirasity.pt", // Outros redirecionam para portfolio
+    githubUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : null, // Apenas Advcatia público
+    isCodePrivate: index !== 0, // Apenas Advcatia tem código público
     color: [
       "from-blue-500 to-cyan-500",
       "from-purple-500 to-pink-500",
+      "from-green-500 to-emerald-500",
+      "from-yellow-500 to-orange-500",
       "from-orange-500 to-red-500",
       "from-indigo-500 to-purple-500"
     ][index] || "from-blue-500 to-cyan-500"

@@ -242,6 +242,34 @@ export const translations = {
           ]
         },
         {
+          title: 'Real Vida Trip',
+          description: 'Plataforma web para gestão de viagens da Real Vida Seguros com sistema completo de itinerários e conteúdo progressivo.',
+          category: 'Plataforma de Viagens',
+          features: [
+            'Sistema de gestão de viagens completo',
+            'Itinerários detalhados por dias',
+            'Liberação progressiva de conteúdo',
+            'Interface responsiva e moderna',
+            'Integração com Strapi CMS',
+            'Dashboard administrativo',
+            'Gestão de grupos de viagem'
+          ]
+        },
+        {
+          title: 'Wein.plus',
+          description: 'Colaboração no desenvolvimento de funcionalidades para plataforma de vinhos, incluindo sistema de emails automáticos para clientes e cron jobs.',
+          category: 'Plataforma de Vinhos',
+          features: [
+            'Sistema de emails automáticos para clientes',
+            'Implementação de cron jobs',
+            'Gestão de notificações',
+            'Integração com base de dados',
+            'Optimização de performance',
+            'Funcionalidades de backend',
+            'Sistema de alertas personalizados'
+          ]
+        },
+        {
           title: 'Real Business Center',
           description: 'Plataforma web empresarial completa desenvolvida para centro de negócios. Sistema robusto com gestão de utilizadores e funcionalidades administrativas avançadas.',
           category: 'Plataforma Empresarial',
@@ -256,14 +284,15 @@ export const translations = {
         },
         {
           title: 'CRM Contact Center - Hexsicor',
-          description: 'Sistema CRM desenvolvido para empresas de contact center entre 2022-2023. Código privado mas interface demonstrável.',
+          description: 'Sistema CRM desenvolvido para empresas de contact center entre 2022-2023. Apenas imagem demonstrativa, sem links ou código público.',
           category: 'CRM Empresarial (2022-2023)',
           features: [
             'CRM especializado para contact centers',
             'Gestão de campanhas e contactos',
             'Dashboard de performance em tempo real',
             'Sistema de relatórios avançados',
-            'Código privado - projeto empresarial'
+            'Projeto empresarial confidencial',
+            'Apenas demonstração visual'
           ]
         }
       ]
@@ -576,6 +605,34 @@ export const translations = {
           ]
         },
         {
+          title: 'Real Vida Trip',
+          description: 'Web platform for Real Vida Seguros travel management with complete itinerary system and progressive content.',
+          category: 'Travel Platform',
+          features: [
+            'Complete travel management system',
+            'Detailed day-by-day itineraries',
+            'Progressive content release',
+            'Responsive and modern interface',
+            'Strapi CMS integration',
+            'Administrative dashboard',
+            'Travel group management'
+          ]
+        },
+        {
+          title: 'Wein.plus',
+          description: 'Collaboration in developing features for wine platform, including automatic email system for clients and cron jobs.',
+          category: 'Wine Platform',
+          features: [
+            'Automatic email system for clients',
+            'Cron jobs implementation',
+            'Notification management',
+            'Database integration',
+            'Performance optimization',
+            'Backend functionalities',
+            'Personalized alert system'
+          ]
+        },
+        {
           title: 'Real Business Center',
           description: 'Complete business web platform developed for business center. Robust system with user management and advanced administrative features.',
           category: 'Business Platform',
@@ -590,14 +647,15 @@ export const translations = {
         },
         {
           title: 'Contact Center CRM - Hexsicor',
-          description: 'CRM system developed for contact center companies between 2022-2023. Private code but demonstrable interface.',
+          description: 'CRM system developed for contact center companies between 2022-2023. Image demonstration only, no links or public code.',
           category: 'Business CRM (2022-2023)',
           features: [
             'Specialized CRM for contact centers',
             'Campaign and contact management',
             'Real-time performance dashboard',
             'Advanced reporting system',
-            'Private code - business project'
+            'Confidential business project',
+            'Visual demonstration only'
           ]
         }
       ]
