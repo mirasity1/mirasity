@@ -23,6 +23,7 @@
     "start:backend": "cd backend && npm run dev",
     "start:frontend-only": "react-scripts start",
     "build": "react-scripts build",
+    "vercel-build": "npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "install:backend": "cd backend && npm install",
