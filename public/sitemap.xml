@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://mirasity.pt/</loc>
+    <lastmod>2024-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://mirasity.pt/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mirasity.pt/en" />
+  </url>
+  <url>
+    <loc>https://mirasity.pt/#about</loc>
+    <lastmod>2024-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://mirasity.pt/#about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mirasity.pt/en#about" />
+  </url>
+  <url>
+    <loc>https://mirasity.pt/#skills</loc>
+    <lastmod>2024-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://mirasity.pt/#skills" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mirasity.pt/en#skills" />
+  </url>
+  <url>
+    <loc>https://mirasity.pt/#experience</loc>
+    <lastmod>2024-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://mirasity.pt/#experience" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mirasity.pt/en#experience" />
+  </url>
+  <url>
+    <loc>https://mirasity.pt/#projects</loc>
+    <lastmod>2024-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://mirasity.pt/#projects" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mirasity.pt/en#projects" />
+  </url>
+  <url>
+    <loc>https://mirasity.pt/#contact</loc>
+    <lastmod>2024-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://mirasity.pt/#contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mirasity.pt/en#contact" />
+  </url>
+</urlset>
