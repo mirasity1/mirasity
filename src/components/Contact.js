@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Mail, MapPin, Send, Linkedin, Github, Download, MessageCircle, CheckCircle, AlertCircle, Eye } from 'lucide-react';
+import { Mail, MapPin, Send, Linkedin, Github, Download, CheckCircle, AlertCircle, Eye } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
 import emailService from '../services/emailService';
@@ -284,7 +284,7 @@ const Contact = () => {
                     href="https://drive.google.com/file/d/1p9JETWrxIt_fdDl8gsNRhsgHvRBEWyvw/view?usp=sharing"
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => trackEvent('cv_view', 'Contact', 'CV View')}
+                    onClick={() => trackEvent('cv_view', 'Contact', 'CV View Full Resume')}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center justify-center w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-600 hover:to-blue-600 transition-all duration-300"
@@ -304,17 +304,6 @@ const Contact = () => {
                   >
                     <Download className="mr-2" size={20} />
                     {t.contact.downloadResume}
-                  </motion.a>
-                  
-                  <motion.a
-                    href="https://mirasity.pt"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center justify-center w-full border-2 border-blue-500 text-blue-400 py-3 px-6 rounded-lg font-semibold hover:bg-blue-500 hover:text-white transition-all duration-300"
-                  >
-                    <MessageCircle className="mr-2" size={20} />
                   </motion.a>
                 </div>
               </motion.div>
