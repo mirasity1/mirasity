@@ -10,8 +10,12 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <App />
-    <SpeedInsights />
-    <Analytics />
+    {process.env.NODE_ENV === 'production' && (
+      <>
+        <SpeedInsights />
+        <Analytics />
+      </>
+    )}
   </React.StrictMode>
 );
 
