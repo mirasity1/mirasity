@@ -44,18 +44,18 @@ const Projects = () => {
     ][index] || '1556742049-0cfed4f6a45d'}?w=600&h=400&fit=crop`,
     video: index === 0 ? { 
       type: 'youtube', 
-      id: 'SEU_VIDEO_ID_1',
-      thumbnail: '/booktrack-demo-thumb.jpg'
+      id: 'bm0E1hvf12A',
+      thumbnail: null
     } : 
     index === 1 ? { 
       type: 'youtube', 
-      id: 'SEU_VIDEO_ID_2',
-      thumbnail: '/viagens-demo-thumb.jpg'
+      id: 'P0zdVl4JOGo',
+      thumbnail: null
     } : 
     index === 2 ? { 
       type: 'youtube', 
-      id: 'SEU_VIDEO_ID_3',
-      thumbnail: '/badges-demo-thumb.jpg'
+      id: 'JiblkDn6wgQ',
+      thumbnail: null
     } : null,
     technologies: [
       ["React", "Laravel", "TypeScript", "Tailwind CSS", "MySQL"],
