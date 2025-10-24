@@ -8,7 +8,11 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
   // Build gallery media array with images and videos
   const galleryMedia = project ? [
     { type: 'image', src: project.image },
-    ...(project.video ? [{ type: 'video', src: project.video }] : []),
+    ...(project.video ? [{ 
+      type: project.video.type || 'video', 
+      src: project.video.type === 'youtube' ? project.video.id : project.video,
+      thumbnail: project.video.thumbnail || null 
+    }] : []),
     { type: 'image', src: `https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop` },
     { type: 'image', src: `https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop` },
     { type: 'image', src: `https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=600&fit=crop` },
@@ -138,7 +142,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
             {/* Media Gallery */}
             <div className="relative h-96 bg-gray-100 overflow-hidden">
               <AnimatePresence mode="wait" custom={currentImageIndex}>
-                {galleryMedia.length > 0 && galleryMedia[currentImageIndex]?.type === 'video' ? (
+                {galleryMedia.length > 0 && (galleryMedia[currentImageIndex]?.type === 'video' || galleryMedia[currentImageIndex]?.type === 'youtube') ? (
                   <motion.div
                     key={`video-${currentImageIndex}`}
                     custom={currentImageIndex}
@@ -152,18 +156,39 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                     }}
                     className="absolute inset-0 w-full h-full bg-black flex items-center justify-center"
                   >
-                    <video
-                      src={galleryMedia[currentImageIndex]?.src}
-                      controls
-                      className="max-w-full max-h-full object-contain"
-                      autoPlay
-                      muted
-                      loop
-                      preload="metadata"
-                      onError={(e) => console.error('Video load error:', e)}
-                    >
-                      Seu navegador não suporta o elemento de vídeo.
-                    </video>
+                    {galleryMedia[currentImageIndex]?.type === 'youtube' ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${galleryMedia[currentImageIndex]?.src}?autoplay=0&mute=1&controls=1&showinfo=0&rel=0`}
+                        title="Project Video"
+                        frameBorder="0"
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        key={galleryMedia[currentImageIndex]?.src}
+                        controls
+                        className="max-w-full max-h-full object-contain"
+                        playsInline
+                        muted
+                        preload="auto"
+                        crossOrigin="anonymous"
+                        onError={(e) => {
+                          console.error('Video load error:', e);
+                          console.error('Video src:', galleryMedia[currentImageIndex]?.src);
+                          console.error('Video element:', e.target);
+                        }}
+                        onLoadStart={() => console.log('Video loading started:', galleryMedia[currentImageIndex]?.src)}
+                        onCanPlay={() => console.log('Video can play:', galleryMedia[currentImageIndex]?.src)}
+                        onLoadedData={() => console.log('Video data loaded:', galleryMedia[currentImageIndex]?.src)}
+                      >
+                        <source src={galleryMedia[currentImageIndex]?.src} type="video/mp4" />
+                        <p>Seu navegador não suporta reprodução de vídeo. 
+                           <br />Tentando carregar: {galleryMedia[currentImageIndex]?.src}
+                        </p>
+                      </video>
+                    )}
                   </motion.div>
                 ) : galleryMedia.length > 0 ? (
                   <motion.img
@@ -215,6 +240,9 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                   {currentImageIndex + 1} / {galleryMedia.length}
                   {galleryMedia[currentImageIndex]?.type === 'video' && (
                     <span className="ml-2">🎥</span>
+                  )}
+                  {galleryMedia[currentImageIndex]?.type === 'youtube' && (
+                    <span className="ml-2">📺</span>
                   )}
                 </div>
               )}
@@ -271,15 +299,29 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                           : 'border-gray-300 opacity-60 hover:opacity-80'
                       }`}
                     >
-                      {media.type === 'video' ? (
+                      {media.type === 'video' || media.type === 'youtube' ? (
                         <div className="w-full h-full bg-gray-800 flex items-center justify-center relative">
                           <span className="text-white text-xs">🎥</span>
-                          <video
-                            src={media.src}
-                            className="absolute inset-0 w-full h-full object-cover opacity-50"
-                            muted
-                            preload="metadata"
-                          />
+                          {media.type === 'youtube' && media.thumbnail ? (
+                            <img
+                              src={media.thumbnail}
+                              className="absolute inset-0 w-full h-full object-cover opacity-70"
+                              alt="Video thumbnail"
+                            />
+                          ) : media.type === 'youtube' ? (
+                            <img
+                              src={`https://img.youtube.com/vi/${media.src}/mqdefault.jpg`}
+                              className="absolute inset-0 w-full h-full object-cover opacity-70"
+                              alt="Video thumbnail"
+                            />
+                          ) : (
+                            <video
+                              src={media.src}
+                              className="absolute inset-0 w-full h-full object-cover opacity-50"
+                              muted
+                              preload="metadata"
+                            />
+                          )}
                         </div>
                       ) : (
                         <img

@@ -42,9 +42,21 @@ const Projects = () => {
       '1467232004584-a241de8bcf5d',
       '1571019613454-1cb2f99b2d8b'
     ][index] || '1556742049-0cfed4f6a45d'}?w=600&h=400&fit=crop`,
-    video: index === 0 ? '/booktrack-demo.mp4' : 
-           index === 1 ? '/viagens-demo.mp4' : 
-           index === 2 ? '/badges-demo.mp4' : null,
+    video: index === 0 ? { 
+      type: 'youtube', 
+      id: 'SEU_VIDEO_ID_1',
+      thumbnail: '/booktrack-demo-thumb.jpg'
+    } : 
+    index === 1 ? { 
+      type: 'youtube', 
+      id: 'SEU_VIDEO_ID_2',
+      thumbnail: '/viagens-demo-thumb.jpg'
+    } : 
+    index === 2 ? { 
+      type: 'youtube', 
+      id: 'SEU_VIDEO_ID_3',
+      thumbnail: '/badges-demo-thumb.jpg'
+    } : null,
     technologies: [
       ["React", "Laravel", "TypeScript", "Tailwind CSS", "MySQL"],
       ["Unity3D", "React", "Node.js", "MongoDB", "Socket.io"],
