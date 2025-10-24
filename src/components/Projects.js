@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { ExternalLink, Github, Calendar, Award, Eye, Lock, Image } from 'lucide-react';
+import { ExternalLink, Github, Eye, EyeOff, Calendar, MapPin, Users, Code2, Image, Lock, Award } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
 import ProjectGallery from './ProjectGallery';
+import BooktrackImage from '../imgs/Booktrack.png';
 
 const Projects = () => {
   const { t } = useLanguage();
@@ -34,13 +35,16 @@ const Projects = () => {
     id: index + 1,
     title: project.title,
     description: project.description,
-    image: `https://images.unsplash.com/photo-${[
+    image: index === 0 ? BooktrackImage : `https://images.unsplash.com/photo-${[
       '1556742049-0cfed4f6a45d',
       '1511512578047-dfb367046420',
       '1611224923853-80b023f02d71',
       '1467232004584-a241de8bcf5d',
       '1571019613454-1cb2f99b2d8b'
     ][index]}?w=600&h=400&fit=crop`,
+    video: index === 0 ? '/booktrack-demo.mp4' : 
+           index === 1 ? '/viagens-demo.mp4' : 
+           index === 2 ? '/badges-demo.mp4' : null,
     technologies: [
       ["React", "Laravel", "TypeScript", "Tailwind CSS", "MySQL"],
       ["Unity3D", "React", "Node.js", "MongoDB", "Socket.io"],

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import BooktrackImage from '../imgs/Booktrack.png';
 
 const LanguageContext = createContext();
 
@@ -216,37 +217,41 @@ export const translations = {
         {
           title: 'BookTrack',
           description: 'Aplicação completa para tracking de livros com funcionalidades sociais e gestão de bibliotecas pessoais.',
-          category: 'Desenvolvimento Web',
+          category: 'Desenvolvimento Web Full-Stack',
           features: [
             'Sistema de tracking de leitura personalizado',
             'Funcionalidades sociais entre utilizadores',
             'Gestão completa de bibliotecas pessoais',
-            'Interface moderna e intuitiva',
-            'Base de dados robusta para livros'
+            'Interface moderna e intuitiva com React',
+            'Base de dados robusta para livros',
+            'Sistema de reviews e avaliações',
+            'Dashboard analítico de progresso de leitura'
           ]
         },
         {
-          title: 'Advcatia - Website Advocacia',
-          description: 'Website profissional desenvolvido para escritório de advocacia com design elegante e funcionalidades específicas.',
-          category: 'Desenvolvimento Web',
+          title: 'RealVida Viagens',
+          description: 'Plataforma completa de turismo e viagens com sistema de reservas e gestão de pacotes turísticos.',
+          category: 'Plataforma de Turismo',
           features: [
-            'Design profissional e elegante',
-            'Secções informativas sobre serviços',
-            'Formulário de contacto integrado',
-            'Optimização SEO completa',
-            'Design responsivo para todos os dispositivos'
+            'Sistema de reservas online',
+            'Gestão de pacotes turísticos',
+            'Interface intuitiva para utilizadores',
+            'Dashboard administrativo completo',
+            'Sistema de pagamentos integrado',
+            'Gestão de disponibilidade em tempo real'
           ]
         },
         {
-          title: 'Sistema de Gestão de Rotas de Vinhos',
-          description: 'Plataforma desenvolvida em Laravel para gestão completa de rotas turísticas de vinhos.',
-          category: 'Desenvolvimento Web',
+          title: 'Sistema de Badges Gamificado',
+          description: 'Sistema de gamificação com badges e conquistas para aumentar engagement em aplicações web.',
+          category: 'Sistema de Gamificação',
           features: [
-            'Gestão completa de rotas turísticas',
-            'Sistema de reservas integrado',
-            'Painel administrativo avançado',
-            'Integração com mapas e GPS',
-            'Sistema de pagamentos online'
+            'Sistema de badges dinâmico',
+            'Engine de conquistas personalizáveis',
+            'Dashboard de progresso do utilizador',
+            'API RESTful para integração',
+            'Sistema de rankings e leaderboards',
+            'Interface administrativa para gestão'
           ]
         },
         {
@@ -557,31 +562,47 @@ export const translations = {
         {
           title: 'BookTrack',
           description: 'Complete book tracking application with social features and personal library management.',
-          category: 'Web Development',
+          category: 'Full-Stack Web Development',
           features: [
             'Personalized reading tracking system',
             'Social features between users',
             'Complete personal library management',
-            'Modern and intuitive interface',
-            'Robust book database'
+            'Modern and intuitive interface with React',
+            'Robust book database',
+            'Reviews and rating system',
+            'Analytics dashboard for reading progress'
           ]
         },
         {
-          title: 'Advcatia - Law Firm Website',
-          description: 'Professional website developed for law firm with elegant design and specific features.',
-          category: 'Web Development',
+          title: 'RealVida Travels',
+          description: 'Complete tourism and travel platform with booking system and travel package management.',
+          category: 'Tourism Platform',
           features: [
-            'Professional and elegant design',
-            'Informative sections about services',
-            'Integrated contact form',
-            'Complete SEO optimization',
-            'Responsive design for all devices'
+            'Online booking system',
+            'Travel package management',
+            'Intuitive user interface',
+            'Complete administrative dashboard',
+            'Integrated payment system',
+            'Real-time availability management'
           ]
         },
         {
-          title: 'Wine Routes Management System',
-          description: 'Platform developed in Laravel for complete management of wine tourism routes.',
-          category: 'Web Development',
+          title: 'Gamified Badge System',
+          description: 'Gamification system with badges and achievements to increase engagement in web applications.',
+          category: 'Gamification System',
+          features: [
+            'Dynamic badge system',
+            'Customizable achievement engine',
+            'User progress dashboard',
+            'RESTful API for integration',
+            'Rankings and leaderboards system',
+            'Administrative interface for management'
+          ]
+        },
+        {
+          title: 'Tourism Route System',
+          description: 'Complete tourism route management with integrated booking system.',
+          category: 'Tourism Platform',
           features: [
             'Complete tourism route management',
             'Integrated booking system',

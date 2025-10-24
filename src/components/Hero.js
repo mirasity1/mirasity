@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ChevronDown, Github, Linkedin, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import mainImage from '../imgs/main.jpeg';
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -71,101 +72,127 @@ const Hero = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="w-full max-w-4xl mx-auto text-center"
+          className="w-full max-w-7xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="mb-6">
-            <span className="inline-block px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium backdrop-blur-sm border border-blue-500/30">
-              {t.hero.greeting}
-            </span>
-          </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Coluna do texto */}
+            <div className="text-center lg:text-left order-2 lg:order-1">
+              <motion.div variants={itemVariants} className="mb-6">
+                <span className="inline-block px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium backdrop-blur-sm border border-blue-500/30">
+                  {t.hero.greeting}
+                </span>
+              </motion.div>
 
-          <motion.h1
-            variants={itemVariants}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6"
-          >
-            Filipe
-            <motion.span
-              animate={{
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="block bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 bg-clip-text text-transparent bg-300% mt-2"
-            >
-              Braga
-            </motion.span>
-          </motion.h1>
+              <motion.h1
+                variants={itemVariants}
+                className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
+              >
+                Filipe
+                <motion.span
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="block bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 bg-clip-text text-transparent bg-300% mt-2"
+                >
+                  Braga
+                </motion.span>
+              </motion.h1>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto"
-          >
-            {t.hero.role}{' '}
-            <span className="text-blue-400 font-semibold">React</span> {t.hero.and}{' '}
-            <span className="text-purple-400 font-semibold">Unity3D</span>
-            <br />
-            {t.hero.description}
-          </motion.p>
+              <motion.p
+                variants={itemVariants}
+                className="text-lg md:text-xl text-gray-300 mb-8 max-w-xl mx-auto lg:mx-0"
+              >
+                {t.hero.role}{' '}
+                <span className="text-blue-400 font-semibold">React</span> {t.hero.and}{' '}
+                <span className="text-purple-400 font-semibold">Unity3D</span>
+                <br />
+                {t.hero.description}
+              </motion.p>
 
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)" }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300"
-              onClick={() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })}
-            >
-              {t.hero.viewProjects}
-            </motion.button>
-            
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="border-2 border-blue-500 text-blue-400 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-500 hover:text-white transition-all duration-300"
-              onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
-            >
-              {t.hero.getInTouch}
-            </motion.button>
-          </motion.div>
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-12"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)" }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300"
+                  onClick={() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })}
+                >
+                  {t.hero.viewProjects}
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="border-2 border-blue-500 text-blue-400 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-500 hover:text-white transition-all duration-300"
+                  onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+                >
+                  {t.hero.getInTouch}
+                </motion.button>
+              </motion.div>
 
-          <motion.div
-            variants={itemVariants}
-            className="flex justify-center space-x-6"
-          >
-            <motion.a
-              href="https://github.com/mirasity1"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.2, color: "#3b82f6" }}
-              whileTap={{ scale: 0.9 }}
-              className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
+              <motion.div
+                variants={itemVariants}
+                className="flex justify-center lg:justify-start space-x-6"
+              >
+                <motion.a
+                  href="https://github.com/mirasity1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2, color: "#3b82f6" }}
+                  whileTap={{ scale: 0.9 }}
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
+                >
+                  <Github size={28} />
+                </motion.a>
+                <motion.a
+                  href="https://linkedin.com/in/filipe-braga-49a4391a9/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2, color: "#0ea5e9" }}
+                  whileTap={{ scale: 0.9 }}
+                  className="text-gray-400 hover:text-sky-400 transition-colors duration-300"
+                >
+                  <Linkedin size={28} />
+                </motion.a>
+                <motion.a
+                  href="mailto:filipe.ac.braga@gmail.com"
+                  whileHover={{ scale: 1.2, color: "#f59e0b" }}
+                  whileTap={{ scale: 0.9 }}
+                  className="text-gray-400 hover:text-amber-400 transition-colors duration-300"
+                >
+                  <Mail size={28} />
+                </motion.a>
+              </motion.div>
+            </div>
+
+            {/* Coluna da imagem */}
+            <motion.div
+              variants={itemVariants}
+              className="order-1 lg:order-2 flex justify-center"
             >
-              <Github size={28} />
-            </motion.a>
-            <motion.a
-              href="https://linkedin.com/in/filipe-braga-49a4391a9/"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.2, color: "#0ea5e9" }}
-              whileTap={{ scale: 0.9 }}
-              className="text-gray-400 hover:text-sky-400 transition-colors duration-300"
-            >
-              <Linkedin size={28} />
-            </motion.a>
-            <motion.a
-              href="mailto:filipe.ac.braga@gmail.com"
-              whileHover={{ scale: 1.2, color: "#f59e0b" }}
-              whileTap={{ scale: 0.9 }}
-              className="text-gray-400 hover:text-amber-400 transition-colors duration-300"
-            >
-              <Mail size={28} />
-            </motion.a>
-          </motion.div>
+              <motion.div
+                animate={floatingAnimation}
+                className="relative"
+              >
+                <div className="w-80 h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-blue-500/30 shadow-2xl">
+                  <img
+                    src={mainImage}
+                    alt="Filipe Braga"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
+                {/* Efeito de brilho */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 via-transparent to-purple-500/20"></div>
+              </motion.div>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
 

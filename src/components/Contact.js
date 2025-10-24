@@ -281,7 +281,7 @@ const Contact = () => {
                 <h4 className="text-white font-semibold mb-4">{t.contact.quickActions}</h4>
                 <div className="space-y-3">
                   <motion.a
-                    href="https://mirasity.pt/resume"
+                    href="/cv.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.05 }}

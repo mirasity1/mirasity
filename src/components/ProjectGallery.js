@@ -14,13 +14,23 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
     `https://images.unsplash.com/photo-1527689368864-3a821dbccc34?w=800&h=600&fit=crop`
   ] : [];
 
+  // Add video to gallery if available
+  const galleryMedia = project ? [
+    { type: 'image', src: project.image },
+    ...(project.video ? [{ type: 'video', src: project.video }] : []),
+    { type: 'image', src: `https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop` },
+    { type: 'image', src: `https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop` },
+    { type: 'image', src: `https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=600&fit=crop` },
+    { type: 'image', src: `https://images.unsplash.com/photo-1527689368864-3a821dbccc34?w=800&h=600&fit=crop` }
+  ] : [];
+
   const nextImage = useCallback(() => {
-    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
-  }, [galleryImages.length]);
+    setCurrentImageIndex((prev) => (prev + 1) % galleryMedia.length);
+  }, [galleryMedia.length]);
 
   const prevImage = useCallback(() => {
-    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
-  }, [galleryImages.length]);
+    setCurrentImageIndex((prev) => (prev - 1 + galleryMedia.length) % galleryMedia.length);
+  }, [galleryMedia.length]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -123,28 +133,49 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
               </button>
             </div>
 
-            {/* Image Gallery */}
+            {/* Media Gallery */}
             <div className="relative h-96 bg-gray-100 overflow-hidden">
               <AnimatePresence mode="wait" custom={currentImageIndex}>
-                <motion.img
-                  key={currentImageIndex}
-                  custom={currentImageIndex}
-                  variants={imageVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    x: { type: "spring", stiffness: 300, damping: 30 },
-                    opacity: { duration: 0.2 }
-                  }}
-                  src={galleryImages[currentImageIndex]}
-                  alt={`${project.title} - Imagem ${currentImageIndex + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                {galleryMedia[currentImageIndex]?.type === 'video' ? (
+                  <motion.video
+                    key={currentImageIndex}
+                    custom={currentImageIndex}
+                    variants={imageVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                      x: { type: "spring", stiffness: 300, damping: 30 },
+                      opacity: { duration: 0.2 }
+                    }}
+                    src={galleryMedia[currentImageIndex].src}
+                    controls
+                    className="absolute inset-0 w-full h-full object-contain bg-black"
+                    autoPlay
+                    muted
+                    loop
+                  />
+                ) : (
+                  <motion.img
+                    key={currentImageIndex}
+                    custom={currentImageIndex}
+                    variants={imageVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                      x: { type: "spring", stiffness: 300, damping: 30 },
+                      opacity: { duration: 0.2 }
+                    }}
+                    src={galleryMedia[currentImageIndex]?.src}
+                    alt={`${project.title} - ${currentImageIndex + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
               </AnimatePresence>
 
-              {/* Navigation buttons */}
-              {galleryImages.length > 1 && (
+              {/* Navigation arrows */}
+              {galleryMedia.length > 1 && (
                 <>
                   <button
                     onClick={prevImage}
@@ -161,9 +192,12 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                 </>
               )}
 
-              {/* Image counter */}
+              {/* Media counter and type indicator */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                {currentImageIndex + 1} / {galleryImages.length}
+                {currentImageIndex + 1} / {galleryMedia.length}
+                {galleryMedia[currentImageIndex]?.type === 'video' && (
+                  <span className="ml-2">🎥</span>
+                )}
               </div>
             </div>
 
