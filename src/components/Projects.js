@@ -4,7 +4,6 @@ import { ExternalLink, Github, Eye, Calendar, Image, Lock, Award } from 'lucide-
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
 import ProjectGallery from './ProjectGallery';
-import BooktrackImage from '../imgs/Booktrack.png';
 
 const Projects = () => {
   const { t } = useLanguage();
@@ -35,13 +34,12 @@ const Projects = () => {
     id: index + 1,
     title: project.title || '',
     description: project.description || '',
-    image: index === 0 ? BooktrackImage : `https://images.unsplash.com/photo-${[
-      '1556742049-0cfed4f6a45d',
-      '1511512578047-dfb367046420',
-      '1611224923853-80b023f02d71',
-      '1467232004584-a241de8bcf5d',
-      '1571019613454-1cb2f99b2d8b'
-    ][index] || '1556742049-0cfed4f6a45d'}?w=600&h=400&fit=crop`,
+    image: index === 0 ? `https://images.unsplash.com/photo-1461749280-e1d36dc340f6?w=600&h=400&fit=crop` : // Coding/Development
+          index === 1 ? require('../imgs/leads.png') : // Real Vida Seguros - leads image
+          index === 2 ? `https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop` : // Badges/Awards
+          index === 3 ? require('../imgs/main.jpeg') : // Real Business Center local image
+          index === 4 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image
+          `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop`,
     video: index === 0 ? { 
       type: 'youtube', 
       id: 'bm0E1hvf12A',
@@ -49,28 +47,39 @@ const Projects = () => {
     } : 
     index === 1 ? { 
       type: 'youtube', 
-      id: 'P0zdVl4JOGo',
+      id: 'sRxYCh0JULQ',
       thumbnail: null
     } : 
     index === 2 ? { 
       type: 'youtube', 
       id: 'JiblkDn6wgQ',
       thumbnail: null
-    } : null,
+    } : 
+    index === 3 ? { 
+      type: 'youtube', 
+      id: 'AiA_qjZtYsc',
+      thumbnail: null
+    } : null, // Hexsicor sem vídeo (não pode mostrar desenvolvimento)
     technologies: [
-      ["React", "Laravel", "TypeScript", "Tailwind CSS", "MySQL"],
-      ["Unity3D", "React", "Node.js", "MongoDB", "Socket.io"],
-      ["Laravel", "PHP", "MySQL", "JavaScript", "CSS"],
-      ["React", "TypeScript", "Laravel", "Python", "Freeswitch"],
-      ["React", "Strapi", "Node.js", "SQL", "Analytics"]
+      ["React", "TypeScript", "Node.js", "MySQL", "Private"], // Projeto em desenvolvimento
+      ["React", "Strapi", "HTML", "Markdown", "CMS"], // RealVida Travels
+      ["Laravel", "PHP", "MySQL", "JavaScript", "CSS"], // Sistema de Gamificação
+      ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Real Business Center
+      ["Laravel", "PHP", "React", "TypeScript", "MySQL"] // Hexsicor CRM
     ][index] || [],
     category: project.category || '',
-    year: "2024",
-    status: index < 2 ? (t.projects?.completed || 'Completed') : (t.projects?.inProgress || 'In Progress'),
+    year: index === 4 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023
+    status: index === 0 ? (t.projects?.inProgress || 'In Progress') : 
+            (t.projects?.completed || 'Completed'),
     features: project.features || [],
-    liveUrl: "https://mirasity.pt",
-    githubUrl: index < 3 ? "https://github.com/mirasity1" : null, // Alguns projetos têm código privado
-    isCodePrivate: index >= 3, // Projetos 4 e 5 têm código privado
+    liveUrl: index === 3 ? "https://realbusinesscenter.pt/" : "https://mirasity.pt",
+    githubUrl: index === 0 ? null : // Projeto privado em desenvolvimento
+             index === 1 ? "https://github.com/mirasity1" : // RealVida pode ser público
+             index === 2 ? null : // Sistema de gamificação (parte do Booktrack - privado)
+             index === 3 ? "https://github.com/mirasity1" : // Real Business Center
+             index === 4 ? null : // Hexsicor CRM (privado)
+             "https://github.com/mirasity1",
+    isCodePrivate: index === 0 || index === 2 || index === 4, // Primeiro, terceiro e Hexsicor são privados
     color: [
       "from-blue-500 to-cyan-500",
       "from-purple-500 to-pink-500",

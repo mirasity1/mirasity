@@ -214,67 +214,66 @@ export const translations = {
       },
       list: [
         {
-          title: 'BookTrack',
-          description: 'Aplicação completa para tracking de livros com funcionalidades sociais e gestão de bibliotecas pessoais.',
+          title: 'Projeto em Desenvolvimento',
+          description: 'Aplicação web completa em desenvolvimento com funcionalidades avançadas. Código privado por questões de confidencialidade.',
           category: 'Desenvolvimento Web Full-Stack',
           features: [
-            'Sistema de tracking de leitura personalizado',
-            'Funcionalidades sociais entre utilizadores',
-            'Gestão completa de bibliotecas pessoais',
-            'Interface moderna e intuitiva com React',
-            'Base de dados robusta para livros',
-            'Sistema de reviews e avaliações',
-            'Dashboard analítico de progresso de leitura'
-          ]
-        },
-        {
-          title: 'RealVida Viagens',
-          description: 'Plataforma completa de turismo e viagens com sistema de reservas e gestão de pacotes turísticos.',
-          category: 'Plataforma de Turismo',
-          features: [
-            'Sistema de reservas online',
-            'Gestão de pacotes turísticos',
-            'Interface intuitiva para utilizadores',
-            'Dashboard administrativo completo',
-            'Sistema de pagamentos integrado',
-            'Gestão de disponibilidade em tempo real'
-          ]
-        },
-        {
-          title: 'Sistema de Badges Gamificado',
-          description: 'Sistema de gamificação com badges e conquistas para aumentar engagement em aplicações web.',
-          category: 'Sistema de Gamificação',
-          features: [
-            'Sistema de badges dinâmico',
-            'Engine de conquistas personalizáveis',
-            'Dashboard de progresso do utilizador',
-            'API RESTful para integração',
-            'Sistema de rankings e leaderboards',
-            'Interface administrativa para gestão'
-          ]
-        },
-        {
-          title: 'CRM Contact Center - Hexsicor',
-          description: 'Sistema CRM completo para empresas de contact center com integração Freeswitch.',
-          category: 'Desenvolvimento Web',
-          features: [
-            'CRM completo para contact centers',
-            'Integração com sistemas telefónicos',
-            'Dashboard analytics em tempo real',
-            'Gestão de campanhas e leads',
-            'Relatórios avançados de performance'
+            'Projeto em fase de desenvolvimento',
+            'Tecnologias modernas implementadas',
+            'Arquitetura escalável e robusta',
+            'Interface moderna e responsiva',
+            'Código privado - em desenvolvimento'
           ]
         },
         {
           title: 'Sistema de Leads - Real Vida Seguros',
-          description: 'Sistema completo de recepção e gestão de leads com integração Strapi e relatórios avançados.',
-          category: 'Desenvolvimento Web',
+          description: 'Sistema completo de recepção e gestão de leads com integração Strapi e relatórios avançados desenvolvido para a equipa de marketing.',
+          category: 'Sistema de Gestão de Leads',
           features: [
             'Sistema de captura de leads automático',
             'Integração com Strapi headless CMS',
             'Relatórios e analytics avançados',
             'Dashboard para equipa de marketing',
-            'Optimização de conversões'
+            'Optimização de conversões',
+            'Interface administrativa completa',
+            'Gestão de campanhas de marketing'
+          ]
+        },
+        {
+          title: 'Sistema de Gamificação',
+          description: 'Sistema de badges e conquistas desenvolvido como parte de projeto maior. Código privado por questões de confidencialidade.',
+          category: 'Sistema de Gamificação (Privado)',
+          features: [
+            'Sistema de badges dinâmico',
+            'Engine de conquistas personalizáveis',
+            'Dashboard de progresso do utilizador',
+            'API RESTful para integração',
+            'Código privado - parte de projeto maior'
+          ]
+        },
+        {
+          title: 'Real Business Center',
+          description: 'Plataforma web empresarial completa desenvolvida para centro de negócios. Sistema robusto com gestão de utilizadores e funcionalidades administrativas avançadas.',
+          category: 'Plataforma Empresarial',
+          features: [
+            'Sistema de gestão empresarial completo',
+            'Dashboard administrativo avançado',
+            'Gestão de utilizadores e permissões',
+            'Interface moderna e responsiva',
+            'Integração com sistemas de pagamento',
+            'Relatórios e analytics detalhados'
+          ]
+        },
+        {
+          title: 'CRM Contact Center - Hexsicor',
+          description: 'Sistema CRM desenvolvido para empresas de contact center entre 2022-2023. Código privado mas interface demonstrável.',
+          category: 'CRM Empresarial (2022-2023)',
+          features: [
+            'CRM especializado para contact centers',
+            'Gestão de campanhas e contactos',
+            'Dashboard de performance em tempo real',
+            'Sistema de relatórios avançados',
+            'Código privado - projeto empresarial'
           ]
         }
       ]
@@ -559,79 +558,66 @@ export const translations = {
       },
       list: [
         {
-          title: 'BookTrack',
-          description: 'Complete book tracking application with social features and personal library management.',
+          title: 'Project in Development',
+          description: 'Complete web application in development with advanced features. Private code for confidentiality reasons.',
           category: 'Full-Stack Web Development',
           features: [
-            'Personalized reading tracking system',
-            'Social features between users',
-            'Complete personal library management',
-            'Modern and intuitive interface with React',
-            'Robust book database',
-            'Reviews and rating system',
-            'Analytics dashboard for reading progress'
+            'Project in development phase',
+            'Modern technologies implemented',
+            'Scalable and robust architecture',
+            'Modern and responsive interface',
+            'Private code - under development'
           ]
         },
         {
-          title: 'RealVida Travels',
-          description: 'Complete tourism and travel platform with booking system and travel package management.',
-          category: 'Tourism Platform',
-          features: [
-            'Online booking system',
-            'Travel package management',
-            'Intuitive user interface',
-            'Complete administrative dashboard',
-            'Integrated payment system',
-            'Real-time availability management'
-          ]
-        },
-        {
-          title: 'Gamified Badge System',
-          description: 'Gamification system with badges and achievements to increase engagement in web applications.',
-          category: 'Gamification System',
-          features: [
-            'Dynamic badge system',
-            'Customizable achievement engine',
-            'User progress dashboard',
-            'RESTful API for integration',
-            'Rankings and leaderboards system',
-            'Administrative interface for management'
-          ]
-        },
-        {
-          title: 'Tourism Route System',
-          description: 'Complete tourism route management with integrated booking system.',
-          category: 'Tourism Platform',
-          features: [
-            'Complete tourism route management',
-            'Integrated booking system',
-            'Advanced administrative panel',
-            'Maps and GPS integration',
-            'Online payment system'
-          ]
-        },
-        {
-          title: 'Contact Center CRM - Hexsicor',
-          description: 'Complete CRM system for contact center companies with Freeswitch integration.',
-          category: 'Web Development',
-          features: [
-            'Complete CRM for contact centers',
-            'Integration with telephone systems',
-            'Real-time analytics dashboard',
-            'Campaign and lead management',
-            'Advanced performance reports'
-          ]
-        },
-        {
-          title: 'Lead System - Real Vida Seguros',
-          description: 'Complete lead reception and management system with Strapi integration and advanced reports.',
-          category: 'Web Development',
+          title: 'Lead Management System - Real Vida Seguros',
+          description: 'Complete lead reception and management system with Strapi integration and advanced reports developed for the marketing team.',
+          category: 'Lead Management System',
           features: [
             'Automatic lead capture system',
             'Strapi headless CMS integration',
             'Advanced reports and analytics',
             'Dashboard for marketing team',
-            'Conversion optimization'
+            'Conversion optimization',
+            'Complete administrative interface',
+            'Marketing campaign management'
+          ]
+        },
+        {
+          title: 'Gamification System',
+          description: 'Badge and achievement system developed as part of a larger project. Private code for confidentiality reasons.',
+          category: 'Gamification System (Private)',
+          features: [
+            'Dynamic badge system',
+            'Customizable achievement engine',
+            'User progress dashboard',
+            'RESTful API for integration',
+            'Private code - part of larger project'
+          ]
+        },
+        {
+          title: 'Real Business Center',
+          description: 'Complete business web platform developed for business center. Robust system with user management and advanced administrative features.',
+          category: 'Business Platform',
+          features: [
+            'Complete business management system',
+            'Advanced administrative dashboard',
+            'User and permission management',
+            'Modern and responsive interface',
+            'Payment system integration',
+            'Detailed reports and analytics'
+          ]
+        },
+        {
+          title: 'Contact Center CRM - Hexsicor',
+          description: 'CRM system developed for contact center companies between 2022-2023. Private code but demonstrable interface.',
+          category: 'Business CRM (2022-2023)',
+          features: [
+            'Specialized CRM for contact centers',
+            'Campaign and contact management',
+            'Real-time performance dashboard',
+            'Advanced reporting system',
+            'Private code - business project'
           ]
         }
       ]
