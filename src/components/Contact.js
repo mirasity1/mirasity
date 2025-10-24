@@ -281,7 +281,7 @@ const Contact = () => {
                 <h4 className="text-white font-semibold mb-4">{t.contact.quickActions}</h4>
                 <div className="space-y-3">
                   <motion.a
-                    href="/cv.pdf"
+                    href="https://drive.google.com/file/d/1p9JETWrxIt_fdDl8gsNRhsgHvRBEWyvw/view?usp=sharing"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => trackEvent('cv_view', 'Contact', 'CV View')}
@@ -294,8 +294,9 @@ const Contact = () => {
                   </motion.a>
 
                   <motion.a
-                    href="/cv.pdf"
-                    download="Filipe_Braga_CV.pdf"
+                    href="https://drive.google.com/uc?export=download&id=1p9JETWrxIt_fdDl8gsNRhsgHvRBEWyvw"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => trackEvent('cv_download', 'Contact', 'CV Download')}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
