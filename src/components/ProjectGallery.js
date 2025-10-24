@@ -11,6 +11,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
     ...(project.video ? [{ 
       type: project.video.type || 'video', 
       src: project.video.type === 'youtube' ? project.video.id : project.video,
+      si: project.video.si || null,
       thumbnail: project.video.thumbnail || null 
     }] : []),
     { type: 'image', src: `https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop` },
@@ -156,13 +157,13 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                     {galleryMedia[currentImageIndex]?.type === 'youtube' ? (
                       <div className="w-full h-full bg-black flex items-center justify-center">
                         <iframe
-                          src={`https://www.youtube.com/embed/${galleryMedia[currentImageIndex]?.src}`}
-                          title="Project Video"
+                          src={`https://www.youtube.com/embed/${galleryMedia[currentImageIndex]?.src}${galleryMedia[currentImageIndex]?.si ? `?si=${galleryMedia[currentImageIndex]?.si}` : ''}`}
+                          title="YouTube video player"
                           frameBorder="0"
                           className="w-full h-full"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
                           allowFullScreen
-                          onError={() => console.error('YouTube iframe error')}
                         />
                       </div>
                     ) : (

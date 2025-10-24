@@ -42,6 +42,7 @@ const Projects = () => {
     video: index === 0 ? { 
       type: 'youtube', 
       id: 'JU3sQZHc9zQ',
+      si: 'YJG-n3lND509uD-N',
       thumbnail: null
     } : 
     index === 1 ? { 
