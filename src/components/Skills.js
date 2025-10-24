@@ -4,6 +4,14 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const Skills = () => {
   const { t } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -25,6 +33,12 @@ const Skills = () => {
         ease: "easeOut"
       }
     }
+  };
+
+  // Simple variants for mobile without transforms
+  const mobileVariants = {
+    hidden: { opacity: 1, scale: 1 },
+    visible: { opacity: 1, scale: 1 }
   };
 
   const skillCategories = [
@@ -105,13 +119,19 @@ const Skills = () => {
     <section id="skills" className="py-20 bg-gray-900">
       <div className="container mx-auto px-6">
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+          variants={isMobile ? mobileVariants : containerVariants}
+          initial="visible"
+          animate="visible"
           className="max-w-7xl mx-auto"
+          style={{ opacity: 1 }}
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
+                    <motion.div 
+            variants={isMobile ? mobileVariants : itemVariants}
+            initial="visible"
+            animate="visible"
+            className="text-center mb-16"
+            style={{ opacity: 1 }}
+          >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               {t.skills.title} <span className="text-blue-400">{t.skills.subtitle}</span>
             </h2>
@@ -128,9 +148,12 @@ const Skills = () => {
             {skillCategories.map((category, categoryIndex) => (
               <motion.div
                 key={categoryIndex}
-                variants={itemVariants}
-                whileHover={{ y: -5 }}
+                variants={isMobile ? mobileVariants : itemVariants}
+                initial="visible"
+                animate="visible"
+                whileHover={isMobile ? {} : { y: -5 }}
                 className="bg-gray-800 rounded-2xl p-6 hover:bg-gray-750 transition-all duration-300"
+                style={{ opacity: 1, transform: 'scale(1)' }}
               >
                 <div className={`text-center mb-6`}>
                   <h3 className={`text-xl font-bold bg-gradient-to-r ${category.color} bg-clip-text text-transparent mb-2`}>
@@ -154,8 +177,11 @@ const Skills = () => {
 
           {/* Additional info */}
           <motion.div
-            variants={itemVariants}
+            variants={isMobile ? mobileVariants : itemVariants}
+            initial="visible"
+            animate="visible"
             className="mt-16 text-center"
+            style={{ opacity: 1 }}
           >
             <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl p-8 border border-blue-500/20">
               <h3 className="text-2xl font-bold text-white mb-4">
@@ -183,15 +209,32 @@ const Skills = () => {
           return () => window.removeEventListener('resize', check);
         }, []);
 
-        const initialState = isMobile ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 };
-        const whileInViewState = isMobile ? undefined : { opacity: 1, x: 0 };
-        const progressInitial = isMobile ? { width: `${skill.level}%` } : { width: 0 };
-        const progressWhileInView = isMobile ? undefined : { width: `${skill.level}%` };
+        if (isMobile) {
+          // Simple rendering for mobile without animations
+          return (
+            <div className="group" style={{ opacity: 1, transform: 'translateX(0px)' }}>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">{skill.icon}</span>
+                  <span className="text-white font-medium">{skill.name}</span>
+                </div>
+                <span className="text-gray-400 text-sm">{skill.level}%</span>
+              </div>
+
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full bg-gradient-to-r ${categoryColor}`}
+                  style={{ width: `${skill.level}%` }}
+                />
+              </div>
+            </div>
+          );
+        }
 
         return (
           <motion.div
-            initial={initialState}
-            whileInView={whileInViewState}
+            initial={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: skillIndex * 0.1 }}
             viewport={{ once: true }}
             className="group"
@@ -206,8 +249,8 @@ const Skills = () => {
 
             <div className="w-full bg-gray-700 rounded-full h-2">
               <motion.div
-                initial={progressInitial}
-                whileInView={progressWhileInView}
+                initial={{ width: 0 }}
+                whileInView={{ width: `${skill.level}%` }}
                 transition={{ duration: 1, delay: skillIndex * 0.1 }}
                 viewport={{ once: true }}
                 className={`h-2 rounded-full bg-gradient-to-r ${categoryColor}`}

@@ -36,6 +36,12 @@ const Experience = () => {
     }
   };
 
+  // Simple variants for mobile without transforms
+  const mobileVariants = {
+    hidden: { opacity: 1 },
+    visible: { opacity: 1 }
+  };
+
   const experiences = [
     {
       company: t.experience.positions.landbell.company,
@@ -121,13 +127,19 @@ const Experience = () => {
     <section id="experience" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+          variants={isMobile ? mobileVariants : containerVariants}
+          initial="visible"
+          animate="visible"
           className="max-w-6xl mx-auto"
+          style={{ opacity: 1 }}
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
+                    <motion.div 
+            variants={isMobile ? mobileVariants : itemVariants}
+            initial="visible"
+            animate="visible"
+            className="text-center mb-16"
+            style={{ opacity: 1 }}
+          >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               {t.experience.title} <span className="text-blue-600">{t.experience.subtitle}</span>
             </h2>
@@ -145,12 +157,13 @@ const Experience = () => {
             {experiences.map((exp, index) => (
               <motion.div
                 key={index}
-                variants={itemVariants}
-                initial={isMobile ? 'visible' : 'hidden'}
-                animate={isMobile ? 'visible' : undefined}
+                variants={isMobile ? mobileVariants : itemVariants}
+                initial="visible"
+                animate="visible"
                 className={`relative flex items-center mb-12 ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}
+                style={{ opacity: 1, transform: 'translateX(0px)' }}
               >
                 {/* Timeline dot */}
                 <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 bg-white border-4 border-blue-500 rounded-full z-10"></div>
@@ -220,7 +233,13 @@ const Experience = () => {
           </div>
 
           {/* Methodologies section */}
-          <motion.div variants={itemVariants} className="mt-20">
+          <motion.div 
+            variants={isMobile ? mobileVariants : itemVariants}
+            initial="visible"
+            animate="visible"
+            className="mt-20"
+            style={{ opacity: 1 }}
+          >
             <h3 className="text-3xl font-bold text-gray-900 text-center mb-8">
               {t.experience.methodologies} <span className="text-blue-600">{t.experience.tools}</span>
             </h3>
@@ -229,9 +248,12 @@ const Experience = () => {
               {methodologies.map((method, index) => (
                 <motion.div
                   key={index}
-                  variants={itemVariants}
-                  whileHover={{ y: -5, scale: 1.02 }}
+                  variants={isMobile ? mobileVariants : itemVariants}
+                  initial="visible"
+                  animate="visible"
+                  whileHover={isMobile ? {} : { y: -5, scale: 1.02 }}
                   className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300"
+                  style={{ opacity: 1 }}
                 >
                   <div className="text-blue-600 mb-4 flex justify-center">
                     {method.icon}
