@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { ExternalLink, Github, Eye, EyeOff, Calendar, MapPin, Users, Code2, Image, Lock, Award } from 'lucide-react';
+import { ExternalLink, Github, Eye, Calendar, Image, Lock, Award } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
 import ProjectGallery from './ProjectGallery';

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Menu, X, Code, User, Briefcase, FolderOpen, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageToggle from './LanguageToggle';
@@ -10,14 +10,14 @@ const Navigation = () => {
   const [activeSection, setActiveSection] = useState('hero');
   const [scrolled, setScrolled] = useState(false);
 
-  const navItems = [
+  const navItems = useMemo(() => [
     { id: 'hero', label: t.nav.home, icon: <Code size={16} /> },
     { id: 'about', label: t.nav.about, icon: <User size={16} /> },
     { id: 'skills', label: t.nav.skills, icon: <Briefcase size={16} /> },
     { id: 'experience', label: t.nav.experience, icon: <Briefcase size={16} /> },
     { id: 'projects', label: t.nav.projects, icon: <FolderOpen size={16} /> },
     { id: 'contact', label: t.nav.contact, icon: <Mail size={16} /> }
-  ];
+  ], [t.nav]);
 
   useEffect(() => {
     const handleScroll = () => {

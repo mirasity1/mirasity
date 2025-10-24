@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState } from 'react';
-import BooktrackImage from '../imgs/Booktrack.png';
 
 const LanguageContext = createContext();
 
