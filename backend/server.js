@@ -128,6 +128,7 @@ app.use('/api/*', (req, res) => {
     message: `The endpoint ${req.originalUrl} does not exist`,
     availableEndpoints: [
       'POST /api/send-email',
+      'GET /api/test',
       'GET /api/test-smtp',
       'GET /health'
     ]

@@ -294,6 +294,20 @@ export const translations = {
             'Projeto empresarial confidencial',
             'Apenas demonstração visual'
           ]
+        },
+        {
+          title: 'Portfolio Pessoal - mirasity.pt',
+          description: 'Portfolio pessoal desenvolvido com React e tecnologias modernas. Código aberto sob licença MIT para fins educacionais e demonstração de competências.',
+          category: 'Portfolio Pessoal',
+          features: [
+            'Desenvolvido com React 18 e Tailwind CSS',
+            'Animações com Framer Motion',
+            'Design responsivo e acessível',
+            'SEO optimizado com React Helmet',
+            'Analytics integrado com Google Analytics',
+            'Formulário de contacto funcional',
+            'Código aberto no GitHub'
+          ]
         }
       ]
     },
@@ -657,6 +671,20 @@ export const translations = {
             'Advanced reporting system',
             'Confidential business project',
             'Visual demonstration only'
+          ]
+        },
+        {
+          title: 'Personal Portfolio - mirasity.pt',
+          description: 'Personal portfolio developed with React and modern technologies. Open source under MIT license for educational purposes and skill demonstration.',
+          category: 'Personal Portfolio',
+          features: [
+            'Built with React 18 and Tailwind CSS',
+            'Animations with Framer Motion',
+            'Responsive and accessible design',
+            'SEO optimized with React Helmet',
+            'Integrated analytics with Google Analytics',
+            'Functional contact form',
+            'Open source on GitHub'
           ]
         }
       ]

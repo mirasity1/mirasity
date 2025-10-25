@@ -41,6 +41,7 @@ const Projects = () => {
           index === 3 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=400&h=300&fit=crop&auto=format&q=75` : // Wine/Restaurant - Wein.plus
           index === 4 ? require('../imgs/main.jpeg') : // Real Business Center local image
           index === 5 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image (apenas imagem)
+          index === 6 ? `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format&q=75` : // Portfolio - development/code image
           `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop&auto=format&q=75`,
     video: index === 0 ? { 
       type: 'youtube', 
@@ -70,24 +71,31 @@ const Projects = () => {
       ["React", "Strapi", "HTML", "Markdown", "CMS"], // Real Vida Trip
       ["Laravel", "PHP", "MySQL", "JavaScript", "Cron Jobs"], // Wein.plus
       ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Real Business Center
-      ["Laravel", "PHP", "React", "TypeScript", "MySQL"] // Hexsicor CRM
+      ["Laravel", "PHP", "React", "TypeScript", "MySQL"], // Hexsicor CRM
+      ["React", "Tailwind CSS", "Framer Motion", "JavaScript", "Vercel"] // Portfolio
     ][index] || [],
     category: project.category || '',
-    year: index === 5 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023
+    year: index === 5 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023, outros são 2024
     status: (t.projects?.completed || 'Completed'),
     features: project.features || [],
     liveUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia - link para GitHub
-             index === 4 ? "https://realbusinesscenter.pt/" : // Real Business Center - único site visitável
+             index === 4 ? "https://realbusinesscenter.pt/" : // Real Business Center - site público
+             index === 6 ? "https://mirasity.pt/" : // Portfolio - site público
              "https://mirasity.pt", // Outros redirecionam para portfolio
-    githubUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : null, // Apenas Advcatia público
-    isCodePrivate: index !== 0, // Apenas Advcatia tem código público
+    githubUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia público
+               index === 4 ? "https://github.com/mirasity1/realbusinesscenter" : // Real Business Center (assumindo que vai criar repo)
+               index === 6 ? "https://github.com/mirasity1/mirasity" : // Portfolio público
+               null,
+    isPublic: index === 0 || index === 4 || index === 6, // Advcatia, Real Business Center e Portfolio são públicos
+    isCodePrivate: !(index === 0 || index === 4 || index === 6), // Inverso do isPublic
     color: [
       "from-blue-500 to-cyan-500",
       "from-purple-500 to-pink-500",
       "from-green-500 to-emerald-500",
       "from-yellow-500 to-orange-500",
       "from-orange-500 to-red-500",
-      "from-indigo-500 to-purple-500"
+      "from-indigo-500 to-purple-500",
+      "from-teal-500 to-blue-500"
     ][index] || "from-blue-500 to-cyan-500"
   }));
 
@@ -176,18 +184,20 @@ const Projects = () => {
                     >
                       <Eye size={16} className="md:w-5 md:h-5" />
                     </motion.button>
-                    <motion.a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="bg-white text-gray-900 p-2.5 md:p-3 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-300"
-                    >
-                      <ExternalLink size={16} className="md:w-5 md:h-5" />
-                    </motion.a>
-                    {!project.isCodePrivate ? (
+                    {project.isPublic && (
+                      <motion.a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="bg-white text-gray-900 p-2.5 md:p-3 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-300"
+                      >
+                        <ExternalLink size={16} className="md:w-5 md:h-5" />
+                      </motion.a>
+                    )}
+                    {project.isPublic && project.githubUrl && (
                       <motion.a
                         href={project.githubUrl}
                         target="_blank"
@@ -199,11 +209,12 @@ const Projects = () => {
                       >
                         <Github size={16} className="md:w-5 md:h-5" />
                       </motion.a>
-                    ) : (
+                    )}
+                    {!project.isPublic && (
                       <motion.div
                         whileHover={{ scale: 1.1 }}
                         className="bg-gray-400 text-white p-2.5 md:p-3 rounded-full cursor-not-allowed"
-                        title="Código Privado"
+                        title="Projeto Privado"
                       >
                         <Lock size={16} className="md:w-5 md:h-5" />
                       </motion.div>
@@ -259,15 +270,17 @@ const Projects = () => {
                       <Eye size={16} />
                       {language === 'pt' ? 'Ver Detalhes' : 'View Details'}
                     </button>
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-gray-100 text-gray-700 py-2.5 px-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center touch-manipulation"
-                    >
-                      <ExternalLink size={16} />
-                    </a>
-                    {!project.isCodePrivate && (
+                    {project.isPublic && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gray-100 text-gray-700 py-2.5 px-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center touch-manipulation"
+                      >
+                        <ExternalLink size={16} />
+                      </a>
+                    )}
+                    {project.isPublic && project.githubUrl && (
                       <a
                         href={project.githubUrl}
                         target="_blank"
@@ -310,7 +323,7 @@ const Projects = () => {
                     >
                       {t.projects?.viewProject || 'View Project'}
                     </motion.a>
-                    {!project.isCodePrivate ? (
+                    {project.isPublic && project.githubUrl && (
                       <motion.a
                         href={project.githubUrl}
                         target="_blank"
@@ -323,7 +336,8 @@ const Projects = () => {
                         <Github size={16} className="mr-1" />
                         {t.projects?.code || 'Code'}
                       </motion.a>
-                    ) : (
+                    )}
+                    {!project.isPublic && (
                       <motion.div
                         className="flex-1 border border-gray-300 text-gray-400 text-center py-2 rounded-lg text-sm font-medium bg-gray-50 cursor-not-allowed flex items-center justify-center"
                         title="Código Privado"

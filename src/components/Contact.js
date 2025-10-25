@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Mail, MapPin, Send, Linkedin, Github, Download, CheckCircle, AlertCircle, Eye, RefreshCw } from 'lucide-react';
+import { Mail, MapPin, Send, Linkedin, Github, Download, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
 import emailService from '../services/emailService';
@@ -280,19 +280,6 @@ const Contact = () => {
               <motion.div variants={itemVariants} className="pt-8">
                 <h4 className="text-white font-semibold mb-4">{t.contact.quickActions}</h4>
                 <div className="space-y-3">
-                  <motion.a
-                    href="https://drive.google.com/file/d/1p9JETWrxIt_fdDl8gsNRhsgHvRBEWyvw/view?usp=sharing"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackEvent('cv_view', 'Contact', 'CV View Full Resume')}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center justify-center w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-600 hover:to-blue-600 transition-all duration-300"
-                  >
-                    <Eye className="mr-2" size={20} />
-                    {t.contact.viewResume}
-                  </motion.a>
-
                   <motion.a
                     href="https://drive.google.com/uc?export=download&id=1p9JETWrxIt_fdDl8gsNRhsgHvRBEWyvw"
                     target="_blank"
