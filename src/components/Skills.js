@@ -1,6 +1,12 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { 
+  Code, Palette, Database, GitBranch, Settings, Smartphone, 
+  Server, Globe, Layers, Wrench, Monitor, Zap, Users, Target,
+  FileText, Briefcase, Phone, CreditCard, Headphones, Camera,
+  Moon, Cpu
+} from 'lucide-react';
 
 const Skills = () => {
   const { t } = useLanguage();
@@ -12,6 +18,49 @@ const Skills = () => {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  // Icon mapping function
+  const getSkillIcon = (skillName) => {
+    const iconMap = {
+      'React': <Code size={20} className="text-blue-400" />,
+      'JavaScript': <Code size={20} className="text-yellow-400" />,
+      'TypeScript': <Code size={20} className="text-blue-600" />,
+      'Vue.js': <Code size={20} className="text-green-400" />,
+      'HTML5': <Globe size={20} className="text-orange-500" />,
+      'CSS3': <Palette size={20} className="text-blue-500" />,
+      'Tailwind CSS': <Palette size={20} className="text-cyan-400" />,
+      'Bootstrap': <Layers size={20} className="text-purple-500" />,
+      'Laravel': <Server size={20} className="text-red-500" />,
+      'PHP': <Server size={20} className="text-indigo-500" />,
+      'Node.js': <Server size={20} className="text-green-500" />,
+      'Python': <Code size={20} className="text-blue-400" />,
+      'MySQL': <Database size={20} className="text-orange-500" />,
+      'PostgreSQL': <Database size={20} className="text-blue-600" />,
+      'APIs REST': <Globe size={20} className="text-green-400" />,
+      'Git': <GitBranch size={20} className="text-orange-500" />,
+      'Jira': <Briefcase size={20} className="text-blue-500" />,
+      'Bitbucket': <GitBranch size={20} className="text-blue-600" />,
+      'Linux': <Monitor size={20} className="text-gray-400" />,
+      'Docker': <Layers size={20} className="text-blue-400" />,
+      'Nginx': <Zap size={20} className="text-green-500" />,
+      'Scrum': <Users size={20} className="text-blue-500" />,
+      'Kanban': <Target size={20} className="text-green-500" />,
+      'Atlassian Suite': <Wrench size={20} className="text-blue-600" />,
+      'Confluence': <FileText size={20} className="text-blue-500" />,
+      'Metodologias Ágeis': <Zap size={20} className="text-yellow-500" />,
+      'Figma': <Palette size={20} className="text-purple-500" />,
+      'UI/UX Design': <Palette size={20} className="text-pink-500" />,
+      'Responsive Design': <Smartphone size={20} className="text-blue-400" />,
+      'Adobe Photoshop': <Camera size={20} className="text-blue-600" />,
+      'Freeswitch': <Phone size={20} className="text-green-500" />,
+      'Sistemas POS': <CreditCard size={20} className="text-yellow-500" />,
+      'Call Center CRM': <Headphones size={20} className="text-purple-500" />,
+      'Lua': <Moon size={20} className="text-blue-400" />,
+      'Strapi CMS': <Cpu size={20} className="text-purple-600" />
+    };
+    
+    return iconMap[skillName] || <Settings size={20} className="text-gray-400" />;
+  };
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -46,71 +95,71 @@ const Skills = () => {
       title: t.skills.categories.frontend,
       color: "from-blue-500 to-cyan-500",
       skills: [
-        { name: "React", level: 85, icon: "⚛️" },
-        { name: "JavaScript", level: 90, icon: "🟨" },
-        { name: "TypeScript", level: 80, icon: "🔷" },
-        { name: "Vue.js", level: 75, icon: "💚" },
-        { name: "HTML5", level: 95, icon: "🟧" },
-        { name: "CSS3", level: 90, icon: "🎨" },
-        { name: "Tailwind CSS", level: 85, icon: "🌊" },
-        { name: "Bootstrap", level: 80, icon: "🅱️" }
+        { name: "React", level: 85 },
+        { name: "JavaScript", level: 90 },
+        { name: "TypeScript", level: 80 },
+        { name: "Vue.js", level: 75 },
+        { name: "HTML5", level: 95 },
+        { name: "CSS3", level: 90 },
+        { name: "Tailwind CSS", level: 85 },
+        { name: "Bootstrap", level: 80 }
       ]
     },
     {
       title: t.skills.categories.backend,
       color: "from-green-500 to-emerald-500",
       skills: [
-        { name: "Laravel", level: 85, icon: "🔴" },
-        { name: "PHP", level: 85, icon: "🐘" },
-        { name: "Node.js", level: 75, icon: "🟢" },
-        { name: "Python", level: 70, icon: "🐍" },
-        { name: "MySQL", level: 80, icon: "🗄️" },
-        { name: "PostgreSQL", level: 75, icon: "🐘" },
-        { name: "APIs REST", level: 85, icon: "🔗" }
+        { name: "Laravel", level: 85 },
+        { name: "PHP", level: 85 },
+        { name: "Node.js", level: 75 },
+        { name: "Python", level: 70 },
+        { name: "MySQL", level: 80 },
+        { name: "PostgreSQL", level: 75 },
+        { name: "APIs REST", level: 85 }
       ]
     },
     {
       title: t.skills.categories.tools,
       color: "from-orange-500 to-red-500",
       skills: [
-        { name: "Git", level: 90, icon: "🌿" },
-        { name: "Jira", level: 85, icon: "📋" },
-        { name: "Bitbucket", level: 90, icon: "🪣" },
-        { name: "Linux", level: 80, icon: "🐧" },
-        { name: "Docker", level: 70, icon: "🐳" },
-        { name: "Nginx", level: 70, icon: "⚡" }
+        { name: "Git", level: 90 },
+        { name: "Jira", level: 85 },
+        { name: "Bitbucket", level: 90 },
+        { name: "Linux", level: 80 },
+        { name: "Docker", level: 70 },
+        { name: "Nginx", level: 70 }
       ]
     },
     {
       title: t.skills.categories.pm,
       color: "from-teal-500 to-blue-500",
       skills: [
-        { name: "Scrum", level: 85, icon: "🏃‍♂️" },
-        { name: "Kanban", level: 80, icon: "�" },
-        { name: "Atlassian Suite", level: 85, icon: "🛠️" },
-        { name: "Confluence", level: 80, icon: "📚" },
-        { name: "Metodologias Ágeis", level: 85, icon: "⚡" }
+        { name: "Scrum", level: 85 },
+        { name: "Kanban", level: 80 },
+        { name: "Atlassian Suite", level: 85 },
+        { name: "Confluence", level: 80 },
+        { name: "Metodologias Ágeis", level: 85 }
       ]
     },
     {
       title: t.skills.categories.design,
       color: "from-indigo-500 to-purple-500",
       skills: [
-        { name: "Figma", level: 75, icon: "🎨" },
-        { name: "UI/UX Design", level: 70, icon: "🎭" },
-        { name: "Responsive Design", level: 85, icon: "📱" },
-        { name: "Adobe Photoshop", level: 65, icon: "📸" }
+        { name: "Figma", level: 75 },
+        { name: "UI/UX Design", level: 70 },
+        { name: "Responsive Design", level: 85 },
+        { name: "Adobe Photoshop", level: 65 }
       ]
     },
     {
       title: "Telecomunicações & Sistemas",
       color: "from-purple-500 to-pink-500",
       skills: [
-        { name: "Freeswitch", level: 75, icon: "�" },
-        { name: "Sistemas POS", level: 80, icon: "💳" },
-        { name: "Call Center CRM", level: 85, icon: "☎️" },
-        { name: "Lua", level: 70, icon: "🌙" },
-        { name: "Strapi CMS", level: 75, icon: "�" }
+        { name: "Freeswitch", level: 75 },
+        { name: "Sistemas POS", level: 80 },
+        { name: "Call Center CRM", level: 85 },
+        { name: "Lua", level: 70 },
+        { name: "Strapi CMS", level: 75 }
       ]
     }
   ];
@@ -168,6 +217,7 @@ const Skills = () => {
                       skill={skill}
                       skillIndex={skillIndex}
                       categoryColor={category.color}
+                      getSkillIcon={getSkillIcon}
                     />
                   ))}
                 </div>
@@ -199,7 +249,7 @@ const Skills = () => {
 };
 
       // Reusable SkillItem that falls back to visible state on small screens
-      const SkillItem = ({ skill, skillIndex, categoryColor }) => {
+      const SkillItem = ({ skill, skillIndex, categoryColor, getSkillIcon }) => {
         const [isMobile, setIsMobile] = useState(false);
 
         useEffect(() => {
@@ -215,7 +265,7 @@ const Skills = () => {
             <div className="group" style={{ opacity: 1, transform: 'translateX(0px)' }}>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
-                  <span className="text-lg">{skill.icon}</span>
+                  {getSkillIcon(skill.name)}
                   <span className="text-white font-medium">{skill.name}</span>
                 </div>
                 <span className="text-gray-400 text-sm">{skill.level}%</span>
@@ -241,7 +291,7 @@ const Skills = () => {
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <span className="text-lg">{skill.icon}</span>
+                {getSkillIcon(skill.name)}
                 <span className="text-white font-medium">{skill.name}</span>
               </div>
               <span className="text-gray-400 text-sm">{skill.level}%</span>

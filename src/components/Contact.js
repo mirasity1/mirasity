@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Mail, MapPin, Send, Linkedin, Github, Download, CheckCircle, AlertCircle, Eye } from 'lucide-react';
+import { Mail, MapPin, Send, Linkedin, Github, Download, CheckCircle, AlertCircle, Eye, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackEvent } from './GoogleAnalytics';
 import emailService from '../services/emailService';
@@ -469,7 +469,7 @@ const Contact = () => {
                         className="text-gray-400 hover:text-white transition-colors"
                         title={t.contact?.form?.refreshMath || 'Gerar nova pergunta'}
                       >
-                        🔄
+                        <RefreshCw size={16} />
                       </motion.button>
                     </div>
                     {formErrors.mathVerification && (
