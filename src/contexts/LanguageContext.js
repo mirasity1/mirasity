@@ -215,6 +215,35 @@ export const translations = {
       },
       list: [
         {
+          title: 'BookTrack - Sistema de Gestão de Biblioteca',
+          description: 'Sistema completo de gestão de biblioteca pessoal em português com funcionalidades avançadas de acompanhamento de leitura, avaliações, estatísticas e sistema social.',
+          category: 'Sistema de Gestão de Biblioteca',
+          features: [
+            'Gestão completa de livros pessoais',
+            'Acompanhamento de progresso de leitura',
+            'Sistema de badges e conquistas',
+            'Reviews e notas pessoais privadas',
+            'Listas de leitura personalizadas',
+            'Estatísticas e relatórios detalhados',
+            'Sistema social com perfis e interações',
+            'Interface em português'
+          ]
+        },
+        {
+          title: 'Portfolio Pessoal - mirasity.pt',
+          description: 'Portfolio pessoal desenvolvido com React e tecnologias modernas. Código aberto sob licença MIT para fins educacionais e demonstração de competências.',
+          category: 'Portfolio Pessoal',
+          features: [
+            'Desenvolvido com React 18 e Tailwind CSS',
+            'Animações com Framer Motion',
+            'Design responsivo e acessível',
+            'SEO optimizado com React Helmet',
+            'Analytics integrado com Google Analytics',
+            'Formulário de contacto funcional',
+            'Código aberto no GitHub'
+          ]
+        },
+        {
           title: 'Advcatia - Sistema de Advocacia',
           description: 'Aplicação web completa para gestão de escritórios de advocacia com funcionalidades avançadas de gestão de casos, clientes e documentos.',
           category: 'Sistema de Gestão Jurídica',
@@ -229,17 +258,16 @@ export const translations = {
           ]
         },
         {
-          title: 'Sistema de Leads - Real Vida Seguros',
-          description: 'Sistema completo de recepção e gestão de leads com integração Strapi e relatórios avançados desenvolvido para a equipa de marketing.',
-          category: 'Sistema de Gestão de Leads',
+          title: 'Real Business Center',
+          description: 'Plataforma web empresarial completa desenvolvida para centro de negócios. Sistema robusto com gestão de utilizadores e funcionalidades administrativas avançadas.',
+          category: 'Plataforma Empresarial',
           features: [
-            'Sistema de captura de leads automático',
-            'Integração com Strapi headless CMS',
-            'Relatórios e analytics avançados',
-            'Dashboard para equipa de marketing',
-            'Optimização de conversões',
-            'Interface administrativa completa',
-            'Gestão de campanhas de marketing'
+            'Sistema de gestão empresarial completo',
+            'Dashboard administrativo avançado',
+            'Gestão de utilizadores e permissões',
+            'Interface moderna e responsiva',
+            'Integração com sistemas de pagamento',
+            'Relatórios e analytics detalhados'
           ]
         },
         {
@@ -257,6 +285,20 @@ export const translations = {
           ]
         },
         {
+          title: 'Sistema de Leads - Real Vida Seguros',
+          description: 'Sistema completo de recepção e gestão de leads com integração Strapi e relatórios avançados desenvolvido para a equipa de marketing.',
+          category: 'Sistema de Gestão de Leads',
+          features: [
+            'Sistema de captura de leads automático',
+            'Integração com Strapi headless CMS',
+            'Relatórios e analytics avançados',
+            'Dashboard para equipa de marketing',
+            'Optimização de conversões',
+            'Interface administrativa completa',
+            'Gestão de campanhas de marketing'
+          ]
+        },
+        {
           title: 'Wein.plus',
           description: 'Colaboração no desenvolvimento de funcionalidades para plataforma de vinhos, incluindo sistema de emails automáticos para clientes e cron jobs.',
           category: 'Plataforma de Vinhos',
@@ -271,34 +313,6 @@ export const translations = {
           ]
         },
         {
-          title: 'Real Business Center',
-          description: 'Plataforma web empresarial completa desenvolvida para centro de negócios. Sistema robusto com gestão de utilizadores e funcionalidades administrativas avançadas.',
-          category: 'Plataforma Empresarial',
-          features: [
-            'Sistema de gestão empresarial completo',
-            'Dashboard administrativo avançado',
-            'Gestão de utilizadores e permissões',
-            'Interface moderna e responsiva',
-            'Integração com sistemas de pagamento',
-            'Relatórios e analytics detalhados'
-          ]
-        },
-        {
-          title: 'BookTrack - Sistema de Gestão de Biblioteca',
-          description: 'Sistema completo de gestão de biblioteca pessoal em português com funcionalidades avançadas de acompanhamento de leitura, avaliações, estatísticas e sistema social.',
-          category: 'Sistema de Gestão de Biblioteca',
-          features: [
-            'Gestão completa de livros pessoais',
-            'Acompanhamento de progresso de leitura',
-            'Sistema de badges e conquistas',
-            'Reviews e notas pessoais privadas',
-            'Listas de leitura personalizadas',
-            'Estatísticas e relatórios detalhados',
-            'Sistema social com perfis e interações',
-            'Interface em português'
-          ]
-        },
-        {
           title: 'CRM Contact Center - Hexsicor',
           description: 'Sistema CRM desenvolvido para empresas de contact center entre 2022-2023. Apenas imagem demonstrativa, sem links ou código público.',
           category: 'CRM Empresarial (2022-2023)',
@@ -309,20 +323,6 @@ export const translations = {
             'Sistema de relatórios avançados',
             'Projeto empresarial confidencial',
             'Apenas demonstração visual'
-          ]
-        },
-        {
-          title: 'Portfolio Pessoal - mirasity.pt',
-          description: 'Portfolio pessoal desenvolvido com React e tecnologias modernas. Código aberto sob licença MIT para fins educacionais e demonstração de competências.',
-          category: 'Portfolio Pessoal',
-          features: [
-            'Desenvolvido com React 18 e Tailwind CSS',
-            'Animações com Framer Motion',
-            'Design responsivo e acessível',
-            'SEO optimizado com React Helmet',
-            'Analytics integrado com Google Analytics',
-            'Formulário de contacto funcional',
-            'Código aberto no GitHub'
           ]
         }
       ]
@@ -609,6 +609,35 @@ export const translations = {
       },
       list: [
         {
+          title: 'BookTrack - Library Management System',
+          description: 'Complete personal library management system in Portuguese with advanced reading tracking, reviews, statistics and social features.',
+          category: 'Library Management System',
+          features: [
+            'Complete personal book management',
+            'Reading progress tracking',
+            'Badge and achievement system',
+            'Reviews and private personal notes',
+            'Custom reading lists',
+            'Detailed statistics and reports',
+            'Social system with profiles and interactions',
+            'Portuguese interface'
+          ]
+        },
+        {
+          title: 'Personal Portfolio - mirasity.pt',
+          description: 'Personal portfolio developed with React and modern technologies. Open source under MIT license for educational purposes and skill demonstration.',
+          category: 'Personal Portfolio',
+          features: [
+            'Built with React 18 and Tailwind CSS',
+            'Animations with Framer Motion',
+            'Responsive and accessible design',
+            'SEO optimized with React Helmet',
+            'Integrated analytics with Google Analytics',
+            'Functional contact form',
+            'Open source on GitHub'
+          ]
+        },
+        {
           title: 'Advcatia - Legal System',
           description: 'Complete web application for law firm management with advanced case, client and document management features.',
           category: 'Legal Management System',
@@ -623,17 +652,16 @@ export const translations = {
           ]
         },
         {
-          title: 'Lead Management System - Real Vida Seguros',
-          description: 'Complete lead reception and management system with Strapi integration and advanced reports developed for the marketing team.',
-          category: 'Lead Management System',
+          title: 'Real Business Center',
+          description: 'Complete business web platform developed for business center. Robust system with user management and advanced administrative features.',
+          category: 'Business Platform',
           features: [
-            'Automatic lead capture system',
-            'Strapi headless CMS integration',
-            'Advanced reports and analytics',
-            'Dashboard for marketing team',
-            'Conversion optimization',
-            'Complete administrative interface',
-            'Marketing campaign management'
+            'Complete business management system',
+            'Advanced administrative dashboard',
+            'User and permission management',
+            'Modern and responsive interface',
+            'Payment system integration',
+            'Detailed reports and analytics'
           ]
         },
         {
@@ -651,6 +679,20 @@ export const translations = {
           ]
         },
         {
+          title: 'Lead Management System - Real Vida Seguros',
+          description: 'Complete lead reception and management system with Strapi integration and advanced reports developed for the marketing team.',
+          category: 'Lead Management System',
+          features: [
+            'Automatic lead capture system',
+            'Strapi headless CMS integration',
+            'Advanced reports and analytics',
+            'Dashboard for marketing team',
+            'Conversion optimization',
+            'Complete administrative interface',
+            'Marketing campaign management'
+          ]
+        },
+        {
           title: 'Wein.plus',
           description: 'Collaboration in developing features for wine platform, including automatic email system for clients and cron jobs.',
           category: 'Wine Platform',
@@ -665,34 +707,6 @@ export const translations = {
           ]
         },
         {
-          title: 'Real Business Center',
-          description: 'Complete business web platform developed for business center. Robust system with user management and advanced administrative features.',
-          category: 'Business Platform',
-          features: [
-            'Complete business management system',
-            'Advanced administrative dashboard',
-            'User and permission management',
-            'Modern and responsive interface',
-            'Payment system integration',
-            'Detailed reports and analytics'
-          ]
-        },
-        {
-          title: 'BookTrack - Library Management System',
-          description: 'Complete personal library management system in Portuguese with advanced reading tracking, reviews, statistics and social features.',
-          category: 'Library Management System',
-          features: [
-            'Complete personal book management',
-            'Reading progress tracking',
-            'Badge and achievement system',
-            'Reviews and private personal notes',
-            'Custom reading lists',
-            'Detailed statistics and reports',
-            'Social system with profiles and interactions',
-            'Portuguese interface'
-          ]
-        },
-        {
           title: 'Contact Center CRM - Hexsicor',
           description: 'CRM system developed for contact center companies between 2022-2023. Image demonstration only, no links or public code.',
           category: 'Business CRM (2022-2023)',
@@ -703,20 +717,6 @@ export const translations = {
             'Advanced reporting system',
             'Confidential business project',
             'Visual demonstration only'
-          ]
-        },
-        {
-          title: 'Personal Portfolio - mirasity.pt',
-          description: 'Personal portfolio developed with React and modern technologies. Open source under MIT license for educational purposes and skill demonstration.',
-          category: 'Personal Portfolio',
-          features: [
-            'Built with React 18 and Tailwind CSS',
-            'Animations with Framer Motion',
-            'Responsive and accessible design',
-            'SEO optimized with React Helmet',
-            'Integrated analytics with Google Analytics',
-            'Functional contact form',
-            'Open source on GitHub'
           ]
         }
       ]
