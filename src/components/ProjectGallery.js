@@ -50,13 +50,30 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
     };
 
     if (isOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
+      
+      if (isOpen) {
+        const scrollY = document.body.style.top;
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        
+        if (scrollY) {
+          window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        }
+      }
     };
   }, [isOpen, nextImage, prevImage, onClose]);
 
@@ -69,7 +86,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
     hidden: { 
       opacity: 0, 
       scale: 0.8,
-      y: 100
+      y: 0
     },
     visible: { 
       opacity: 1, 
@@ -77,14 +94,14 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
       y: 0,
       transition: {
         type: "spring",
-        damping: 20,
-        stiffness: 300
+        damping: 25,
+        stiffness: 400
       }
     },
     exit: { 
       opacity: 0, 
       scale: 0.8,
-      y: 100,
+      y: 0,
       transition: {
         duration: 0.2
       }
@@ -118,7 +135,18 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
           initial="hidden"
           animate="visible"
           exit="hidden"
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/90 z-[9999] overflow-y-auto"
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem'
+          }}
           onClick={onClose}
         >
           <motion.div
@@ -126,7 +154,11 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative bg-white rounded-xl md:rounded-2xl max-w-4xl w-full max-h-[95vh] md:max-h-[90vh] overflow-hidden"
+            className="relative bg-white rounded-xl md:rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+            style={{ 
+              margin: 'auto',
+              minHeight: 'fit-content'
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -318,15 +350,53 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
 
               {/* Action buttons */}
               <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg transition-colors duration-200 text-center text-sm md:text-base font-medium touch-manipulation"
-                >
-                  Ver Projeto Live
-                </a>
-                {!project.isCodePrivate && (
+                {project.hasLiveUrl ? (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg transition-colors duration-200 text-center text-sm md:text-base font-medium touch-manipulation"
+                  >
+                    Ver Projeto Live
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => {
+                      // Fechar o modal primeiro
+                      onClose();
+                      
+                      // Aguardar um pouco para o modal fechar completamente
+                      setTimeout(() => {
+                        // Scroll para o formulário de contacto
+                        const contactSection = document.getElementById('contact');
+                        if (contactSection) {
+                          contactSection.scrollIntoView({ behavior: 'smooth' });
+                          
+                          // Aguarda um pouco para o scroll terminar e depois preenche o formulário
+                          setTimeout(() => {
+                            const subjectField = document.getElementById('subject');
+                            const messageField = document.getElementById('message');
+                            
+                            if (subjectField) {
+                              subjectField.value = `Questão sobre o projeto: ${project.title}`;
+                              subjectField.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                            
+                            if (messageField) {
+                              messageField.value = `Olá! Gostaria de saber mais sobre o projeto "${project.title}". Pode partilhar mais detalhes sobre este projeto?`;
+                              messageField.dispatchEvent(new Event('input', { bubbles: true }));
+                              messageField.focus();
+                            }
+                          }, 1000);
+                        }
+                      }, 300);
+                    }}
+                    className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg transition-colors duration-200 text-center text-sm md:text-base font-medium touch-manipulation"
+                  >
+                    Questionar sobre este projeto
+                  </button>
+                )}
+                {!project.isCodePrivate && project.githubUrl && (
                   <a
                     href={project.githubUrl}
                     target="_blank"
