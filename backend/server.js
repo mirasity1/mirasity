@@ -220,29 +220,28 @@ const createTransporter = () => {
     }
   };
 
-  // Configurações específicas para MXRouting (ainda mais agressivas)
+  // Configurações específicas para MXRouting com timeouts mais agressivos
   if (isMXRouting) {
     Object.assign(config, {
-      connectionTimeout: 30000,  // Aumentado para 30s (MXRouting pode ser lento)
-      greetingTimeout: 20000,    // Aumentado para 20s
-      socketTimeout: 30000,      // Aumentado para 30s
-      requireTLS: false,         // MXRouting não precisa
-      ignoreTLS: false,          // Permitir TLS mas não forçar
+      connectionTimeout: 60000,  // Voltar para 60s - Railway pode precisar de mais tempo
+      greetingTimeout: 30000,    // 30s para saudação
+      socketTimeout: 60000,      // 60s para socket
+      requireTLS: false,         // MXRouting não requer TLS forçado
+      ignoreTLS: false,          
       tls: {
         rejectUnauthorized: false,
         servername: process.env.SMTP_HOST,
-        ciphers: 'HIGH:MEDIUM:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
-        // Removido secureProtocol e minVersion que causam conflito
+        // Simplificar ciphers para compatibilidade máxima
+        ciphers: 'ALL'
       },
       pool: false,               // Desabilitar pooling
       maxConnections: 1,
       maxMessages: 1,
-      // Configurações de retry específicas para MXRouting
-      retryDelay: 1000,
-      maxRetries: 3,
-      // Desabilitar debug em produção mas manter logger para troubleshooting
-      debug: process.env.NODE_ENV === 'development',
-      logger: process.env.NODE_ENV === 'development'
+      // Configurações de retry para conexões lentas
+      retryDelay: 2000,
+      maxRetries: 2,
+      debug: true,              // Ativar debug para troubleshooting
+      logger: true             // Ativar logger para ver detalhes
     });
   } else {
     // Configurações padrão para outros provedores
@@ -268,6 +267,7 @@ const createTransporter = () => {
     secure: config.secure, 
     user: config.auth.user,
     connectionTimeout: config.connectionTimeout,
+    debug: config.debug,
     environment: process.env.NODE_ENV
   });
 
@@ -359,7 +359,7 @@ app.post('/api/send-email', async (req, res) => {
 
     // Enviar email com timeout otimizado e fallback para MXRouting
     console.log('Enviando email...');
-    const emailTimeout = isMXRouting ? 45000 : 60000; // 45s para MXRouting, 60s para outros
+    const emailTimeout = isMXRouting ? 90000 : 60000; // 90s para MXRouting, 60s para outros
     
     let emailSent = false;
     let lastError = null;
@@ -384,15 +384,16 @@ app.post('/api/send-email', async (req, res) => {
       
     } catch (sendError) {
       lastError = sendError;
+      console.log('❌ Erro na porta principal:', sendError.code, sendError.message);
       
       // Se for MXRouting e falhar na porta 465, tentar porta 587
       if (isMXRouting && process.env.SMTP_PORT === '465' && 
-          (sendError.code === 'ETIMEDOUT' || sendError.code === 'ECONNREFUSED')) {
+          (sendError.code === 'ETIMEDOUT' || sendError.code === 'ECONNREFUSED' || sendError.code === 'ECONNECTION')) {
         
         console.log('⚠️ Porta 465 falhou, tentando porta 587 para MXRouting...');
         
         try {
-          // Criar novo transporter com porta 587
+          // Criar novo transporter com porta 587 e configurações mais simples
           const fallbackConfig = {
             host: process.env.SMTP_HOST,
             port: 587,
@@ -401,17 +402,25 @@ app.post('/api/send-email', async (req, res) => {
               user: process.env.SMTP_USER,
               pass: process.env.SMTP_PASS
             },
-            connectionTimeout: 30000,
-            greetingTimeout: 20000,
-            socketTimeout: 30000,
+            connectionTimeout: 90000,  // 90s para conexões lentas
+            greetingTimeout: 45000,     // 45s para saudação
+            socketTimeout: 90000,       // 90s para socket
             requireTLS: true,
             tls: {
               rejectUnauthorized: false,
-              servername: process.env.SMTP_HOST,
-              ciphers: 'HIGH:MEDIUM:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
+              ciphers: 'ALL'  // Aceitar todos os ciphers
             },
-            pool: false
+            pool: false,
+            debug: true,
+            logger: true
           };
+          
+          console.log('Configuração fallback 587:', {
+            host: fallbackConfig.host,
+            port: fallbackConfig.port,
+            secure: fallbackConfig.secure,
+            connectionTimeout: fallbackConfig.connectionTimeout
+          });
           
           const fallbackTransporter = nodemailer.createTransport(fallbackConfig);
           
@@ -427,7 +436,7 @@ app.post('/api/send-email', async (req, res) => {
           
           res.status(200).json({
             success: true,
-            message: 'Email enviado com sucesso via fallback!',
+            message: 'Email enviado com sucesso via fallback (porta 587)!',
             messageId: info.messageId,
             method: 'fallback-587',
             timestamp: new Date().toISOString()
@@ -435,7 +444,7 @@ app.post('/api/send-email', async (req, res) => {
           
         } catch (fallbackError) {
           lastError = fallbackError;
-          console.error('❌ Fallback também falhou:', fallbackError.message);
+          console.error('❌ Fallback também falhou:', fallbackError.code, fallbackError.message);
         }
       }
       
@@ -525,7 +534,7 @@ app.get('/api/test-smtp', async (req, res) => {
       await Promise.race([
         transporter.sendMail(testEmail),
         new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Test email timeout')), 20000)
+          setTimeout(() => reject(new Error('Test email timeout')), 90000)  // 90s para teste
         )
       ]);
       
