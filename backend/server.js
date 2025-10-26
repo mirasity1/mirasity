@@ -45,22 +45,30 @@ app.use((req, res, next) => {
 
 // Configuração do Nodemailer
 const createTransporter = () => {
+  const port = parseInt(process.env.SMTP_PORT) || 587;
   const config = {
     host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT) || 587,
-    secure: parseInt(process.env.SMTP_PORT) === 465, // true para 465, false para outras portas
+    port: port,
+    secure: port === 465, // true para 465, false para 587
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
     },
-    // Aumentar timeouts para Railway
+    // Configurações específicas para MXRouting
     connectionTimeout: 60000, // 60 segundos
     greetingTimeout: 30000,    // 30 segundos
     socketTimeout: 60000,      // 60 segundos
-    // Pool de conexões
-    pool: true,
-    maxConnections: 1,
-    maxMessages: 3
+    // Configurações adicionais para MXRouting
+    requireTLS: port !== 465,  // Require TLS para porta 587
+    tls: {
+      rejectUnauthorized: false, // Para certificados self-signed
+      ciphers: 'SSLv3'
+    },
+    // Pool de conexões (desabilitar para MXRouting)
+    pool: false,
+    // Adicionar debug se necessário
+    debug: process.env.NODE_ENV === 'development',
+    logger: process.env.NODE_ENV === 'development'
   };
 
   console.log('Configuração SMTP:', { 
@@ -68,6 +76,7 @@ const createTransporter = () => {
     port: config.port, 
     secure: config.secure, 
     user: config.auth.user,
+    requireTLS: config.requireTLS,
     connectionTimeout: config.connectionTimeout,
     environment: process.env.NODE_ENV
   });
@@ -106,25 +115,28 @@ app.post('/api/send-email', async (req, res) => {
       await Promise.race([
         transporter.verify(),
         new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('SMTP verification timeout')), 30000)
+          setTimeout(() => reject(new Error('SMTP verification timeout')), 45000)
         )
       ]);
       console.log('Conexão SMTP verificada com sucesso');
     } catch (verifyError) {
       console.error('Erro na verificação SMTP:', verifyError.message);
-      // Continuar mesmo com erro de verificação em produção
-      if (process.env.NODE_ENV !== 'production') {
-        throw verifyError;
-      }
+      console.error('Continuando sem verificação (comum com MXRouting)...');
+      // Para MXRouting, às vezes a verificação falha mas o envio funciona
     }
 
     // Configuração do email
     const mailOptions = {
-      from: `"Portfolio Mirasity" <${process.env.SMTP_USER}>`,
+      from: `"Portfolio Mirasity" <${process.env.SMTP_USER}>`, // Usar o email MXRouting
       to: to,
       replyTo: replyTo || from,
       subject: subject,
-      html: html
+      html: html,
+      // Headers adicionais para MXRouting
+      headers: {
+        'X-Mailer': 'Portfolio Mirasity',
+        'X-Priority': '3'
+      }
     };
 
     // Enviar email com timeout
@@ -171,17 +183,69 @@ app.get('/api/test', (req, res) => {
 // Rota para testar configuração SMTP
 app.get('/api/test-smtp', async (req, res) => {
   try {
+    console.log('=== TESTE SMTP INICIADO ===');
     const transporter = createTransporter();
-    await transporter.verify();
+    
+    // Teste básico de conexão
+    console.log('Testando conexão SMTP...');
+    await Promise.race([
+      transporter.verify(),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('SMTP verification timeout (45s)')), 45000)
+      )
+    ]);
+    
+    console.log('SMTP verificado com sucesso!');
     res.json({ 
       success: true, 
-      message: 'Configuração SMTP válida!' 
+      message: 'Configuração SMTP válida!',
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      user: process.env.SMTP_USER,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
-    res.status(500).json({ 
-      success: false, 
-      error: error.message 
-    });
+    console.error('Erro no teste SMTP:', error.message);
+    
+    // Para MXRouting, tentar envio de teste mesmo se verify falhar
+    if (error.message.includes('timeout') || error.code === 'ETIMEDOUT') {
+      console.log('Tentando envio de teste apesar do timeout...');
+      try {
+        const transporter = createTransporter();
+        const testEmail = {
+          from: `"Test" <${process.env.SMTP_USER}>`,
+          to: process.env.SMTP_USER, // Enviar para si mesmo
+          subject: 'Teste SMTP - Railway',
+          text: 'Este é um email de teste do Railway.'
+        };
+        
+        await Promise.race([
+          transporter.sendMail(testEmail),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Test email timeout')), 60000)
+          )
+        ]);
+        
+        res.json({ 
+          success: true, 
+          message: 'SMTP funcionando! (verificação falhou mas envio ok)',
+          host: process.env.SMTP_HOST,
+          note: 'Comum com MXRouting'
+        });
+      } catch (sendError) {
+        res.status(500).json({ 
+          success: false, 
+          error: `Erro SMTP: ${error.message}`,
+          sendError: sendError.message
+        });
+      }
+    } else {
+      res.status(500).json({ 
+        success: false, 
+        error: error.message,
+        code: error.code
+      });
+    }
   }
 });
 
