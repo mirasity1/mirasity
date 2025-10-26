@@ -43,7 +43,168 @@ app.use((req, res, next) => {
   }
 });
 
-// Configuração do Nodemailer
+// Função para gerar HTML do email
+const generateEmailHTML = (name, email, subject, message) => {
+  return `
+    <!DOCTYPE html>
+    <html lang="pt">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nova Mensagem do Portfolio</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background-color: #f9fafb;
+            padding: 20px;
+          }
+          .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          }
+          .email-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+            color: white;
+            padding: 30px 25px;
+            text-align: center;
+          }
+          .email-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+          }
+          .email-header p {
+            font-size: 16px;
+            opacity: 0.9;
+          }
+          .email-content {
+            padding: 30px 25px;
+          }
+          .field-group {
+            margin-bottom: 25px;
+          }
+          .field-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+          }
+          .field-value {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 16px;
+            color: #111827;
+            word-wrap: break-word;
+          }
+          .field-value.message {
+            min-height: 100px;
+            white-space: pre-wrap;
+          }
+          .email-footer {
+            background: #f8fafc;
+            padding: 20px 25px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+          }
+          .email-footer p {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 5px;
+          }
+          .email-footer .timestamp {
+            font-size: 12px;
+            color: #9ca3af;
+          }
+          .security-note {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #92400e;
+          }
+          @media (max-width: 600px) {
+            body {
+              padding: 10px;
+            }
+            .email-header,
+            .email-content,
+            .email-footer {
+              padding: 20px 15px;
+            }
+            .email-header h1 {
+              font-size: 20px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="email-header">
+            <h1>📧 Nova Mensagem do Portfolio</h1>
+            <p>Mensagem recebida através de mirasity.pt</p>
+          </div>
+          
+          <div class="email-content">
+            <div class="field-group">
+              <label class="field-label">👤 Nome do Remetente</label>
+              <div class="field-value">${name}</div>
+            </div>
+            
+            <div class="field-group">
+              <label class="field-label">📧 Email de Contacto</label>
+              <div class="field-value">${email}</div>
+            </div>
+            
+            <div class="field-group">
+              <label class="field-label">📝 Assunto</label>
+              <div class="field-value">${subject}</div>
+            </div>
+            
+            <div class="field-group">
+              <label class="field-label">💬 Mensagem</label>
+              <div class="field-value message">${message}</div>
+            </div>
+            
+            <div class="security-note">
+              <strong>⚠️ Informação de Segurança:</strong> Este email foi enviado através do formulário de contacto em mirasity.pt. Responda diretamente ao email do remetente.
+            </div>
+          </div>
+          
+          <div class="email-footer">
+            <p><strong>Portfolio Mirasity</strong> - mirasity.pt</p>
+            <p class="timestamp">Enviado em ${new Date().toLocaleString('pt-PT', { 
+              timeZone: 'Europe/Lisbon',
+              day: '2-digit',
+              month: '2-digit', 
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+};
 const createTransporter = () => {
   const port = parseInt(process.env.SMTP_PORT) || 587;
   const config = {
@@ -81,7 +242,7 @@ const createTransporter = () => {
     environment: process.env.NODE_ENV
   });
 
-  return nodemailer.createTransporter(config);
+  return nodemailer.createTransport(config);
 };
 
 // Rota para enviar email
@@ -89,22 +250,43 @@ app.post('/api/send-email', async (req, res) => {
   console.log('=== ROTA /api/send-email ACIONADA ===');
   console.log('Method:', req.method);
   console.log('Path:', req.path);
-  console.log('Body received:', req.body);
   
   try {
-    const { to, from, subject, html, replyTo } = req.body;
+    const { name, email, subject, message } = req.body;
+    
+    console.log('📧 Dados recebidos:', { 
+      hasName: !!name, 
+      hasEmail: !!email, 
+      hasSubject: !!subject, 
+      hasMessage: !!message 
+    });
 
-    // Validação básica
-    if (!to || !from || !subject || !html) {
-      console.log('Erro de validação - campos obrigatórios faltando');
+    // Validação dos campos obrigatórios
+    if (!name || !email || !subject || !message) {
+      console.log('❌ Campos obrigatórios em falta');
       return res.status(400).json({ 
-        error: 'Todos os campos são obrigatórios',
-        received: { to, from, subject: !!subject, html: !!html }
+        success: false,
+        error: 'Todos os campos são obrigatórios: nome, email, assunto e mensagem'
       });
     }
 
-    console.log('Tentando enviar email para:', to);
-    console.log('De:', from);
+    // Validação de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      console.log('❌ Email inválido:', email);
+      return res.status(400).json({ 
+        success: false,
+        error: 'Email inválido' 
+      });
+    }
+
+    console.log('✅ Validações passaram, gerando HTML...');
+
+    // Gerar HTML do email usando a função
+    const emailHTML = generateEmailHTML(name, email, subject, message);
+
+    console.log('Tentando enviar email para:', process.env.SMTP_USER);
+    console.log('De:', name, '<' + email + '>');
     console.log('Assunto:', subject);
 
     const transporter = createTransporter();
@@ -128,14 +310,16 @@ app.post('/api/send-email', async (req, res) => {
     // Configuração do email
     const mailOptions = {
       from: `"Portfolio Mirasity" <${process.env.SMTP_USER}>`, // Usar o email MXRouting
-      to: to,
-      replyTo: replyTo || from,
-      subject: subject,
-      html: html,
+      to: process.env.SMTP_USER,
+      replyTo: email,
+      subject: `[Portfolio] ${subject}`,
+      html: emailHTML,
       // Headers adicionais para MXRouting
       headers: {
         'X-Mailer': 'Portfolio Mirasity',
-        'X-Priority': '3'
+        'X-Priority': '3',
+        'X-MSMail-Priority': 'Normal',
+        'Importance': 'Normal'
       }
     };
 
@@ -148,21 +332,30 @@ app.post('/api/send-email', async (req, res) => {
       )
     ]);
 
-    console.log('Email enviado com sucesso:', info.messageId);
+    console.log('✅ Email enviado com sucesso:', info.messageId);
 
     res.status(200).json({
       success: true,
-      message: 'Email enviado com sucesso',
+      message: 'Email enviado com sucesso!',
       messageId: info.messageId,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('Erro detalhado ao enviar email:', error);
+    console.error('❌ Erro detalhado ao enviar email:', error);
+    
+    // Logging detalhado do erro
+    if (error.code) {
+      console.error('Código do erro:', error.code);
+    }
+    if (error.response) {
+      console.error('Resposta do servidor SMTP:', error.response);
+    }
+    
     res.status(500).json({
       success: false,
-      error: 'Erro ao enviar email',
-      details: process.env.NODE_ENV === 'development' ? error.message : 'Erro interno do servidor'
+      error: 'Erro interno do servidor. Tente novamente mais tarde.',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

@@ -23,17 +23,16 @@ class EmailService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          to: this.config.from,
-          from: formData.email,
-          subject: `Portfolio Contact: ${formData.subject}`,
-          html: this.generateEmailHTML(formData),
-          replyTo: formData.email
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
         })
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to send email');
+        throw new Error(errorData.error || 'Failed to send email');
       }
 
       return await response.json();
@@ -64,52 +63,6 @@ class EmailService {
       console.error('Error sending email with Netlify:', error);
       throw error;
     }
-  }
-
-  // Gera HTML para o email
-  generateEmailHTML(formData) {
-    return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-            .content { background: #f8fafc; padding: 20px; border-radius: 0 0 8px 8px; }
-            .field { margin-bottom: 15px; }
-            .label { font-weight: bold; color: #374151; }
-            .value { margin-top: 5px; padding: 10px; background: white; border-radius: 4px; border-left: 4px solid #3b82f6; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h2>Nova Mensagem do Portfolio</h2>
-            </div>
-            <div class="content">
-              <div class="field">
-                <div class="label">Nome:</div>
-                <div class="value">${formData.name}</div>
-              </div>
-              <div class="field">
-                <div class="label">Email:</div>
-                <div class="value">${formData.email}</div>
-              </div>
-              <div class="field">
-                <div class="label">Assunto:</div>
-                <div class="value">${formData.subject}</div>
-              </div>
-              <div class="field">
-                <div class="label">Mensagem:</div>
-                <div class="value">${formData.message.replace(/\n/g, '<br>')}</div>
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
-    `;
   }
 
   // Validação do formulário
