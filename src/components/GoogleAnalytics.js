@@ -163,7 +163,7 @@ export const trackPageView = (path, title) => {
 // Componente principal do Google Analytics
 const GoogleAnalytics = () => {
   useEffect(() => {
-    // Só inicializa se o usuário já deu consentimento para analytics
+    // Só inicializa se o utilizador já deu consentimento para analytics
     const consent = localStorage.getItem('cookieConsent');
     if (consent) {
       const preferences = JSON.parse(consent);

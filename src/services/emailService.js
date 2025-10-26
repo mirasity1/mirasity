@@ -1,7 +1,7 @@
 // Email service configuration
 class EmailService {
   constructor() {
-    // SMTP Configuration - você pode configurar aqui suas credenciais
+    // SMTP Configuration - pode configurar aqui as suas credenciais
     this.config = {
       host: process.env.REACT_APP_SMTP_HOST || 'smtp.gmail.com',
       port: process.env.REACT_APP_SMTP_PORT || 587,
@@ -43,7 +43,7 @@ class EmailService {
   }
 
 
-  // Método usando Netlify Functions (se você usar Netlify)
+  // Método usando Netlify Functions (se usar Netlify)
   async sendEmailWithNetlify(formData) {
     try {
       const response = await fetch('/.netlify/functions/send-email', {

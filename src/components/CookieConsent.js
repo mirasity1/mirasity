@@ -16,7 +16,7 @@ const CookieConsent = () => {
   });
 
   useEffect(() => {
-    // Verificar se o usuário já deu consentimento
+    // Verificar se o utilizador já deu consentimento
     const consent = localStorage.getItem('cookieConsent');
     if (!consent) {
       setShowBanner(true);
@@ -24,7 +24,7 @@ const CookieConsent = () => {
       const preferences = JSON.parse(consent);
       setCookiePreferences(preferences);
       
-      // Inicializar Google Analytics se o usuário consentiu
+      // Inicializar Google Analytics se o utilizador consentiu
       if (preferences.analytics) {
         initGA();
       }

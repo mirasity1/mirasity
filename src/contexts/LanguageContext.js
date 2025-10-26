@@ -337,7 +337,7 @@ export const translations = {
       infoDescription: 'Estou sempre disponível para discutir novos projetos, oportunidades criativas ou simplesmente para trocar ideias sobre tecnologia.',
       quickActions: 'Ações Rápidas',
       viewResume: 'Ver Currículo',
-      downloadResume: 'Baixar Currículo',
+      downloadResume: 'Descarregar Currículo',
       viewFullPortfolio: 'Ver Portfólio Completo',
       sendMessage: 'Envie uma Mensagem',
       form: {
@@ -347,7 +347,7 @@ export const translations = {
         message: 'Mensagem',
         namePlaceholder: 'Seu nome',
         emailPlaceholder: 'seu@email.com',
-        subjectPlaceholder: 'Sobre o que você gostaria de falar?',
+        subjectPlaceholder: 'Sobre o que gostaria de falar?',
         messagePlaceholder: 'Conte-me sobre seu projeto ou ideia...',
         mathVerification: 'Verificação de Segurança',
         refreshMath: 'Gerar nova pergunta',

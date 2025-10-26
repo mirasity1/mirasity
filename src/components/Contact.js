@@ -91,7 +91,7 @@ const Contact = () => {
       [name]: value
     });
     
-    // Limpa o erro do campo quando o usuário começa a digitar
+    // Limpa o erro do campo quando o utilizador começa a digitar
     if (formErrors[name]) {
       setFormErrors({
         ...formErrors,
@@ -126,7 +126,7 @@ const Contact = () => {
     setFormErrors({});
     
     try {
-      // Aqui você pode escolher qual método usar:
+      // Aqui pode escolher qual método usar:
       // 1. Backend próprio com SMTP (webhook Discord será enviado automaticamente pelo backend)
       await emailService.sendEmail(formData);
       
