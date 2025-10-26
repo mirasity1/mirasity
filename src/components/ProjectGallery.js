@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 
 const ProjectGallery = ({ project, isOpen, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -50,60 +51,114 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
     };
 
     if (isOpen) {
-      // Save current scroll position
-      const scrollY = window.scrollY;
-      
       document.addEventListener('keydown', handleKeyDown);
+      
+      // Capturar posição atual do scroll PARA PRESERVAR
+      const scrollY = window.scrollY;
+      const scrollX = window.scrollX;
+      
+      // Guardar posição para restaurar depois
+      document.body.setAttribute('data-scroll-y', scrollY.toString());
+      document.body.setAttribute('data-scroll-x', scrollX.toString());
+      
+      // Bloquear scroll do body MANTENDO a posição atual visível
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
+      document.body.style.left = `-${scrollX}px`;
+      document.body.style.width = '100vw';
+      document.body.style.height = '100vh';
+      
+    } else {
+      document.removeEventListener('keydown', handleKeyDown);
+      
+      // Aguardar um pouco para a animação de fade-out completar
+      setTimeout(() => {
+        // Restaurar scroll position exatamente onde estava
+        const scrollY = parseInt(document.body.getAttribute('data-scroll-y') || '0');
+        const scrollX = parseInt(document.body.getAttribute('data-scroll-x') || '0');
+        
+        // Restaurar estilos do body
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.width = '';
+        document.body.style.height = '';
+        
+        // Limpar atributos
+        document.body.removeAttribute('data-scroll-y');
+        document.body.removeAttribute('data-scroll-x');
+        
+        // Restaurar posição do scroll de forma suave
+        window.scrollTo({
+          top: scrollY,
+          left: scrollX,
+          behavior: 'instant' // Sem animação para evitar movimento estranho
+        });
+      }, 200); // Aguarda animação de exit (200ms)
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       
-      if (isOpen) {
-        const scrollY = document.body.style.top;
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        
-        if (scrollY) {
-          window.scrollTo(0, parseInt(scrollY || '0') * -1);
-        }
-      }
+      // Cleanup: garantir que o body não fica com estilos residuais
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.body.removeAttribute('data-scroll-y');
+      document.body.removeAttribute('data-scroll-x');
     };
   }, [isOpen, nextImage, prevImage, onClose]);
 
   const backdropVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
+    visible: { 
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeIn"
+      }
+    }
   };
 
   const modalVariants = {
     hidden: { 
       opacity: 0, 
       scale: 0.8,
-      y: 0
+      y: 0,
+      x: 0
     },
     visible: { 
       opacity: 1, 
       scale: 1,
       y: 0,
+      x: 0,
       transition: {
         type: "spring",
         damping: 25,
-        stiffness: 400
+        stiffness: 400,
+        duration: 0.3
       }
     },
     exit: { 
       opacity: 0, 
       scale: 0.8,
       y: 0,
+      x: 0,
       transition: {
-        duration: 0.2
+        duration: 0.2,
+        ease: "easeIn"
       }
     }
   };
@@ -127,7 +182,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
 
   if (!project) return null;
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -135,34 +190,41 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
           initial="hidden"
           animate="visible"
           exit="hidden"
-          className="fixed inset-0 bg-black/90 z-[9999] overflow-y-auto"
+          className="fixed inset-0 bg-black/90 z-[9999]"
+          onClick={onClose}
           style={{ 
-            position: 'fixed', 
-            top: 0, 
-            left: 0, 
-            right: 0, 
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
             bottom: 0,
+            width: '100vw',
+            height: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '1rem'
+            padding: '16px',
+            margin: 0,
+            transform: 'translate3d(0, 0, 0)', // Force hardware acceleration
+            overflow: 'hidden',
+            zIndex: 9999
           }}
-          onClick={onClose}
         >
           <motion.div
             variants={modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative bg-white rounded-xl md:rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
-            style={{ 
-              margin: 'auto',
-              minHeight: 'fit-content'
-            }}
+            className="relative bg-white rounded-xl md:rounded-2xl w-full max-w-4xl flex flex-col max-h-[90vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              margin: 0,
+              transform: 'translate3d(0, 0, 0)' // Force hardware acceleration
+            }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 flex-shrink-0">
               <div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 pr-4">{project.title}</h3>
                 <p className="text-gray-600 text-sm md:text-base">{project.category}</p>
@@ -176,7 +238,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
             </div>
 
             {/* Media Gallery */}
-            <div className="relative h-64 md:h-96 bg-gray-100 overflow-hidden">
+            <div className="relative h-64 md:h-80 bg-gray-100 overflow-hidden flex-shrink-0">
               <AnimatePresence mode="wait" custom={currentImageIndex}>
                 {galleryMedia.length > 0 && (galleryMedia[currentImageIndex]?.type === 'video' || galleryMedia[currentImageIndex]?.type === 'youtube') ? (
                   <motion.div
@@ -313,7 +375,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
             </div>
 
             {/* Project details */}
-            <div className="p-4 md:p-6 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6">
               <p className="text-gray-700 text-sm md:text-base mb-4">{project.description || 'Sem descrição disponível'}</p>
               
               {/* Technologies */}
@@ -464,6 +526,9 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
       )}
     </AnimatePresence>
   );
+
+  // Use portal to render modal directly to document.body
+  return isOpen ? createPortal(modalContent, document.body) : null;
 };
 
 export default ProjectGallery;

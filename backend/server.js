@@ -304,6 +304,80 @@ const sendEmailViaMXrouteAPI = async (mailOptions) => {
   });
 };
 
+// Função para enviar webhook para Discord
+const sendDiscordWebhook = async (formData) => {
+  const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
+  
+  if (!DISCORD_WEBHOOK_URL) {
+    console.log('Discord webhook URL não configurado - pulando...');
+    return;
+  }
+
+  try {
+    // Criar embed rico para Discord
+    const embed = {
+      title: "📧 Novo Contacto no Portfolio",
+      color: 0x3b82f6, // Azul
+      fields: [
+        {
+          name: "👤 Nome",
+          value: formData.name,
+          inline: true
+        },
+        {
+          name: "📧 Email", 
+          value: formData.email,
+          inline: true
+        },
+        {
+          name: "📋 Assunto",
+          value: formData.subject,
+          inline: false
+        },
+        {
+          name: "💬 Mensagem",
+          value: formData.message.length > 1000 
+            ? formData.message.substring(0, 1000) + "..." 
+            : formData.message,
+          inline: false
+        }
+      ],
+      footer: {
+        text: "Portfolio mirasity.pt",
+        icon_url: "https://mirasity.pt/favicon.ico"
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    const webhookData = {
+      content: "🚨 **Novo contacto recebido!**",
+      embeds: [embed],
+      username: "Portfolio Bot",
+      avatar_url: "https://mirasity.pt/favicon.ico"
+    };
+
+    console.log('📨 Enviando webhook para Discord...');
+    
+    const response = await fetch(DISCORD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(webhookData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Discord webhook failed: ${response.status}`);
+    }
+
+    console.log('✅ Discord webhook enviado com sucesso!');
+
+  } catch (error) {
+    console.error('❌ Erro ao enviar Discord webhook:', error.message);
+    throw error; // Re-lançar para ser capturado no caller
+  }
+};
+
 // Configurações SMTP otimizadas para Railway e MXRouting
 const getMXRoutingConfig = (port) => {
   const hosts = [
@@ -527,6 +601,15 @@ app.post('/api/send-email', async (req, res) => {
     // Enviar email com timeout otimizado e fallback para MXRouting
     console.log('Enviando email...');
     
+    // PRIMEIRO: Tentar enviar webhook para Discord (se configurado)
+    try {
+      await sendDiscordWebhook({ name, email, subject, message });
+    } catch (discordError) {
+      console.warn('Discord webhook falhou (continuando):', discordError.message);
+      // Não falha o processo principal se Discord não funcionar
+    }
+    
+    // SEGUNDO: Enviar email
     // Usar o método de retry para MXRouting
     try {
       const info = await sendEmailWithRetry(mailOptions);
@@ -896,7 +979,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('Railway URL: ' + (process.env.RAILWAY_STATIC_URL || 'N/A'));
   console.log('Railway Domain: ' + (process.env.RAILWAY_PUBLIC_DOMAIN || 'N/A'));
   console.log('Rotas disponíveis:');
-  console.log('  POST /api/send-email - Enviar email via MXroute SMTP API');
+  console.log('  POST /api/send-email - Enviar email via MXroute SMTP API (+ Discord webhook automático)');
   console.log('  POST /api/send-email-api-only - Teste direto da API');
   console.log('  GET /api/test - Testar API básica');
   console.log('  GET /api/test-smtp - Testar MXroute SMTP API');

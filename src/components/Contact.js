@@ -127,7 +127,7 @@ const Contact = () => {
     
     try {
       // Aqui você pode escolher qual método usar:
-      // 1. Backend próprio com SMTP
+      // 1. Backend próprio com SMTP (webhook Discord será enviado automaticamente pelo backend)
       await emailService.sendEmail(formData);
       
       // 2. EmailJS (descomente para usar)
