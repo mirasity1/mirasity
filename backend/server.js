@@ -8,8 +8,40 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: ['https://mirasity.pt', 'https://www.mirasity.pt', 'http://localhost:3000', 'https://backend.mirasity.pt'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware de logging para debug
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log('Headers:', req.headers);
+  console.log('Host:', req.get('host'));
+  console.log('User-Agent:', req.get('user-agent'));
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('Body:', req.body);
+  }
+  next();
+});
+
+// Adicionar headers para Railway
+app.use((req, res, next) => {
+  res.header('X-Powered-By', 'Railway');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // Configuração do Nodemailer
 const createTransporter = () => {
@@ -35,11 +67,17 @@ const createTransporter = () => {
 
 // Rota para enviar email
 app.post('/api/send-email', async (req, res) => {
+  console.log('=== ROTA /api/send-email ACIONADA ===');
+  console.log('Method:', req.method);
+  console.log('Path:', req.path);
+  console.log('Body received:', req.body);
+  
   try {
     const { to, from, subject, html, replyTo } = req.body;
 
     // Validação básica
     if (!to || !from || !subject || !html) {
+      console.log('Erro de validação - campos obrigatórios faltando');
       return res.status(400).json({ 
         error: 'Todos os campos são obrigatórios',
         received: { to, from, subject: !!subject, html: !!html }
@@ -121,11 +159,50 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Rota de debug para listar todas as rotas
+app.get('/api/routes', (req, res) => {
+  const routes = [];
+  
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      routes.push({
+        path: middleware.route.path,
+        methods: Object.keys(middleware.route.methods)
+      });
+    } else if (middleware.name === 'router') {
+      middleware.handle.stack.forEach((handler) => {
+        if (handler.route) {
+          routes.push({
+            path: handler.route.path,
+            methods: Object.keys(handler.route.methods)
+          });
+        }
+      });
+    }
+  });
+  
+  res.json({
+    message: 'Rotas registradas',
+    timestamp: new Date().toISOString(),
+    routes: routes,
+    totalRoutes: routes.length
+  });
+});
+
 // Rota 404 para APIs não encontradas - deve vir DEPOIS das rotas definidas
 app.use('/api/*', (req, res) => {
+  console.log('=== ROTA 404 ACIONADA ===');
+  console.log('Method:', req.method);
+  console.log('Original URL:', req.originalUrl);
+  console.log('Path:', req.path);
+  console.log('All routes registered:');
+  
   res.status(404).json({
     error: 'API endpoint not found',
     message: `The endpoint ${req.originalUrl} does not exist`,
+    method: req.method,
+    path: req.path,
+    timestamp: new Date().toISOString(),
     availableEndpoints: [
       'POST /api/send-email',
       'GET /api/test',
@@ -141,12 +218,17 @@ app.use('*', (req, res) => {
   res.redirect(301, frontendUrl);
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Frontend URL: ${process.env.FRONTEND_URL || 'https://mirasity.pt'}`);
+  console.log(`Railway URL: ${process.env.RAILWAY_STATIC_URL || 'N/A'}`);
+  console.log(`Railway Domain: ${process.env.RAILWAY_PUBLIC_DOMAIN || 'N/A'}`);
   console.log('Rotas disponíveis:');
   console.log('  POST /api/send-email - Enviar email de contato');
+  console.log('  GET /api/test - Testar API');
   console.log('  GET /api/test-smtp - Testar configuração SMTP');
+  console.log('  GET /api/routes - Listar rotas (debug)');
   console.log('  GET /health - Health check');
   console.log('  * Qualquer outra rota → Redirect para frontend');
 });
