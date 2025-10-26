@@ -6,6 +6,11 @@ import { createPortal } from 'react-dom';
 const ProjectGallery = ({ project, isOpen, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Handle modal close without any scroll manipulation
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
+
   // Build gallery media array with images and videos
   const galleryMedia = project ? [
     { type: 'image', src: project.image },
@@ -45,74 +50,27 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
       if (e.key === 'ArrowLeft') prevImage();
       if (e.key === 'ArrowRight') nextImage();
     };
 
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      
-      // Capturar posição atual do scroll PARA PRESERVAR
-      const scrollY = window.scrollY;
-      const scrollX = window.scrollX;
-      
-      // Guardar posição para restaurar depois
-      document.body.setAttribute('data-scroll-y', scrollY.toString());
-      document.body.setAttribute('data-scroll-x', scrollX.toString());
-      
-      // Bloquear scroll do body MANTENDO a posição atual visível
+      // Apenas bloquear scroll sem mover nada
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = `-${scrollX}px`;
-      document.body.style.width = '100vw';
-      document.body.style.height = '100vh';
-      
     } else {
       document.removeEventListener('keydown', handleKeyDown);
-      
-      // Aguardar um pouco para a animação de fade-out completar
-      setTimeout(() => {
-        // Restaurar scroll position exatamente onde estava
-        const scrollY = parseInt(document.body.getAttribute('data-scroll-y') || '0');
-        const scrollX = parseInt(document.body.getAttribute('data-scroll-x') || '0');
-        
-        // Restaurar estilos do body
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.width = '';
-        document.body.style.height = '';
-        
-        // Limpar atributos
-        document.body.removeAttribute('data-scroll-y');
-        document.body.removeAttribute('data-scroll-x');
-        
-        // Restaurar posição do scroll de forma suave
-        window.scrollTo({
-          top: scrollY,
-          left: scrollX,
-          behavior: 'instant' // Sem animação para evitar movimento estranho
-        });
-      }, 200); // Aguarda animação de exit (200ms)
+      // Restaurar scroll
+      document.body.style.overflow = '';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      
-      // Cleanup: garantir que o body não fica com estilos residuais
+      // Cleanup simples
       document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-      document.body.removeAttribute('data-scroll-y');
-      document.body.removeAttribute('data-scroll-x');
     };
-  }, [isOpen, nextImage, prevImage, onClose]);
+  }, [isOpen, nextImage, prevImage, handleClose]);
 
   const backdropVariants = {
     hidden: { opacity: 0 },
@@ -191,7 +149,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
           animate="visible"
           exit="hidden"
           className="fixed inset-0 bg-black/90 z-[9999]"
-          onClick={onClose}
+          onClick={handleClose}
           style={{ 
             position: 'fixed',
             top: 0,
@@ -230,7 +188,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                 <p className="text-gray-600 text-sm md:text-base">{project.category}</p>
               </div>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 touch-manipulation"
               >
                 <X size={20} className="md:w-6 md:h-6" />
@@ -425,7 +383,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                   <button
                     onClick={() => {
                       // Fechar o modal primeiro
-                      onClose();
+                      handleClose();
                       
                       // Aguardar um pouco para o modal fechar completamente
                       setTimeout(() => {
