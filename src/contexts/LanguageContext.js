@@ -204,6 +204,7 @@ export const translations = {
       inProgress: 'Em desenvolvimento',
       features: 'Funcionalidades:',
       viewProject: 'Ver Projecto',
+      askMoreAbout: 'Questiona-me sobre este projecto',
       code: 'Código',
       callToAction: 'Gostaste do que viste? Vamos trabalhar juntos no teu próximo projecto!',
       startProject: 'Iniciar Projecto',
@@ -280,6 +281,21 @@ export const translations = {
             'Interface moderna e responsiva',
             'Integração com sistemas de pagamento',
             'Relatórios e analytics detalhados'
+          ]
+        },
+        {
+          title: 'BookTrack - Sistema de Gestão de Biblioteca',
+          description: 'Sistema completo de gestão de biblioteca pessoal em português com funcionalidades avançadas de acompanhamento de leitura, avaliações, estatísticas e sistema social.',
+          category: 'Sistema de Gestão de Biblioteca',
+          features: [
+            'Gestão completa de livros pessoais',
+            'Acompanhamento de progresso de leitura',
+            'Sistema de badges e conquistas',
+            'Reviews e notas pessoais privadas',
+            'Listas de leitura personalizadas',
+            'Estatísticas e relatórios detalhados',
+            'Sistema social com perfis e interações',
+            'Interface em português'
           ]
         },
         {
@@ -582,6 +598,7 @@ export const translations = {
       inProgress: 'In development',
       features: 'Features:',
       viewProject: 'View Project',
+      askMoreAbout: 'Ask me about this project',
       code: 'Code',
       callToAction: 'Liked what you saw? Let\'s work together on your next project!',
       startProject: 'Start Project',
@@ -658,6 +675,21 @@ export const translations = {
             'Modern and responsive interface',
             'Payment system integration',
             'Detailed reports and analytics'
+          ]
+        },
+        {
+          title: 'BookTrack - Library Management System',
+          description: 'Complete personal library management system in Portuguese with advanced reading tracking, reviews, statistics and social features.',
+          category: 'Library Management System',
+          features: [
+            'Complete personal book management',
+            'Reading progress tracking',
+            'Badge and achievement system',
+            'Reviews and private personal notes',
+            'Custom reading lists',
+            'Detailed statistics and reports',
+            'Social system with profiles and interactions',
+            'Portuguese interface'
           ]
         },
         {

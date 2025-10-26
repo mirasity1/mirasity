@@ -40,8 +40,9 @@ const Projects = () => {
           index === 2 ? `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format&q=75` : // Travel/Trip - Real Vida Trip
           index === 3 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=400&h=300&fit=crop&auto=format&q=75` : // Wine/Restaurant - Wein.plus
           index === 4 ? require('../imgs/main.jpeg') : // Real Business Center local image
-          index === 5 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image (apenas imagem)
-          index === 6 ? `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format&q=75` : // Portfolio - development/code image
+          index === 5 ? `https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop&auto=format&q=75` : // BookTrack - books/library image
+          index === 6 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image (apenas imagem)
+          index === 7 ? `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format&q=75` : // Portfolio - development/code image
           `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop&auto=format&q=75`,
     video: index === 0 ? { 
       type: 'youtube', 
@@ -64,36 +65,54 @@ const Projects = () => {
       type: 'youtube', 
       id: 'AiA_qjZtYsc',
       thumbnail: null
-    } : null, // Hexsicor sem vídeo (apenas imagem)
+    } : 
+    index === 5 ? { 
+      type: 'youtube', 
+      id: 'bm0E1hvf12A',
+      thumbnail: null,
+      additionalVideos: [
+        {
+          type: 'youtube',
+          id: 'JiblkDn6wgQ',
+          title: 'Sistema de Badges - BookTrack'
+        }
+      ]
+    } : // BookTrack - dois vídeos disponíveis
+    index === 6 ? null : // Hexsicor sem vídeo (apenas imagem)
+    null,
     technologies: [
-      ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Advcatia
-      ["React", "Strapi", "HTML", "Markdown", "CMS"], // Sistema de Leads - Real Vida Seguros
-      ["React", "Strapi", "HTML", "Markdown", "CMS"], // Real Vida Trip
+      ["React", "MySQL", "Tailwind"], // Advcatia
+      ["React","Tailwind", "Strapi","Typescript","Python","PostgreSQL","HTML", "Markdown", "CMS", "Cron Jobs"], // Sistema de Leads - Real Vida Seguros
+      ["React", "Strapi","Tailwind", "HTML", "Markdown", "CMS"], // Real Vida Trip
       ["Laravel", "PHP", "MySQL", "JavaScript", "Cron Jobs"], // Wein.plus
-      ["React", "Laravel", "PHP", "MySQL", "Bootstrap"], // Real Business Center
-      ["Laravel", "PHP", "React", "TypeScript", "MySQL"], // Hexsicor CRM
-      ["React", "Tailwind CSS", "Framer Motion", "JavaScript", "Vercel"] // Portfolio
+      ["React", "CMS","Strapi","Tailwind","Cron Jobs", "Bootstrap"], // Real Business Center
+      ["React", "Tailwind", "Strapi", "TypeScript", "Node.js", "SQLite"], // BookTrack
+      ["Laravel", "PHP", "React", "TypeScript", "MySQL","Python"], // Hexsicor CRM
+      ["React", "Tailwind CSS", "Framer Motion", "JavaScript", "Vercel","RailWay"] // Portfolio
     ][index] || [],
-    category: project.category || '',
-    year: index === 5 ? "2022-2023" : "2024", // Hexsicor foi em 2022-2023, outros são 2024
-    status: (t.projects?.completed || 'Completed'),
+    category: project.category || '', // Hexsicor foi em 2022-2023, outros são 2024 e o portfolio 2025
+    year: index === 5 ? "2024" : index === 6 ? "2022-2023" : index === 7 ? "2025" : "2024",
+    status: index === 5 ? (t.projects?.inProgress || 'In Progress') : (t.projects?.completed || 'Completed'),
     features: project.features || [],
     liveUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia - link para GitHub
+             index === 3 ? "https://wein.plus/" : // Wein.plus - site público
              index === 4 ? "https://realbusinesscenter.pt/" : // Real Business Center - site público
-             index === 6 ? "https://mirasity.pt/" : // Portfolio - site público
+             index === 5 ? null : // BookTrack - sem site público ainda
+             index === 7 ? "https://mirasity.pt/" : // Portfolio - site público
              "https://mirasity.pt", // Outros redirecionam para portfolio
     githubUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia público
-               index === 4 ? "https://github.com/mirasity1/realbusinesscenter" : // Real Business Center (assumindo que vai criar repo)
-               index === 6 ? "https://github.com/mirasity1/mirasity" : // Portfolio público
+               index === 7 ? "https://github.com/mirasity1/mirasity" : // Portfolio público
                null,
-    isPublic: index === 0 || index === 4 || index === 6, // Advcatia, Real Business Center e Portfolio são públicos
-    isCodePrivate: !(index === 0 || index === 4 || index === 6), // Inverso do isPublic
+    isPublic: index === 0 || index === 7, // Advcatia e Portfolio são públicos
+    isCodePrivate: !(index === 0 || index === 7), // Inverso do isPublic
+    hasLiveUrl: index === 0 || index === 3 || index === 4 || index === 7, // Projetos com site ativo
     color: [
       "from-blue-500 to-cyan-500",
       "from-purple-500 to-pink-500",
       "from-green-500 to-emerald-500",
       "from-yellow-500 to-orange-500",
       "from-orange-500 to-red-500",
+      "from-amber-500 to-yellow-600", // BookTrack
       "from-indigo-500 to-purple-500",
       "from-teal-500 to-blue-500"
     ][index] || "from-blue-500 to-cyan-500"
@@ -112,6 +131,34 @@ const Projects = () => {
     setShowGallery(false);
     setSelectedProject(null);
     trackProjectView(selectedProject?.title || 'unknown', 'gallery_close');
+  };
+
+  const handleAskAboutProject = (projectTitle) => {
+    // Scroll para o formulário de contacto
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+      
+      // Aguarda um pouco para o scroll terminar e depois preenche o formulário
+      setTimeout(() => {
+        const subjectField = document.getElementById('subject');
+        const messageField = document.getElementById('message');
+        
+        if (subjectField) {
+          subjectField.value = `Questão sobre o projeto: ${projectTitle}`;
+          subjectField.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        
+        if (messageField) {
+          messageField.value = `Olá! Gostaria de saber mais sobre o projeto "${projectTitle}". Pode partilhar mais detalhes sobre este projeto?`;
+          messageField.dispatchEvent(new Event('input', { bubbles: true }));
+          messageField.focus();
+        }
+      }, 1000);
+    }
+    
+    // Track da ação
+    trackProjectView(projectTitle, 'ask_about_project');
   };
 
   return (
@@ -162,7 +209,7 @@ const Projects = () => {
                   
                   {/* Status badge */}
                   <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium ${
-                    project.status === 'Concluído' 
+                    project.status === 'Concluído' || project.status === 'Completed'
                       ? 'bg-green-500 text-white' 
                       : 'bg-yellow-500 text-white'
                   }`}>
@@ -187,7 +234,7 @@ const Projects = () => {
                     >
                       <Eye size={16} className="md:w-5 md:h-5" />
                     </motion.button>
-                    {project.isPublic && (
+                    {project.hasLiveUrl && (
                       <motion.a
                         href={project.liveUrl}
                         target="_blank"
@@ -282,7 +329,7 @@ const Projects = () => {
                       <Eye size={16} />
                       {language === 'pt' ? 'Ver Detalhes' : 'View Details'}
                     </button>
-                    {project.isPublic && (
+                    {project.hasLiveUrl && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
@@ -326,17 +373,28 @@ const Projects = () => {
 
                   {/* Action buttons */}
                   <div className="flex space-x-2">
-                    <motion.a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackExternalLink(project.liveUrl, `${project.title} Live Site`, 'Projects')}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex-1 bg-blue-500 text-white text-center py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-300"
-                    >
-                      {t.projects?.viewProject || 'View Project'}
-                    </motion.a>
+                    {project.hasLiveUrl ? (
+                      <motion.a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => trackExternalLink(project.liveUrl, `${project.title} Live Site`, 'Projects')}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex-1 bg-blue-500 text-white text-center py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-300"
+                      >
+                        {t.projects?.viewProject || 'View Project'}
+                      </motion.a>
+                    ) : (
+                      <motion.button
+                        onClick={() => handleAskAboutProject(project.title)}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex-1 bg-blue-500 text-white text-center py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-300"
+                      >
+                        {t.projects?.askMoreAbout || 'Ask me about this project'}
+                      </motion.button>
+                    )}
                     {project.isPublic && project.githubUrl && (
                       <motion.a
                         href={project.githubUrl}

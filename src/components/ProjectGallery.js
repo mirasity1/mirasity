@@ -14,6 +14,12 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
       si: project.video.si || null,
       thumbnail: project.video.thumbnail || null 
     }] : []),
+    ...(project.video?.additionalVideos ? project.video.additionalVideos.map(video => ({
+      type: video.type || 'video',
+      src: video.type === 'youtube' ? video.id : video.src,
+      title: video.title || null,
+      thumbnail: video.thumbnail || null
+    })) : []),
     { type: 'image', src: `https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop` },
   ].filter(item => item.src) : []; // Filter out any undefined sources
 
@@ -266,6 +272,9 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                   )}
                   {galleryMedia[currentImageIndex]?.type === 'youtube' && (
                     <span className="ml-2">📺</span>
+                  )}
+                  {galleryMedia[currentImageIndex]?.title && (
+                    <span className="ml-2 text-xs opacity-90">- {galleryMedia[currentImageIndex].title}</span>
                   )}
                 </div>
               )}
