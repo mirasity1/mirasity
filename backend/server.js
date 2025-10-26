@@ -52,17 +52,27 @@ const createTransporter = () => {
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
-    }
+    },
+    // Aumentar timeouts para Railway
+    connectionTimeout: 60000, // 60 segundos
+    greetingTimeout: 30000,    // 30 segundos
+    socketTimeout: 60000,      // 60 segundos
+    // Pool de conexões
+    pool: true,
+    maxConnections: 1,
+    maxMessages: 3
   };
 
   console.log('Configuração SMTP:', { 
     host: config.host, 
     port: config.port, 
     secure: config.secure, 
-    user: config.auth.user 
+    user: config.auth.user,
+    connectionTimeout: config.connectionTimeout,
+    environment: process.env.NODE_ENV
   });
 
-  return nodemailer.createTransport(config);
+  return nodemailer.createTransporter(config);
 };
 
 // Rota para enviar email
@@ -90,9 +100,23 @@ app.post('/api/send-email', async (req, res) => {
 
     const transporter = createTransporter();
 
-    // Teste de conexão SMTP
-    await transporter.verify();
-    console.log('Conexão SMTP verificada com sucesso');
+    // Teste de conexão SMTP com timeout
+    console.log('Verificando conexão SMTP...');
+    try {
+      await Promise.race([
+        transporter.verify(),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('SMTP verification timeout')), 30000)
+        )
+      ]);
+      console.log('Conexão SMTP verificada com sucesso');
+    } catch (verifyError) {
+      console.error('Erro na verificação SMTP:', verifyError.message);
+      // Continuar mesmo com erro de verificação em produção
+      if (process.env.NODE_ENV !== 'production') {
+        throw verifyError;
+      }
+    }
 
     // Configuração do email
     const mailOptions = {
@@ -103,15 +127,22 @@ app.post('/api/send-email', async (req, res) => {
       html: html
     };
 
-    // Enviar email
-    const info = await transporter.sendMail(mailOptions);
+    // Enviar email com timeout
+    console.log('Enviando email...');
+    const info = await Promise.race([
+      transporter.sendMail(mailOptions),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Email send timeout')), 60000)
+      )
+    ]);
 
     console.log('Email enviado com sucesso:', info.messageId);
 
     res.status(200).json({
       success: true,
       message: 'Email enviado com sucesso',
-      messageId: info.messageId
+      messageId: info.messageId,
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
