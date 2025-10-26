@@ -44,13 +44,32 @@ app.use((req, res, next) => {
   }
 });
 
+// Função para escapar caracteres HTML e preservar encoding
+const escapeHtml = (text) => {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+};
+
 // Função para gerar HTML do email
 const generateEmailHTML = (name, email, subject, message) => {
+  // Escapar dados do utilizador para prevenir problemas de encoding
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeSubject = escapeHtml(subject);
+  const safeMessage = escapeHtml(message);
+
   return `
     <!DOCTYPE html>
-    <html lang="pt">
+    <html lang="pt-PT">
       <head>
-        <meta charset="utf-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Nova Mensagem do Portfolio</title>
         <style>
@@ -167,22 +186,22 @@ const generateEmailHTML = (name, email, subject, message) => {
           <div class="email-content">
             <div class="field-group">
               <label class="field-label">👤 Nome do Remetente</label>
-              <div class="field-value">${name}</div>
+              <div class="field-value">${safeName}</div>
             </div>
             
             <div class="field-group">
               <label class="field-label">📧 Email de Contacto</label>
-              <div class="field-value">${email}</div>
+              <div class="field-value">${safeEmail}</div>
             </div>
             
             <div class="field-group">
               <label class="field-label">📝 Assunto</label>
-              <div class="field-value">${subject}</div>
+              <div class="field-value">${safeSubject}</div>
             </div>
             
             <div class="field-group">
               <label class="field-label">💬 Mensagem</label>
-              <div class="field-value message">${message}</div>
+              <div class="field-value message">${safeMessage}</div>
             </div>
             
             <div class="security-note">
@@ -220,15 +239,19 @@ const sendEmailViaMXrouteAPI = async (mailOptions) => {
       body: mailOptions.html || mailOptions.text || ''
     };
 
-    const postData = JSON.stringify(apiData);
+    // Garantir encoding UTF-8 correto
+    const postData = JSON.stringify(apiData, null, 0);
+    const postDataBuffer = Buffer.from(postData, 'utf8');
     
     const options = {
       hostname: 'smtpapi.mxroute.com',
       path: '/',
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
+        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Length': postDataBuffer.length,
+        'Accept': 'application/json',
+        'User-Agent': 'Portfolio-Mirasity/1.0'
       }
     };
 
@@ -238,7 +261,8 @@ const sendEmailViaMXrouteAPI = async (mailOptions) => {
       from: apiData.from,
       to: apiData.to,
       subject: apiData.subject,
-      bodyLength: apiData.body.length
+      bodyLength: apiData.body.length,
+      encoding: 'utf-8'
     });
 
     const req = https.request(options, (res) => {
@@ -275,7 +299,7 @@ const sendEmailViaMXrouteAPI = async (mailOptions) => {
       reject(error);
     });
 
-    req.write(postData);
+    req.write(postDataBuffer);
     req.end();
   });
 };
@@ -452,7 +476,7 @@ app.post('/api/send-email', async (req, res) => {
     // Gerar HTML do email usando a função
     const emailHTML = generateEmailHTML(name, email, subject, message);
 
-    console.log('Tentando enviar email para:', process.env.SMTP_USER);
+    console.log('Tentando enviar email para:', process.env.EMAIL_TO || process.env.SMTP_USER);
     console.log('De:', name, '<' + email + '>');
     console.log('Assunto:', subject);
 
@@ -482,16 +506,21 @@ app.post('/api/send-email', async (req, res) => {
     // Configuração do email
     const mailOptions = {
       from: '"Portfolio Mirasity" <' + process.env.SMTP_USER + '>',
-      to: process.env.SMTP_USER,
+      to: process.env.EMAIL_TO || process.env.SMTP_USER,
       replyTo: email,
       subject: '[Portfolio] ' + subject,
       html: emailHTML,
+      // Configurações de encoding para suportar emojis e caracteres portugueses
+      encoding: 'utf8',
+      textEncoding: 'quoted-printable',
       // Headers adicionais para MXRouting
       headers: {
         'X-Mailer': 'Portfolio Mirasity',
         'X-Priority': '3',
         'X-MSMail-Priority': 'Normal',
-        'Importance': 'Normal'
+        'Importance': 'Normal',
+        'Content-Type': 'text/html; charset=UTF-8',
+        'Content-Transfer-Encoding': 'quoted-printable'
       }
     };
 
@@ -582,7 +611,7 @@ app.get('/api/test-smtp', async (req, res) => {
       
       const testEmail = {
         from: '"Test Portfolio" <' + process.env.SMTP_USER + '>',
-        to: process.env.SMTP_USER,
+        to: process.env.EMAIL_TO || process.env.SMTP_USER,
         subject: 'Teste MXroute SMTP API - Portfolio',
         html: '<h2>✅ MXroute SMTP API Funcionando!</h2>' +
               '<p>Este email foi enviado via <strong>HTTP API</strong> da MXroute.</p>' +
@@ -627,7 +656,7 @@ app.get('/api/test-smtp-port/:port', async (req, res) => {
     
     const testEmail = {
       from: '"Port Test" <' + process.env.SMTP_USER + '>',
-      to: process.env.SMTP_USER,
+      to: process.env.EMAIL_TO || process.env.SMTP_USER,
       subject: 'Teste Porta ' + testPort + ' - Railway',
       html: '<h2>Teste Porta ' + testPort + '</h2>' +
             '<p>Este email foi enviado testando a porta ' + testPort + '</p>' +
@@ -670,7 +699,7 @@ app.get('/api/test-mxroute-api', async (req, res) => {
     
     const testEmail = {
       from: '"API Test" <' + process.env.SMTP_USER + '>',
-      to: process.env.SMTP_USER,
+      to: process.env.EMAIL_TO || process.env.SMTP_USER,
       subject: 'Teste MXroute SMTP API - Railway',
       html: '<h2>🚀 MXroute SMTP API Funcionando!</h2>' +
             '<p>Este email foi enviado via <strong>HTTP API</strong> em vez de SMTP tradicional.</p>' +
@@ -745,18 +774,25 @@ app.post('/api/send-email-api-only', async (req, res) => {
     const emailHTML = generateEmailHTML(name, email, subject, message);
 
     console.log('🚀 FORÇANDO envio via MXroute SMTP API...');
-    console.log('Destinatário:', process.env.SMTP_USER);
+    console.log('Destinatário:', process.env.EMAIL_TO || process.env.SMTP_USER);
     console.log('De:', name, '<' + email + '>');
     console.log('Assunto:', subject);
 
     // Configuração do email para a API
     const mailOptions = {
       from: '"Portfolio Mirasity" <' + process.env.SMTP_USER + '>',
-      to: process.env.SMTP_USER,
+      to: process.env.EMAIL_TO || process.env.SMTP_USER,
       replyTo: email,
       subject: '[Portfolio API] ' + subject,
       html: emailHTML,
-      text: 'Nome: ' + name + '\nEmail: ' + email + '\nAssunto: ' + subject + '\nMensagem: ' + message
+      text: 'Nome: ' + name + '\nEmail: ' + email + '\nAssunto: ' + subject + '\nMensagem: ' + message,
+      // Configurações de encoding para suportar emojis e caracteres portugueses
+      encoding: 'utf8',
+      textEncoding: 'quoted-printable',
+      headers: {
+        'Content-Type': 'text/html; charset=UTF-8',
+        'Content-Transfer-Encoding': 'quoted-printable'
+      }
     };
 
     // Enviar APENAS via MXroute SMTP API (HTTP)
