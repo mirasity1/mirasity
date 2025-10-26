@@ -162,6 +162,22 @@ firebase-debug.log
 *smtp*
 *email*
 !src/services/emailService.js
+!backend/.env.example
+
+# Test scripts (manter apenas local)
+backend/test-*.sh
+
+# Only ignore test scripts with sensitive data
+backend/test-*-local-*
+backend/test-*-production-*
+**/sensitive-*
+**/private-*
+
+# Any file with 'secret' in the name
+*secret*
+*password*
+*credential*
+!backend/.env.example
 
 # Analytics and tracking IDs (keep example files)
 !.env.example
