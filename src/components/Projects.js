@@ -35,38 +35,16 @@ const Projects = () => {
     id: index + 1,
     title: project.title || '',
     description: project.description || '',
-    image: index === 0 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop&auto=format&q=75` : // Law/Legal system - Advcatia
-          index === 1 ? require('../imgs/leads.png') : // Real Vida Seguros - leads image
-          index === 2 ? `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format&q=75` : // Travel/Trip - Real Vida Trip
-          index === 3 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=400&h=300&fit=crop&auto=format&q=75` : // Wine/Restaurant - Wein.plus
-          index === 4 ? require('../imgs/main.jpeg') : // Real Business Center local image
-          index === 5 ? `https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop&auto=format&q=75` : // BookTrack - books/library image
-          index === 6 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image (apenas imagem)
-          index === 7 ? `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format&q=75` : // Portfolio - development/code image
+    image: index === 0 ? `https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop&auto=format&q=75` : // BookTrack - books/library image
+          index === 1 ? `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format&q=75` : // Portfolio - development/code image
+          index === 2 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop&auto=format&q=75` : // Advcatia - Law/Legal system
+          index === 3 ? require('../imgs/main.jpeg') : // Real Business Center local image
+          index === 4 ? `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format&q=75` : // Real Vida Trip - Travel/Trip
+          index === 5 ? require('../imgs/leads.png') : // Real Vida Seguros - leads image
+          index === 6 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=400&h=300&fit=crop&auto=format&q=75` : // Wein.plus - Wine/Restaurant
+          index === 7 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image (apenas imagem)
           `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop&auto=format&q=75`,
     video: index === 0 ? { 
-      type: 'youtube', 
-      id: 'JU3sQZHc9zQ',
-      si: 'YJG-n3lND509uD-N',
-      thumbnail: null
-    } : 
-    index === 1 ? { 
-      type: 'youtube', 
-      id: 'sRxYCh0JULQ',
-      thumbnail: null
-    } : 
-    index === 2 ? { 
-      type: 'youtube', 
-      id: 'P0zdVl4JOGo',
-      thumbnail: null
-    } : 
-    index === 3 ? null : // Wein.plus - sem vídeo
-    index === 4 ? { 
-      type: 'youtube', 
-      id: 'AiA_qjZtYsc',
-      thumbnail: null
-    } : 
-    index === 5 ? { 
       type: 'youtube', 
       id: 'bm0E1hvf12A',
       thumbnail: null,
@@ -78,43 +56,69 @@ const Projects = () => {
         }
       ]
     } : // BookTrack - dois vídeos disponíveis
-    index === 6 ? null : // Hexsicor sem vídeo (apenas imagem)
+    index === 1 ? null : // Portfolio - sem vídeo
+    index === 2 ? { 
+      type: 'youtube', 
+      id: 'JU3sQZHc9zQ',
+      si: 'YJG-n3lND509uD-N',
+      thumbnail: null
+    } : // Advcatia
+    index === 3 ? { 
+      type: 'youtube', 
+      id: 'AiA_qjZtYsc',
+      thumbnail: null
+    } : // Real Business Center
+    index === 4 ? { 
+      type: 'youtube', 
+      id: 'P0zdVl4JOGo',
+      thumbnail: null
+    } : // Real Vida Trip
+    index === 5 ? { 
+      type: 'youtube', 
+      id: 'sRxYCh0JULQ',
+      thumbnail: null
+    } : // Real Vida Seguros - Leads
+    index === 6 ? null : // Wein.plus - sem vídeo
+    index === 7 ? null : // Hexsicor sem vídeo (apenas imagem)
     null,
     technologies: [
-      ["React", "MySQL", "Tailwind"], // Advcatia
-      ["React","Tailwind", "Strapi","Typescript","Python","PostgreSQL","HTML", "Markdown", "CMS", "Cron Jobs"], // Sistema de Leads - Real Vida Seguros
-      ["React", "Strapi","Tailwind", "HTML", "Markdown", "CMS"], // Real Vida Trip
-      ["Laravel", "PHP", "MySQL", "JavaScript", "Cron Jobs"], // Wein.plus
-      ["React", "CMS","Strapi","Tailwind","Cron Jobs", "Bootstrap"], // Real Business Center
       ["React", "Tailwind", "Strapi", "TypeScript", "Node.js", "SQLite"], // BookTrack
-      ["Laravel", "PHP", "React", "TypeScript", "MySQL","Python"], // Hexsicor CRM
-      ["React", "Tailwind CSS", "Framer Motion", "JavaScript", "Vercel","RailWay"] // Portfolio
+      ["React", "Tailwind CSS", "Framer Motion", "JavaScript", "Vercel","RailWay"], // Portfolio
+      ["React", "MySQL", "Tailwind"], // Advcatia
+      ["React", "CMS","Strapi","Tailwind","Cron Jobs", "Bootstrap"], // Real Business Center
+      ["React", "Strapi","Tailwind", "HTML", "Markdown", "CMS"], // Real Vida Trip
+      ["React","Tailwind", "Strapi","Typescript","Python","PostgreSQL","HTML", "Markdown", "CMS", "Cron Jobs"], // Sistema de Leads - Real Vida Seguros
+      ["Laravel", "PHP", "MySQL", "JavaScript", "Cron Jobs"], // Wein.plus
+      ["Laravel", "PHP", "React", "TypeScript", "MySQL","Python"] // Hexsicor CRM
     ][index] || [],
-    category: project.category || '', // Hexsicor foi em 2022-2023, outros são 2024 e o portfolio 2025
-    year: index === 5 ? "2024" : index === 6 ? "2022-2023" : index === 7 ? "2025" : "2024",
-    status: index === 5 ? (t.projects?.inProgress || 'In Progress') : (t.projects?.completed || 'Completed'),
+    category: project.category || '',
+    year: index === 0 ? "2024" : index === 1 ? "2025" : index === 7 ? "2022-2023" : "2024", // BookTrack: 2024, Portfolio: 2025, Hexsicor: 2022-2023, outros: 2024
+    status: index === 0 ? (t.projects?.inProgress || 'In Progress') : (t.projects?.completed || 'Completed'), // Apenas BookTrack em desenvolvimento
     features: project.features || [],
-    liveUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia - link para GitHub
-             index === 3 ? "https://wein.plus/" : // Wein.plus - site público
-             index === 4 ? "https://realbusinesscenter.pt/" : // Real Business Center - site público
-             index === 5 ? null : // BookTrack - sem site público ainda
-             index === 7 ? "https://mirasity.pt/" : // Portfolio - site público
-             "https://mirasity.pt", // Outros redirecionam para portfolio
-    githubUrl: index === 0 ? "https://github.com/mirasity1/advcatia" : // Advcatia público
-               index === 7 ? "https://github.com/mirasity1/mirasity" : // Portfolio público
+    liveUrl: index === 0 ? null : // BookTrack - sem site público ainda
+             index === 1 ? "https://mirasity.pt/" : // Portfolio - site público
+             index === 2 ? "https://github.com/mirasity1/advcatia" : // Advcatia - link para GitHub
+             index === 3 ? "https://realbusinesscenter.pt/" : // Real Business Center - site público
+             index === 4 ? "https://mirasity.pt" : // Real Vida Trip - redireciona para portfolio
+             index === 5 ? "https://mirasity.pt" : // Real Vida Seguros - redireciona para portfolio
+             index === 6 ? "https://wein.plus/" : // Wein.plus - site público
+             index === 7 ? "https://mirasity.pt" : // Hexsicor - redireciona para portfolio
+             "https://mirasity.pt",
+    githubUrl: index === 1 ? "https://github.com/mirasity1/mirasity" : // Portfolio público
+               index === 2 ? "https://github.com/mirasity1/advcatia" : // Advcatia público
                null,
-    isPublic: index === 0 || index === 7, // Advcatia e Portfolio são públicos
-    isCodePrivate: !(index === 0 || index === 7), // Inverso do isPublic
-    hasLiveUrl: index === 0 || index === 3 || index === 4 || index === 7, // Projetos com site ativo
+    isPublic: index === 1 || index === 2, // Portfolio e Advcatia são públicos
+    isCodePrivate: !(index === 1 || index === 2), // Inverso do isPublic
+    hasLiveUrl: index === 1 || index === 2 || index === 3 || index === 6, // Portfolio, Advcatia, Real Business Center, Wein.plus têm sites ativos
     color: [
-      "from-blue-500 to-cyan-500",
-      "from-purple-500 to-pink-500",
-      "from-green-500 to-emerald-500",
-      "from-yellow-500 to-orange-500",
-      "from-orange-500 to-red-500",
       "from-amber-500 to-yellow-600", // BookTrack
-      "from-indigo-500 to-purple-500",
-      "from-teal-500 to-blue-500"
+      "from-teal-500 to-blue-500", // Portfolio
+      "from-blue-500 to-cyan-500", // Advcatia
+      "from-orange-500 to-red-500", // Real Business Center
+      "from-green-500 to-emerald-500", // Real Vida Trip
+      "from-purple-500 to-pink-500", // Real Vida Seguros - Leads
+      "from-yellow-500 to-orange-500", // Wein.plus
+      "from-indigo-500 to-purple-500" // Hexsicor
     ][index] || "from-blue-500 to-cyan-500"
   }));
 
