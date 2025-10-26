@@ -137,14 +137,11 @@ const SEO = ({
         {JSON.stringify(structuredData)}
       </script>
       
-      {/* Google Site Verification - DESCOMENTAR E ADICIONAR SEU CÓDIGO */}
+      {/* Google Site Verification - ADICIONADO EM public/index.html */}
       {/* 
-        1. Acesse: https://search.google.com/search-console
-        2. Adicione sua propriedade (mirasity.pt)
-        3. Escolha "HTML tag" como método de verificação
-        4. Copie o código e descomente a linha abaixo:
+        A tag de verificação do Google está em public/index.html para
+        garantir que seja incluída no build estático.
       */}
-      <meta name="google-site-verification" content="CP3raxXK4mrP1QHZ78jdJfLql4zPVZTDVhoF3ZAtchs" />
       
       {/* Bing Site Verification - DESCOMENTAR E ADICIONAR SEU CÓDIGO */}
       {/* 
