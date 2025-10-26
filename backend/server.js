@@ -2,6 +2,7 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
+const https = require('https');
 require('dotenv').config();
 
 const app = express();
@@ -206,6 +207,79 @@ const generateEmailHTML = (name, email, subject, message) => {
   `;
 };
 
+// Função para enviar email via MXroute SMTP API (HTTP)
+const sendEmailViaMXrouteAPI = async (mailOptions) => {
+  return new Promise((resolve, reject) => {
+    const apiData = {
+      server: process.env.SMTP_HOST || 'heracles.mxrouting.net',
+      username: process.env.SMTP_USER,
+      password: process.env.SMTP_PASS,
+      from: mailOptions.from.replace(/.*<(.+)>.*/, '$1'), // Extrair email do formato "Name <email>"
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+      body: mailOptions.html || mailOptions.text || ''
+    };
+
+    const postData = JSON.stringify(apiData);
+    
+    const options = {
+      hostname: 'smtpapi.mxroute.com',
+      path: '/',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
+    console.log('📧 Enviando via MXroute SMTP API...');
+    console.log('API Data:', {
+      server: apiData.server,
+      from: apiData.from,
+      to: apiData.to,
+      subject: apiData.subject,
+      bodyLength: apiData.body.length
+    });
+
+    const req = https.request(options, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        try {
+          const response = JSON.parse(data);
+          
+          if (response.success) {
+            console.log('✅ MXroute API: Email enviado com sucesso!');
+            resolve({
+              messageId: 'mxroute-api-' + Date.now(),
+              response: response.message,
+              method: 'mxroute-http-api'
+            });
+          } else {
+            console.error('❌ MXroute API Error:', response.message);
+            reject(new Error('MXroute API: ' + response.message));
+          }
+        } catch (error) {
+          console.error('❌ Erro ao processar resposta da API:', error);
+          reject(new Error('Erro ao processar resposta da MXroute API'));
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      console.error('❌ Erro na requisição MXroute API:', error);
+      reject(error);
+    });
+
+    req.write(postData);
+    req.end();
+  });
+};
+
 // Configurações SMTP otimizadas para Railway e MXRouting
 const getMXRoutingConfig = (port) => {
   const hosts = [
@@ -218,11 +292,11 @@ const getMXRoutingConfig = (port) => {
     hosts: hosts,
     port: port,
     secure: port === 465,
-    connectionTimeout: 45000,   // Reduzir para 45s
-    greetingTimeout: 20000,     // 20s para saudação
-    socketTimeout: 45000,       // 45s para socket
-    authTimeout: 15000,         // 15s para autenticação
-    requireTLS: port === 587,   // TLS obrigatório para 587
+    connectionTimeout: 30000,   // Reduzir para 30s para testes mais rápidos
+    greetingTimeout: 15000,     // 15s para saudação
+    socketTimeout: 30000,       // 30s para socket
+    authTimeout: 10000,         // 10s para autenticação
+    requireTLS: port === 587 || port === 2525,   // TLS obrigatório para 587 e 2525
     tls: {
       rejectUnauthorized: false,
       servername: 'heracles.mxrouting.net',  // Fixar servername
@@ -325,27 +399,34 @@ const sendEmailWithRetry = async (mailOptions) => {
     return await transporter.sendMail(mailOptions);
   }
   
-  // Para MXRouting, tentar múltiplas configurações
+  // Para MXRouting, primeiro tentar SMTP tradicional, depois API HTTP
+  console.log('🚀 MXRouting detectado - tentando múltiplas abordagens...');
+  
+  // Primeira tentativa: SMTP tradicional com múltiplas portas
   const attempts = [
+    { hostIndex: 0, port: 2525 },  // heracles.mxrouting.net:2525 (porta alternativa)
     { hostIndex: 0, port: 587 },   // heracles.mxrouting.net:587
+    { hostIndex: 1, port: 2525 },  // IP direto:2525
     { hostIndex: 1, port: 587 },   // IP direto:587  
     { hostIndex: 0, port: 465 },   // heracles.mxrouting.net:465
     { hostIndex: 1, port: 465 },   // IP direto:465
     { hostIndex: 2, port: 587 },   // hermes.mxrouting.net:587
+    { hostIndex: 0, port: 25 },    // heracles.mxrouting.net:25 (última tentativa)
   ];
   
   let lastError = null;
   
+  // Tentar SMTP tradicional primeiro (mais rápido se funcionar)
   for (let i = 0; i < attempts.length; i++) {
     const { hostIndex, port } = attempts[i];
     
     try {
-      console.log('Tentativa ' + (i + 1) + '/' + attempts.length + ': Host ' + hostIndex + ', Porta ' + port);
+      console.log('Tentativa SMTP ' + (i + 1) + '/' + attempts.length + ': Host ' + hostIndex + ', Porta ' + port);
       
       const transporter = createTransporter(hostIndex, port);
       
-      // Timeout personalizado por tentativa
-      const timeout = 30000 + (i * 10000); // 30s, 40s, 50s, 60s, 70s
+      // Timeout mais curto para falhar rapidamente e tentar próxima opção
+      const timeout = 20000; // 20s
       
       const result = await Promise.race([
         transporter.sendMail(mailOptions),
@@ -354,21 +435,28 @@ const sendEmailWithRetry = async (mailOptions) => {
         )
       ]);
       
-      console.log('Sucesso na tentativa ' + (i + 1) + ':', result.messageId);
+      console.log('✅ Sucesso SMTP na tentativa ' + (i + 1) + ':', result.messageId);
       return result;
       
     } catch (error) {
       lastError = error;
-      console.log('Tentativa ' + (i + 1) + ' falhou:', error.message);
+      console.log('❌ Tentativa SMTP ' + (i + 1) + ' falhou:', error.message);
       
-      // Se não for timeout, pausar antes da próxima tentativa
-      if (!error.message.includes('timeout') && !error.message.includes('ETIMEDOUT')) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
+      // Não pausar entre tentativas SMTP para ser mais rápido
     }
   }
   
-  throw lastError || new Error('Todas as tentativas falharam');
+  // Se todas as tentativas SMTP falharam, tentar API HTTP
+  console.log('⚠️ Todas as tentativas SMTP falharam, tentando MXroute SMTP API...');
+  
+  try {
+    const result = await sendEmailViaMXrouteAPI(mailOptions);
+    console.log('✅ Sucesso via MXroute SMTP API!');
+    return result;
+  } catch (apiError) {
+    console.error('❌ MXroute SMTP API também falhou:', apiError.message);
+    throw new Error('Todas as tentativas falharam. SMTP: ' + lastError.message + '. API: ' + apiError.message);
+  }
 };
 
 // Rota para enviar email
@@ -574,6 +662,93 @@ app.get('/api/test-smtp', async (req, res) => {
       error: error.message,
       code: error.code,
       provider: process.env.SMTP_PROVIDER || 'unknown'
+    });
+  }
+});
+
+// Nova rota para testar portas específicas
+app.get('/api/test-smtp-port/:port', async (req, res) => {
+  try {
+    const testPort = parseInt(req.params.port);
+    console.log('=== TESTE PORTA ESPECÍFICA ===', testPort);
+    
+    const transporter = createTransporter(0, testPort); // Usar host 0, porta específica
+    
+    const testEmail = {
+      from: '"Port Test" <' + process.env.SMTP_USER + '>',
+      to: process.env.SMTP_USER,
+      subject: 'Teste Porta ' + testPort + ' - Railway',
+      html: '<h2>Teste Porta ' + testPort + '</h2>' +
+            '<p>Este email foi enviado testando a porta ' + testPort + '</p>' +
+            '<p><strong>Data:</strong> ' + new Date().toLocaleString('pt-PT') + '</p>'
+    };
+    
+    const info = await Promise.race([
+      transporter.sendMail(testEmail),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout na porta ' + testPort)), 30000)
+      )
+    ]);
+    
+    res.json({
+      success: true,
+      message: 'Porta ' + testPort + ' funcionando!',
+      port: testPort,
+      messageId: info.messageId,
+      host: process.env.SMTP_HOST,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Erro na porta ' + req.params.port + ':', error.message);
+    
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      code: error.code,
+      port: parseInt(req.params.port),
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Nova rota para testar apenas a MXroute SMTP API (HTTP)
+app.get('/api/test-mxroute-api', async (req, res) => {
+  try {
+    console.log('=== TESTE MXROUTE SMTP API ===');
+    
+    const testEmail = {
+      from: '"API Test" <' + process.env.SMTP_USER + '>',
+      to: process.env.SMTP_USER,
+      subject: 'Teste MXroute SMTP API - Railway',
+      html: '<h2>🚀 MXroute SMTP API Funcionando!</h2>' +
+            '<p>Este email foi enviado via <strong>HTTP API</strong> em vez de SMTP tradicional.</p>' +
+            '<p><strong>Método:</strong> HTTPS POST para smtpapi.mxroute.com</p>' +
+            '<p><strong>Data:</strong> ' + new Date().toLocaleString('pt-PT') + '</p>' +
+            '<hr>' +
+            '<small>Portfolio Mirasity - MXroute SMTP API</small>'
+    };
+    
+    const result = await sendEmailViaMXrouteAPI(testEmail);
+    
+    res.json({
+      success: true,
+      message: 'MXroute SMTP API funcionando perfeitamente!',
+      method: 'HTTP API (smtpapi.mxroute.com)',
+      messageId: result.messageId,
+      server: process.env.SMTP_HOST,
+      note: 'Enviado via HTTP - sem problemas de firewall',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Erro no teste MXroute API:', error.message);
+    
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      method: 'HTTP API (smtpapi.mxroute.com)',
+      timestamp: new Date().toISOString()
     });
   }
 });
