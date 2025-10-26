@@ -148,6 +148,7 @@ const Hero = () => {
                   whileHover={{ scale: 1.2, color: "#3b82f6" }}
                   whileTap={{ scale: 0.9 }}
                   className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
+                  aria-label="GitHub de Filipe Braga"
                 >
                   <Github size={28} />
                 </motion.a>
@@ -158,6 +159,7 @@ const Hero = () => {
                   whileHover={{ scale: 1.2, color: "#0ea5e9" }}
                   whileTap={{ scale: 0.9 }}
                   className="text-gray-400 hover:text-sky-400 transition-colors duration-300"
+                  aria-label="LinkedIn de Filipe Braga"
                 >
                   <Linkedin size={28} />
                 </motion.a>

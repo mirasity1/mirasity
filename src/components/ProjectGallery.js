@@ -379,6 +379,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg transition-colors duration-200 text-center text-sm md:text-base font-medium touch-manipulation"
+                    aria-label={`Ver projeto ${project.title} em funcionamento`}
                   >
                     Ver Projeto Live
                   </a>
@@ -445,6 +446,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                           ? 'border-blue-500 opacity-100'
                           : 'border-gray-300 opacity-60 hover:opacity-80'
                       }`}
+                      aria-label={`Selecionar ${media.type === 'video' || media.type === 'youtube' ? 'vídeo' : 'imagem'} ${index + 1} de ${galleryMedia.length}`}
                     >
                       {media.type === 'video' || media.type === 'youtube' ? (
                         <div className="w-full h-full bg-gray-800 flex items-center justify-center relative">

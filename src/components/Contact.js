@@ -323,6 +323,7 @@ const Contact = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center justify-center w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300"
+                    aria-label="Descarregar currículo de Filipe Braga"
                   >
                     <Download className="mr-2" size={20} />
                     {t.contact.downloadResume}

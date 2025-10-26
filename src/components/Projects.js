@@ -330,6 +330,7 @@ const Projects = () => {
                         trackProjectView(project.title, 'view_details_button');
                       }}
                       className="flex-1 bg-blue-500 text-white py-2.5 px-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center gap-2 touch-manipulation"
+                      aria-label={`Ver detalhes do projeto ${project.title}`}
                     >
                       <Eye size={16} />
                       {language === 'pt' ? 'Ver Detalhes' : 'View Details'}
