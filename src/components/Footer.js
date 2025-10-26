@@ -80,6 +80,7 @@ const Footer = () => {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.1 }}
                     className="bg-gray-800 p-3 rounded-full hover:bg-blue-600 transition-colors"
+                    aria-label="Perfil LinkedIn de Filipe Braga"
                   >
                     <Linkedin size={20} />
                   </motion.a>
@@ -88,7 +89,8 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.1 }}
-                    className="bg-gray-800 p-3 rounded-full hover:bg-gray-600 transition-colors"
+                    className="bg-gray-800 p-3 rounded-full hover:bg-blue-600 transition-colors"
+                    aria-label="Perfil GitHub de Filipe Braga"
                   >
                     <Github size={20} />
                   </motion.a>
@@ -102,6 +104,7 @@ const Footer = () => {
                   <button
                     onClick={() => setShowPrivacyPolicy(true)}
                     className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition-colors"
+                    aria-label="Ver política de privacidade"
                   >
                     <Shield size={16} />
                     {text.privacy}
@@ -109,6 +112,7 @@ const Footer = () => {
                   <button
                     onClick={() => setShowTermsOfService(true)}
                     className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition-colors"
+                    aria-label="Ver termos de serviço"
                   >
                     <FileText size={16} />
                     {text.terms}

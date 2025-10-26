@@ -130,6 +130,7 @@ const CookieConsent = () => {
                       <button
                         onClick={() => setShowSettings(true)}
                         className="text-blue-600 hover:text-blue-800 underline"
+                        aria-label="Saber mais sobre cookies"
                       >
                         {t.cookies?.learnMore || 'Saiba mais'}
                       </button>

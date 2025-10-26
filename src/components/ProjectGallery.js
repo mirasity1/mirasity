@@ -190,6 +190,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
               <button
                 onClick={handleClose}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 touch-manipulation"
+                aria-label="Fechar galeria"
               >
                 <X size={20} className="md:w-6 md:h-6" />
               </button>
@@ -302,6 +303,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                     onClick={prevImage}
                     className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 md:p-3 rounded-full transition-all duration-200 z-10 shadow-lg touch-manipulation"
                     style={{ zIndex: 10 }}
+                    aria-label="Imagem anterior"
                   >
                     <ChevronLeft size={20} className="md:w-6 md:h-6" />
                   </button>
@@ -309,6 +311,7 @@ const ProjectGallery = ({ project, isOpen, onClose }) => {
                     onClick={nextImage}
                     className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 md:p-3 rounded-full transition-all duration-200 z-10 shadow-lg touch-manipulation"
                     style={{ zIndex: 10 }}
+                    aria-label="Próxima imagem"
                   >
                     <ChevronRight size={20} className="md:w-6 md:h-6" />
                   </button>

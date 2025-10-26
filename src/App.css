@@ -80,11 +80,14 @@ section {
   -webkit-transform: translateZ(0);
 }
 
-/* Loading optimization */
+/* Loading optimization - Optimized for compositor */
 img[loading="lazy"] {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
+  will-change: background-position;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 @keyframes loading {
@@ -112,4 +115,22 @@ img[loading="lazy"] {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
+}
+
+/* Performance optimizations for animations */
+.framer-motion-element {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize hover animations */
+button:hover,
+a:hover {
+  will-change: transform, background-color;
+}
+
+/* Remove will-change after animation */
+.animation-complete {
+  will-change: auto;
 }
