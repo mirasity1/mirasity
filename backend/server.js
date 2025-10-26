@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middleware de logging para debug
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log(new Date().toISOString() + ' - ' + req.method + ' ' + req.path);
   console.log('Headers:', req.headers);
   console.log('Host:', req.get('host'));
   console.log('User-Agent:', req.get('user-agent'));
@@ -205,59 +205,100 @@ const generateEmailHTML = (name, email, subject, message) => {
     </html>
   `;
 };
-const createTransporter = () => {
-  const port = parseInt(process.env.SMTP_PORT) || 587;
+
+// Configurações SMTP otimizadas para Railway e MXRouting
+const getMXRoutingConfig = (port) => {
+  const hosts = [
+    'heracles.mxrouting.net',
+    '65.109.144.50',  // IP direto para bypassing DNS issues
+    'hermes.mxrouting.net'  // Servidor alternativo
+  ];
+  
+  return {
+    hosts: hosts,
+    port: port,
+    secure: port === 465,
+    connectionTimeout: 45000,   // Reduzir para 45s
+    greetingTimeout: 20000,     // 20s para saudação
+    socketTimeout: 45000,       // 45s para socket
+    authTimeout: 15000,         // 15s para autenticação
+    requireTLS: port === 587,   // TLS obrigatório para 587
+    tls: {
+      rejectUnauthorized: false,
+      servername: 'heracles.mxrouting.net',  // Fixar servername
+      ciphers: 'HIGH:MEDIUM:!aNULL:!eNULL:!3DES:!MD5:!RC4:!ADH',
+      secureProtocol: 'TLSv1_2_method'
+    },
+    pool: false,
+    maxConnections: 1,
+    rateLimit: 5,  // Max 5 emails per second
+    debug: true,
+    logger: true,
+    // Headers específicos para melhor deliverability
+    options: {
+      dkim: false,
+      textEncoding: 'quoted-printable'
+    }
+  };
+};
+
+const createTransporter = (hostIndex = 0, portOverride = null) => {
+  const originalPort = parseInt(process.env.SMTP_PORT) || 587;
+  const port = portOverride || originalPort;
   const isMXRouting = process.env.SMTP_PROVIDER === 'mxrouting' || 
                      (process.env.SMTP_HOST && process.env.SMTP_HOST.includes('mxrouting'));
   
-  const config = {
-    host: process.env.SMTP_HOST,
-    port: port,
-    secure: port === 465, // true para 465, false para 587
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
-  };
-
-  // Configurações específicas para MXRouting com timeouts mais agressivos
+  let config;
+  
   if (isMXRouting) {
-    Object.assign(config, {
-      connectionTimeout: 60000,  // Voltar para 60s - Railway pode precisar de mais tempo
-      greetingTimeout: 30000,    // 30s para saudação
-      socketTimeout: 60000,      // 60s para socket
-      requireTLS: false,         // MXRouting não requer TLS forçado
-      ignoreTLS: false,          
-      tls: {
-        rejectUnauthorized: false,
-        servername: process.env.SMTP_HOST,
-        // Simplificar ciphers para compatibilidade máxima
-        ciphers: 'ALL'
+    const mxConfig = getMXRoutingConfig(port);
+    const selectedHost = mxConfig.hosts[hostIndex] || mxConfig.hosts[0];
+    
+    config = {
+      host: selectedHost,
+      port: mxConfig.port,
+      secure: mxConfig.secure,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
       },
-      pool: false,               // Desabilitar pooling
-      maxConnections: 1,
-      maxMessages: 1,
-      // Configurações de retry para conexões lentas
-      retryDelay: 2000,
-      maxRetries: 2,
-      debug: true,              // Ativar debug para troubleshooting
-      logger: true             // Ativar logger para ver detalhes
-    });
+      connectionTimeout: mxConfig.connectionTimeout,
+      greetingTimeout: mxConfig.greetingTimeout,
+      socketTimeout: mxConfig.socketTimeout,
+      authTimeout: mxConfig.authTimeout,
+      requireTLS: mxConfig.requireTLS,
+      tls: mxConfig.tls,
+      pool: mxConfig.pool,
+      maxConnections: mxConfig.maxConnections,
+      rateLimit: mxConfig.rateLimit,
+      debug: mxConfig.debug,
+      logger: mxConfig.logger,
+      // Adicionar configurações específicas do Railway
+      localAddress: '0.0.0.0',  // Bind to all interfaces
+      name: 'railway-backend'    // HELO/EHLO name
+    };
   } else {
-    // Configurações padrão para outros provedores
-    Object.assign(config, {
-      connectionTimeout: 60000,
-      greetingTimeout: 30000,
-      socketTimeout: 60000,
-      requireTLS: port !== 465,
+    // Configurações para outros provedores
+    config = {
+      host: process.env.SMTP_HOST,
+      port: port,
+      secure: port === 465,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      },
+      connectionTimeout: 45000,
+      greetingTimeout: 20000,
+      socketTimeout: 45000,
+      requireTLS: port === 587,
       tls: {
         rejectUnauthorized: false,
-        ciphers: 'SSLv3'
+        ciphers: 'HIGH:MEDIUM:!aNULL'
       },
       pool: false,
       debug: process.env.NODE_ENV === 'development',
       logger: process.env.NODE_ENV === 'development'
-    });
+    };
   }
 
   console.log('Configuração SMTP:', { 
@@ -267,11 +308,67 @@ const createTransporter = () => {
     secure: config.secure, 
     user: config.auth.user,
     connectionTimeout: config.connectionTimeout,
-    debug: config.debug,
+    hostIndex: hostIndex,
     environment: process.env.NODE_ENV
   });
 
   return nodemailer.createTransport(config);
+};
+
+// Função para tentar múltiplos hosts e portas
+const sendEmailWithRetry = async (mailOptions) => {
+  const isMXRouting = process.env.SMTP_PROVIDER === 'mxrouting';
+  
+  if (!isMXRouting) {
+    // Para outros provedores, usar método simples
+    const transporter = createTransporter();
+    return await transporter.sendMail(mailOptions);
+  }
+  
+  // Para MXRouting, tentar múltiplas configurações
+  const attempts = [
+    { hostIndex: 0, port: 587 },   // heracles.mxrouting.net:587
+    { hostIndex: 1, port: 587 },   // IP direto:587  
+    { hostIndex: 0, port: 465 },   // heracles.mxrouting.net:465
+    { hostIndex: 1, port: 465 },   // IP direto:465
+    { hostIndex: 2, port: 587 },   // hermes.mxrouting.net:587
+  ];
+  
+  let lastError = null;
+  
+  for (let i = 0; i < attempts.length; i++) {
+    const { hostIndex, port } = attempts[i];
+    
+    try {
+      console.log('Tentativa ' + (i + 1) + '/' + attempts.length + ': Host ' + hostIndex + ', Porta ' + port);
+      
+      const transporter = createTransporter(hostIndex, port);
+      
+      // Timeout personalizado por tentativa
+      const timeout = 30000 + (i * 10000); // 30s, 40s, 50s, 60s, 70s
+      
+      const result = await Promise.race([
+        transporter.sendMail(mailOptions),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout na tentativa ' + (i + 1))), timeout)
+        )
+      ]);
+      
+      console.log('Sucesso na tentativa ' + (i + 1) + ':', result.messageId);
+      return result;
+      
+    } catch (error) {
+      lastError = error;
+      console.log('Tentativa ' + (i + 1) + ' falhou:', error.message);
+      
+      // Se não for timeout, pausar antes da próxima tentativa
+      if (!error.message.includes('timeout') && !error.message.includes('ETIMEDOUT')) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+  }
+  
+  throw lastError || new Error('Todas as tentativas falharam');
 };
 
 // Rota para enviar email
@@ -343,10 +440,10 @@ app.post('/api/send-email', async (req, res) => {
 
     // Configuração do email
     const mailOptions = {
-      from: `"Portfolio Mirasity" <${process.env.SMTP_USER}>`, // Usar o email MXRouting
+      from: '"Portfolio Mirasity" <' + process.env.SMTP_USER + '>',
       to: process.env.SMTP_USER,
       replyTo: email,
-      subject: `[Portfolio] ${subject}`,
+      subject: '[Portfolio] ' + subject,
       html: emailHTML,
       // Headers adicionais para MXRouting
       headers: {
@@ -359,21 +456,12 @@ app.post('/api/send-email', async (req, res) => {
 
     // Enviar email com timeout otimizado e fallback para MXRouting
     console.log('Enviando email...');
-    const emailTimeout = isMXRouting ? 90000 : 60000; // 90s para MXRouting, 60s para outros
     
-    let emailSent = false;
-    let lastError = null;
-    
+    // Usar o método de retry para MXRouting
     try {
-      const info = await Promise.race([
-        transporter.sendMail(mailOptions),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Email send timeout')), emailTimeout)
-        )
-      ]);
+      const info = await sendEmailWithRetry(mailOptions);
       
-      console.log('✅ Email enviado com sucesso:', info.messageId);
-      emailSent = true;
+      console.log('Email enviado com sucesso:', info.messageId);
       
       res.status(200).json({
         success: true,
@@ -382,76 +470,9 @@ app.post('/api/send-email', async (req, res) => {
         timestamp: new Date().toISOString()
       });
       
-    } catch (sendError) {
-      lastError = sendError;
-      console.log('❌ Erro na porta principal:', sendError.code, sendError.message);
-      
-      // Se for MXRouting e falhar na porta 465, tentar porta 587
-      if (isMXRouting && process.env.SMTP_PORT === '465' && 
-          (sendError.code === 'ETIMEDOUT' || sendError.code === 'ECONNREFUSED' || sendError.code === 'ECONNECTION')) {
-        
-        console.log('⚠️ Porta 465 falhou, tentando porta 587 para MXRouting...');
-        
-        try {
-          // Criar novo transporter com porta 587 e configurações mais simples
-          const fallbackConfig = {
-            host: process.env.SMTP_HOST,
-            port: 587,
-            secure: false,
-            auth: {
-              user: process.env.SMTP_USER,
-              pass: process.env.SMTP_PASS
-            },
-            connectionTimeout: 90000,  // 90s para conexões lentas
-            greetingTimeout: 45000,     // 45s para saudação
-            socketTimeout: 90000,       // 90s para socket
-            requireTLS: true,
-            tls: {
-              rejectUnauthorized: false,
-              ciphers: 'ALL'  // Aceitar todos os ciphers
-            },
-            pool: false,
-            debug: true,
-            logger: true
-          };
-          
-          console.log('Configuração fallback 587:', {
-            host: fallbackConfig.host,
-            port: fallbackConfig.port,
-            secure: fallbackConfig.secure,
-            connectionTimeout: fallbackConfig.connectionTimeout
-          });
-          
-          const fallbackTransporter = nodemailer.createTransport(fallbackConfig);
-          
-          const info = await Promise.race([
-            fallbackTransporter.sendMail(mailOptions),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Fallback email timeout')), emailTimeout)
-            )
-          ]);
-          
-          console.log('✅ Email enviado via fallback (porta 587):', info.messageId);
-          emailSent = true;
-          
-          res.status(200).json({
-            success: true,
-            message: 'Email enviado com sucesso via fallback (porta 587)!',
-            messageId: info.messageId,
-            method: 'fallback-587',
-            timestamp: new Date().toISOString()
-          });
-          
-        } catch (fallbackError) {
-          lastError = fallbackError;
-          console.error('❌ Fallback também falhou:', fallbackError.code, fallbackError.message);
-        }
-      }
-      
-      // Se ainda não enviou, retornar erro
-      if (!emailSent) {
-        throw lastError;
-      }
+    } catch (error) {
+      console.error('Erro ao enviar email:', error.message);
+      throw error;
     }
 
   } catch (error) {
@@ -519,16 +540,14 @@ app.get('/api/test-smtp', async (req, res) => {
       console.log('🚀 MXRouting detectado - testando envio direto...');
       
       const testEmail = {
-        from: `"Test Portfolio" <${process.env.SMTP_USER}>`,
+        from: '"Test Portfolio" <' + process.env.SMTP_USER + '>',
         to: process.env.SMTP_USER,
         subject: 'Teste SMTP MXRouting - Portfolio',
-        html: `
-          <h2>✅ Teste SMTP Funcionando!</h2>
-          <p>Este email foi enviado via MXRouting através do Railway.</p>
-          <p><strong>Data:</strong> ${new Date().toLocaleString('pt-PT')}</p>
-          <hr>
-          <small>Portfolio Mirasity - Sistema de Email</small>
-        `
+        html: '<h2>Teste SMTP Funcionando!</h2>' +
+              '<p>Este email foi enviado via MXRouting através do Railway.</p>' +
+              '<p><strong>Data:</strong> ' + new Date().toLocaleString('pt-PT') + '</p>' +
+              '<hr>' +
+              '<small>Portfolio Mirasity - Sistema de Email</small>'
       };
       
       await Promise.race([
@@ -604,7 +623,7 @@ app.use('/api/*', (req, res) => {
   
   res.status(404).json({
     error: 'API endpoint not found',
-    message: `The endpoint ${req.originalUrl} does not exist`,
+    message: 'The endpoint ' + req.originalUrl + ' does not exist',
     method: req.method,
     path: req.path,
     timestamp: new Date().toISOString(),
@@ -624,11 +643,11 @@ app.use('*', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Frontend URL: ${process.env.FRONTEND_URL || 'https://mirasity.pt'}`);
-  console.log(`Railway URL: ${process.env.RAILWAY_STATIC_URL || 'N/A'}`);
-  console.log(`Railway Domain: ${process.env.RAILWAY_PUBLIC_DOMAIN || 'N/A'}`);
+  console.log('Servidor rodando na porta ' + PORT);
+  console.log('Environment: ' + (process.env.NODE_ENV || 'development'));
+  console.log('Frontend URL: ' + (process.env.FRONTEND_URL || 'https://mirasity.pt'));
+  console.log('Railway URL: ' + (process.env.RAILWAY_STATIC_URL || 'N/A'));
+  console.log('Railway Domain: ' + (process.env.RAILWAY_PUBLIC_DOMAIN || 'N/A'));
   console.log('Rotas disponíveis:');
   console.log('  POST /api/send-email - Enviar email de contato');
   console.log('  GET /api/test - Testar API');
