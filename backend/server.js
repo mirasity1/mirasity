@@ -344,7 +344,7 @@ const sendDiscordWebhook = async (formData) => {
       ],
       footer: {
         text: "Portfolio mirasity.pt",
-        icon_url: "https://mirasity.pt/favicon.ico"
+        icon_url: "https://postimg.cc/fJfjLhP0"
       },
       timestamp: new Date().toISOString()
     };
@@ -353,7 +353,7 @@ const sendDiscordWebhook = async (formData) => {
       content: "🚨 **Novo contacto recebido!**",
       embeds: [embed],
       username: "Portfolio Bot",
-      avatar_url: "https://mirasity.pt/favicon.ico"
+      avatar_url: "https://postimg.cc/fJfjLhP0"
     };
 
     console.log('📨 Enviando webhook para Discord...');
