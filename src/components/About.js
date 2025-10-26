@@ -3,7 +3,16 @@ import { Code, Coffee, Lightbulb, Target } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const About = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  // CVs por idioma
+  const cvLinks = {
+    pt: "https://drive.google.com/file/d/1S0qJArPJnFbnUZI2g3KczqiMK3WgUJRn/view?usp=sharing",
+    en: "https://drive.google.com/file/d/1NIQrartPeAgx5pOWrnEGD9AVWufmG5Eo/view?usp=sharing"
+  };
+
+  const currentCvLink = cvLinks[language] || cvLinks.en;
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -103,7 +112,7 @@ const About = () => {
                 className="inline-block"
               >
                 <a
-                  href="https://mirasity.pt/resume"
+                  href={currentCvLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300"

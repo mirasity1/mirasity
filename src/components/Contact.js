@@ -6,7 +6,7 @@ import { trackEvent } from './GoogleAnalytics';
 import emailService from '../services/emailService';
 
 const Contact = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,6 +20,14 @@ const Contact = () => {
   // Verificação anti-bot - pergunta matemática simples
   const [mathQuestion, setMathQuestion] = useState({ num1: 0, num2: 0, answer: 0 });
   const [userMathAnswer, setUserMathAnswer] = useState('');
+
+  // CVs por idioma
+  const cvLinks = {
+    pt: "https://drive.google.com/file/d/1S0qJArPJnFbnUZI2g3KczqiMK3WgUJRn/view?usp=sharing",
+    en: "https://drive.google.com/file/d/1NIQrartPeAgx5pOWrnEGD9AVWufmG5Eo/view?usp=sharing"
+  };
+
+  const currentCvLink = cvLinks[language] || cvLinks.en;
 
   // Gerar nova pergunta matemática
   const generateMathQuestion = () => {
@@ -281,10 +289,10 @@ const Contact = () => {
                 <h4 className="text-white font-semibold mb-4">{t.contact.quickActions}</h4>
                 <div className="space-y-3">
                   <motion.a
-                    href="https://drive.google.com/uc?export=download&id=1p9JETWrxIt_fdDl8gsNRhsgHvRBEWyvw"
+                    href={currentCvLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => trackEvent('cv_download', 'Contact', 'CV Download')}
+                    onClick={() => trackEvent('cv_download', 'Contact', `CV Download ${language.toUpperCase()}`)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center justify-center w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300"
