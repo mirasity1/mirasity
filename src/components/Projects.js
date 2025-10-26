@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { ExternalLink, Github, Eye, Calendar, Image, Lock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { trackEvent } from './GoogleAnalytics';
+import { trackProjectView, trackExternalLink } from './GoogleAnalytics';
 import ProjectGallery from './ProjectGallery';
 
 const Projects = () => {
@@ -105,13 +105,13 @@ const Projects = () => {
   const openGallery = (project) => {
     setSelectedProject(project);
     setShowGallery(true);
-    trackEvent('project_gallery_open', 'Projects', project.title);
+    trackProjectView(project.title, 'gallery_open');
   };
 
   const closeGallery = () => {
     setShowGallery(false);
     setSelectedProject(null);
-    trackEvent('project_gallery_close', 'Projects');
+    trackProjectView(selectedProject?.title || 'unknown', 'gallery_close');
   };
 
   return (
@@ -147,7 +147,10 @@ const Projects = () => {
                 className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group touch-manipulation"
               >
                 {/* Project Image */}
-                <div className="relative overflow-hidden h-40 md:h-48 cursor-pointer" onClick={() => openGallery(project)}>
+                <div className="relative overflow-hidden h-40 md:h-48 cursor-pointer" onClick={() => {
+                  openGallery(project);
+                  trackProjectView(project.title, 'details_click');
+                }}>
                   <img
                     src={project.image}
                     alt={project.title}
@@ -189,7 +192,10 @@ const Projects = () => {
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          trackExternalLink(project.liveUrl, `${project.title} Live Site`, 'Projects');
+                        }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         className="bg-white text-gray-900 p-2.5 md:p-3 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-300"
@@ -202,7 +208,10 @@ const Projects = () => {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          trackExternalLink(project.githubUrl, `${project.title} GitHub`, 'Projects');
+                        }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         className="bg-white text-gray-900 p-2.5 md:p-3 rounded-full hover:bg-gray-900 hover:text-white transition-colors duration-300"
@@ -264,7 +273,10 @@ const Projects = () => {
                   {/* Action buttons for mobile */}
                   <div className="flex gap-2 mb-3 md:hidden">
                     <button
-                      onClick={() => openGallery(project)}
+                      onClick={() => {
+                        openGallery(project);
+                        trackProjectView(project.title, 'view_details_button');
+                      }}
                       className="flex-1 bg-blue-500 text-white py-2.5 px-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center gap-2 touch-manipulation"
                     >
                       <Eye size={16} />
@@ -275,6 +287,7 @@ const Projects = () => {
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackExternalLink(project.liveUrl, `${project.title} Live Site`, 'Projects')}
                         className="bg-gray-100 text-gray-700 py-2.5 px-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center touch-manipulation"
                       >
                         <ExternalLink size={16} />
@@ -285,6 +298,7 @@ const Projects = () => {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackExternalLink(project.githubUrl, `${project.title} GitHub`, 'Projects')}
                         className="bg-gray-100 text-gray-700 py-2.5 px-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center touch-manipulation"
                       >
                         <Github size={16} />
@@ -316,7 +330,7 @@ const Projects = () => {
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => trackEvent('project_live_click', 'Projects', project.title)}
+                      onClick={() => trackExternalLink(project.liveUrl, `${project.title} Live Site`, 'Projects')}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="flex-1 bg-blue-500 text-white text-center py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-300"
@@ -328,7 +342,7 @@ const Projects = () => {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() => trackEvent('project_github_click', 'Projects', project.title)}
+                        onClick={() => trackExternalLink(project.githubUrl, `${project.title} GitHub`, 'Projects')}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className="flex-1 border border-gray-300 text-gray-700 text-center py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-300 flex items-center justify-center"

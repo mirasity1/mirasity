@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useMemo } from 'react';
 import { Menu, X, Code, User, Briefcase, FolderOpen, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { trackNavigation } from './GoogleAnalytics';
 import LanguageToggle from './LanguageToggle';
 
 const Navigation = () => {
@@ -44,6 +45,9 @@ const Navigation = () => {
   }, [navItems]);
 
   const scrollToSection = (sectionId) => {
+    // Rastrear navegação
+    trackNavigation(sectionId, 'menu');
+    
     const element = document.getElementById(sectionId === 'hero' ? 'root' : sectionId);
     if (element) {
       if (sectionId === 'hero') {

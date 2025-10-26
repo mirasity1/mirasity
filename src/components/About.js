@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Code, Coffee, Lightbulb, Target } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { trackCVDownload, trackButtonClick } from './GoogleAnalytics';
 
 const About = () => {
   const { t, language } = useLanguage();
@@ -12,6 +13,15 @@ const About = () => {
   };
 
   const currentCvLink = cvLinks[language] || cvLinks.en;
+  
+  // Handler para cliques no CV
+  const handleCVClick = () => {
+    trackCVDownload(language);
+    trackButtonClick('Download CV', 'About', { 
+      cv_language: language,
+      cv_url: currentCvLink 
+    });
+  };
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -115,6 +125,7 @@ const About = () => {
                   href={currentCvLink}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={handleCVClick}
                   className="inline-flex items-center bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300"
                 >
                   {t.about.viewResume}

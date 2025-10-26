@@ -35,7 +35,8 @@ const SEO = ({
   const currentSiteData = siteData[language];
   const siteUrl = process.env.REACT_APP_SITE_URL || 'https://mirasity.pt';
   const currentUrl = url ? `${siteUrl}${url}` : siteUrl;
-  const currentImage = image || `${siteUrl}/images/og-image.jpg`;
+  // Usar imagem OG otimizada (1200x630) baseada na main.jpeg
+  const currentImage = image || `${siteUrl}/images/og-main.jpeg`;
 
   // Structured Data para Google
   const structuredData = {
@@ -136,10 +137,21 @@ const SEO = ({
         {JSON.stringify(structuredData)}
       </script>
       
-      {/* Google Site Verification (adicione seu código) */}
-      {/* <meta name="google-site-verification" content="your-verification-code" /> */}
+      {/* Google Site Verification - DESCOMENTAR E ADICIONAR SEU CÓDIGO */}
+      {/* 
+        1. Acesse: https://search.google.com/search-console
+        2. Adicione sua propriedade (mirasity.pt)
+        3. Escolha "HTML tag" como método de verificação
+        4. Copie o código e descomente a linha abaixo:
+      */}
+      <meta name="google-site-verification" content="CP3raxXK4mrP1QHZ78jdJfLql4zPVZTDVhoF3ZAtchs" />
       
-      {/* Bing Site Verification (adicione seu código) */}
+      {/* Bing Site Verification - DESCOMENTAR E ADICIONAR SEU CÓDIGO */}
+      {/* 
+        1. Acesse: https://www.bing.com/webmasters/
+        2. Adicione seu site
+        3. Copie o código e descomente a linha abaixo:
+      */}
       {/* <meta name="msvalidate.01" content="your-verification-code" /> */}
     </Helmet>
   );

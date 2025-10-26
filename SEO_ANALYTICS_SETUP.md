@@ -98,10 +98,14 @@ Configurado para:
 
 ### Próximos Passos
 
-- [ ] Implementar lazy loading nas seções
-- [ ] Adicionar Service Worker
-- [ ] Otimizar imagens com WebP
-- [ ] Implementar Critical CSS
+- [x] Implementar lazy loading nas seções
+- [x] Adicionar Service Worker
+- [x] Otimizar imagens com WebP
+- [x] Implementar Critical CSS
+- [ ] **CRIAR IMAGEM OPEN GRAPH** (1200x630px)
+- [ ] **CONFIGURAR GOOGLE SEARCH CONSOLE**
+- [ ] **ADICIONAR VERIFICATION CODES**
+- [ ] **TESTAR SOCIAL SHARING**
 
 ## 📈 Monitoramento
 

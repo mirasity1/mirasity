@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Mail, MapPin, Send, Linkedin, Github, Download, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { trackEvent } from './GoogleAnalytics';
+import { trackCVDownload, trackButtonClick, trackFormSubmission, trackExternalLink } from './GoogleAnalytics';
 import emailService from '../services/emailService';
 
 const Contact = () => {
@@ -28,6 +28,24 @@ const Contact = () => {
   };
 
   const currentCvLink = cvLinks[language] || cvLinks.en;
+
+  // Handler para cliques no CV
+  const handleCVClick = () => {
+    trackCVDownload(language);
+    trackButtonClick('Download CV', 'Contact', { 
+      cv_language: language,
+      cv_url: currentCvLink 
+    });
+  };
+
+  // Handler para links externos
+  const handleExternalLink = (url, linkText, platform) => {
+    trackExternalLink(url, linkText, 'Contact');
+    trackButtonClick(`${platform} Link`, 'Contact', { 
+      platform: platform,
+      url: url 
+    });
+  };
 
   // Gerar nova pergunta matemática
   const generateMathQuestion = () => {
@@ -87,7 +105,7 @@ const Contact = () => {
     setFormStatus(null);
     
     // Rastrear tentativa de envio
-    trackEvent('form_submit_attempt', 'Contact', 'Contact Form');
+    trackFormSubmission('contact', 'attempt');
     
     // Validação do formulário
     const errors = emailService.validateForm(formData);
@@ -100,7 +118,7 @@ const Contact = () => {
     
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
-      trackEvent('form_validation_error', 'Contact', 'Form Validation Failed');
+      trackFormSubmission('contact', 'validation_error', Object.keys(errors).join(', '));
       return;
     }
     
@@ -130,7 +148,7 @@ const Contact = () => {
       generateMathQuestion();
       
       // Rastrear sucesso
-      trackEvent('form_submit_success', 'Contact', 'Contact Form Sent Successfully');
+      trackFormSubmission('contact', 'success');
       
       // Auto-hide success message after 5 seconds
       setTimeout(() => setFormStatus(null), 5000);
@@ -140,7 +158,7 @@ const Contact = () => {
       setFormStatus('error');
       
       // Rastrear erro
-      trackEvent('form_submit_error', 'Contact', 'Contact Form Error');
+      trackFormSubmission('contact', 'error', error.message);
       
       // Auto-hide error message after 8 seconds
       setTimeout(() => setFormStatus(null), 8000);
@@ -253,6 +271,15 @@ const Contact = () => {
                         href={info.href}
                         target={info.href.startsWith('http') ? '_blank' : '_self'}
                         rel={info.href.startsWith('http') ? 'noopener noreferrer' : ''}
+                        onClick={() => {
+                          if (info.href.includes('linkedin')) {
+                            handleExternalLink(info.href, 'LinkedIn Profile', 'LinkedIn');
+                          } else if (info.href.includes('github')) {
+                            handleExternalLink(info.href, 'GitHub Profile', 'GitHub');
+                          } else if (info.href.startsWith('mailto:')) {
+                            trackButtonClick('Email Contact', 'Contact', { email: info.href });
+                          }
+                        }}
                         className="flex items-center p-4 bg-gray-800 rounded-xl hover:bg-gray-750 transition-all duration-300 border border-gray-700 hover:border-blue-500/30"
                       >
                         <div className={`p-3 rounded-lg bg-gradient-to-r ${info.color} mr-4`}>
@@ -292,7 +319,7 @@ const Contact = () => {
                     href={currentCvLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => trackEvent('cv_download', 'Contact', `CV Download ${language.toUpperCase()}`)}
+                    onClick={handleCVClick}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center justify-center w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300"

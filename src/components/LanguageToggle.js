@@ -1,13 +1,20 @@
 import { motion } from 'framer-motion';
 import { Globe } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { trackLanguageChange } from './GoogleAnalytics';
 
 const LanguageToggle = () => {
   const { language, toggleLanguage } = useLanguage();
 
+  const handleLanguageToggle = () => {
+    const newLanguage = language === 'pt' ? 'en' : 'pt';
+    trackLanguageChange(language, newLanguage);
+    toggleLanguage();
+  };
+
   return (
     <motion.button
-      onClick={toggleLanguage}
+      onClick={handleLanguageToggle}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       className="flex items-center space-x-3 px-4 py-2 rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:border-blue-500/50 transition-all duration-300 text-gray-300 hover:text-white"
