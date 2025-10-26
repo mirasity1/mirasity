@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { ExternalLink, Github, Eye, Calendar, Image, Lock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { trackProjectView, trackExternalLink } from './GoogleAnalytics';
-import ProjectGallery from './ProjectGallery';
+import LazyImage from './LazyImage';
+
+// Lazy load ProjectGallery component
+const ProjectGallery = lazy(() => import('./ProjectGallery'));
 
 const Projects = () => {
   const { t, language } = useLanguage();
@@ -35,15 +38,15 @@ const Projects = () => {
     id: index + 1,
     title: project.title || '',
     description: project.description || '',
-    image: index === 0 ? `https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop&auto=format&q=75` : // BookTrack - books/library image
-          index === 1 ? `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format&q=75` : // Portfolio - development/code image
-          index === 2 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop&auto=format&q=75` : // Advcatia - Law/Legal system
+    image: index === 0 ? `https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop&auto=format&q=80&fm=webp` : // BookTrack - books/library image
+          index === 1 ? `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format&q=80&fm=webp` : // Portfolio - development/code image
+          index === 2 ? `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop&auto=format&q=80&fm=webp` : // Advcatia - Law/Legal system
           index === 3 ? require('../imgs/main.jpeg') : // Real Business Center local image
-          index === 4 ? `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format&q=75` : // Real Vida Trip - Travel/Trip
+          index === 4 ? `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format&q=80&fm=webp` : // Real Vida Trip - Travel/Trip
           index === 5 ? require('../imgs/leads.png') : // Real Vida Seguros - leads image
-          index === 6 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=400&h=300&fit=crop&auto=format&q=75` : // Wein.plus - Wine/Restaurant
+          index === 6 ? `https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=400&h=300&fit=crop&auto=format&q=80&fm=webp` : // Wein.plus - Wine/Restaurant
           index === 7 ? require('../imgs/hexsicor.jpg') : // Hexsicor local image (apenas imagem)
-          `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop&auto=format&q=75`,
+          `https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop&auto=format&q=80&fm=webp`,
     video: index === 0 ? { 
       type: 'youtube', 
       id: 'bm0E1hvf12A',
@@ -202,12 +205,10 @@ const Projects = () => {
                   openGallery(project);
                   trackProjectView(project.title, 'details_click');
                 }}>
-                  <img
+                  <LazyImage
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                    decoding="async"
+                    className="w-full h-full group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 transition-opacity duration-300" />
                   
@@ -452,11 +453,15 @@ const Projects = () => {
           </motion.div>
 
           {/* Gallery Modal */}
-          <ProjectGallery 
-            project={selectedProject}
-            isOpen={showGallery}
-            onClose={closeGallery}
-          />
+          <Suspense fallback={<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg p-4">A carregar...</div>
+          </div>}>
+            <ProjectGallery 
+              project={selectedProject}
+              isOpen={showGallery}
+              onClose={closeGallery}
+            />
+          </Suspense>
         </motion.div>
       </div>
     </section>
