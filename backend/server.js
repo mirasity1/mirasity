@@ -231,10 +231,8 @@ const createTransporter = () => {
       tls: {
         rejectUnauthorized: false,
         servername: process.env.SMTP_HOST,
-        ciphers: 'HIGH:MEDIUM:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA',
-        // Adicionar configurações específicas para MXRouting
-        secureProtocol: 'TLSv1_2_method',
-        minVersion: 'TLSv1.2'
+        ciphers: 'HIGH:MEDIUM:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
+        // Removido secureProtocol e minVersion que causam conflito
       },
       pool: false,               // Desabilitar pooling
       maxConnections: 1,
