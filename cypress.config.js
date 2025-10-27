@@ -11,12 +11,25 @@ module.exports = defineConfig({
     defaultCommandTimeout: 10000,
     requestTimeout: 10000,
     responseTimeout: 10000,
+    chromeWebSecurity: false,
+    experimentalModifyObstructiveThirdPartyCode: true,
     env: {
       apiUrl: "http://localhost:3001",
       DEMO_MODE: false  // Ativado via CYPRESS_DEMO_MODE=true
     },
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
     excludeSpecPattern: ["**/1-getting-started/*", "**/2-advanced-examples/*"],
+    // CI-specific configuration
+    ...(process.env.CI && {
+      video: false,
+      screenshotOnRunFailure: false,
+      retries: {
+        runMode: 2,
+        openMode: 0
+      },
+      browser: 'chrome',
+      headless: true
+    }),
     setupNodeEvents(on, config) {
       // implement node event listeners here
       on('task', {
