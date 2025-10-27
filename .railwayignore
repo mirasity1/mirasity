@@ -1,0 +1,46 @@
+# Railway ignore file - otimizar deployment do backend
+
+# Frontend files (não necessários no backend)
+public/
+src/
+build/
+node_modules/
+
+# Testes e development
+cypress/
+coverage/
+__tests__/
+*.test.js
+*.spec.js
+
+# Development files
+.env.local
+.env.development
+.env.example
+
+# Documentation
+*.md
+DEMO_MODE.md
+DISCORD_WEBHOOK.md
+GOOGLE_ANALYTICS_EVENTS.md
+LOGIN_TEST_GUIDE.md
+PLANO_TESTES_ACADEMICO.md
+SEO_ANALYTICS_SETUP.md
+TESTING_GUIDE.md
+
+# Scripts de demo e testes
+demo-*.sh
+test-*.sh
+
+# Configurações de desenvolvimento
+cypress.config.js
+jest.config.json
+tailwind.config.js
+
+# Arquivos temporários
+*.log
+.DS_Store
+*.tmp
+
+# HTML templates
+*.html
