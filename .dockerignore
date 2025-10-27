@@ -1,0 +1,49 @@
+# IMPORTANTE: Excluir backend completamente
+backend/
+backend/**/*
+
+# Arquivos de desenvolvimento que podem referenciar backend
+cypress/
+coverage/
+__tests__/
+*.test.js
+*.spec.js
+
+# Node modules (serão instalados no container)
+node_modules/
+
+# Logs e temporários
+*.log
+.DS_Store
+*.tmp
+
+# Environment files
+.env.local
+.env.development
+.env.example
+
+# Documentation
+*.md
+!README.md
+
+# Scripts de teste e demo
+demo-*.sh
+test-*.sh
+run-*.sh
+scripts/
+
+# Configurações de desenvolvimento
+cypress.config.js
+jest.config.json
+.nvmrc
+nixpacks.toml
+
+# Git files
+.git/
+.gitignore
+
+# HTML templates
+gmail-signature*.html
+
+# Build artifacts (serão criados no container)
+build/
