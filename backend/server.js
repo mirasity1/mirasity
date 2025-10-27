@@ -906,6 +906,45 @@ app.post('/api/send-email-api-only', async (req, res) => {
   }
 });
 
+// Endpoint de teste de login que sempre falha - para aprender error handling
+app.post('/api/login', async (req, res) => {
+  console.log('=== ROTA DE TESTE LOGIN ACIONADA ===');
+  console.log('Body:', req.body);
+  
+  // Simular delay de uma operação real
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  
+  const { username, password } = req.body;
+  
+  // Validação de campos obrigatórios
+  if (!username || !password) {
+    return res.status(400).json({
+      success: false,
+      error: 'Username e password são obrigatórios',
+      field: !username ? 'username' : 'password'
+    });
+  }
+  
+  // Lógica simples: password deve ser exatamente "123456"
+  if (password !== '123456') {
+    return res.status(401).json({
+      success: false,
+      error: 'Palavra-passe incorreta',
+      message: 'A palavra-passe que inseriu está incorreta. Tente novamente.',
+      code: 'WRONG_PASSWORD'
+    });
+  }
+  
+  // Se chegou aqui, password está correta mas vamos falhar mesmo assim para manter como teste
+  return res.status(401).json({
+    success: false,
+    error: 'Login desabilitado',
+    message: 'Esta é uma página de teste - login está desabilitado para demonstrar error handling',
+    code: 'LOGIN_DISABLED_FOR_TESTING',
+    tip: 'Use password "123456" para ver uma mensagem diferente'
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
