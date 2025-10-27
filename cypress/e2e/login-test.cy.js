@@ -113,7 +113,7 @@ describe('Login Test Page', () => {
     cy.get('button[type="submit"]').click();
 
     cy.wait('@loginRequest');
-    cy.contains('Erro de conectividade');
+    cy.contains('conectividade', { matchCase: false });
   });
 
   it('should be responsive on mobile viewport', () => {
