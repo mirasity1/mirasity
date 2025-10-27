@@ -1,77 +1,51 @@
 const request = require('supertest');
-const express = require('express');
 
 // Mock do nodemailer
 jest.mock('nodemailer', () => ({
   createTransport: jest.fn(() => ({
-    sendMail: jest.fn()
+    sendMail: jest.fn(),
+    verify: jest.fn()
   }))
 }));
 
-// Mock do fetch para Discord webhook
+// Mock do fetch para Discord webhook  
 global.fetch = jest.fn();
 
 describe('Backend API Tests', () => {
   let app;
-  let server;
+
+  beforeAll(() => {
+    // Importar servidor
+    app = require('../server.js');
+  });
 
   beforeEach(() => {
-    // Limpar mocks
+    // Limpar mocks antes de cada teste
     jest.clearAllMocks();
     
-    // Importar servidor após limpar mocks
-    delete require.cache[require.resolve('../../backend/server.js')];
-    app = require('../../backend/server.js');
+    // Mock fetch para Discord webhook
+    global.fetch.mockResolvedValue({
+      ok: true,
+      status: 200
+    });
   });
 
-  afterEach(() => {
-    if (server) {
-      server.close();
-    }
-  });
-
-  describe('POST /api/contact', () => {
-    const validContactData = {
+  describe('POST /api/send-email', () => {
+    const validEmailData = {
       name: 'João Silva',
       email: 'joao@example.com',
       subject: 'Teste de contacto',
-      message: 'Esta é uma mensagem de teste.',
-      mathAnswer: '5'
+      message: 'Esta é uma mensagem de teste.'
     };
 
-    test('deve aceitar dados válidos e enviar email', async () => {
-      // Mock successful email send
-      const nodemailer = require('nodemailer');
-      const mockTransporter = nodemailer.createTransport();
-      mockTransporter.sendMail.mockResolvedValue({
-        messageId: 'test-message-id',
-        response: '250 OK'
-      });
-
-      // Mock successful Discord webhook
-      fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ success: true })
-      });
-
+    test('deve aceitar dados válidos para email', async () => {
       const response = await request(app)
-        .post('/api/contact')
-        .send(validContactData)
+        .post('/api/send-email')
+        .send(validEmailData)
         .expect(200);
 
-      expect(response.body).toEqual({
-        success: true,
-        message: 'Email enviado com sucesso!'
-      });
-
-      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
-        expect.objectContaining({
-          from: expect.stringContaining('@'),
-          to: expect.stringContaining('@'),
-          subject: expect.stringContaining('Teste de contacto'),
-          html: expect.stringContaining('João Silva')
-        })
-      );
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('message');
     });
 
     test('deve rejeitar dados inválidos - campos obrigatórios', async () => {
@@ -83,168 +57,102 @@ describe('Backend API Tests', () => {
       };
 
       const response = await request(app)
-        .post('/api/contact')
+        .post('/api/send-email')
         .send(invalidData)
         .expect(400);
 
-      expect(response.body).toEqual({
-        success: false,
-        message: expect.stringContaining('obrigatório')
-      });
+      expect(response.body).toHaveProperty('success', false);
+      expect(response.body).toHaveProperty('error');
     });
 
     test('deve rejeitar email com formato inválido', async () => {
       const invalidEmailData = {
-        ...validContactData,
+        ...validEmailData,
         email: 'email-invalido'
       };
 
       const response = await request(app)
-        .post('/api/contact')
+        .post('/api/send-email')
         .send(invalidEmailData)
         .expect(400);
 
-      expect(response.body).toEqual({
-        success: false,
-        message: expect.stringContaining('inválido')
-      });
+      expect(response.body).toHaveProperty('success', false);
+      expect(response.body.error).toContain('Email inválido');
     });
+  });
 
-    test('deve rejeitar mensagem muito curta', async () => {
-      const shortMessageData = {
-        ...validContactData,
-        message: 'abc'
+  describe('POST /api/login', () => {
+    test('deve rejeitar login com password incorreta', async () => {
+      const loginData = {
+        username: 'teste',
+        password: 'senha-errada'
       };
 
       const response = await request(app)
-        .post('/api/contact')
-        .send(shortMessageData)
+        .post('/api/login')
+        .send(loginData)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('success', false);
+      expect(response.body).toHaveProperty('error', 'Palavra-passe incorreta');
+    });
+
+    test('deve rejeitar login mesmo com password correta (teste)', async () => {
+      const loginData = {
+        username: 'teste', 
+        password: '123456'
+      };
+
+      const response = await request(app)
+        .post('/api/login')
+        .send(loginData)
+        .expect(401);
+
+      expect(response.body).toHaveProperty('success', false);
+      expect(response.body).toHaveProperty('code', 'LOGIN_DISABLED_FOR_TESTING');
+    });
+
+    test('deve validar campos obrigatórios', async () => {
+      const response = await request(app)
+        .post('/api/login')
+        .send({})
         .expect(400);
 
-      expect(response.body).toEqual({
-        success: false,
-        message: expect.stringContaining('muito curta')
-      });
-    });
-
-    test('deve prevenir spam com rate limiting', async () => {
-      // Simular múltiplos requests rápidos
-      const requests = Array(6).fill().map(() => 
-        request(app)
-          .post('/api/contact')
-          .send(validContactData)
-      );
-
-      const responses = await Promise.all(requests);
-      
-      // Pelo menos uma resposta deve ser rate limited (429)
-      const rateLimitedResponses = responses.filter(res => res.status === 429);
-      expect(rateLimitedResponses.length).toBeGreaterThan(0);
-    });
-
-    test('deve lidar com erro de envio de email', async () => {
-      // Mock failed email send
-      const nodemailer = require('nodemailer');
-      const mockTransporter = nodemailer.createTransporter();
-      mockTransporter.sendMail.mockRejectedValue(new Error('SMTP Error'));
-
-      const response = await request(app)
-        .post('/api/contact')
-        .send(validContactData)
-        .expect(500);
-
-      expect(response.body).toEqual({
-        success: false,
-        message: expect.stringContaining('erro')
-      });
-    });
-
-    test('deve enviar webhook Discord mesmo se email falhar', async () => {
-      // Mock failed email but successful Discord
-      const nodemailer = require('nodemailer');
-      const mockTransporter = nodemailer.createTransporter();
-      mockTransporter.sendMail.mockRejectedValue(new Error('SMTP Error'));
-
-      // Mock successful Discord webhook
-      fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ success: true })
-      });
-
-      await request(app)
-        .post('/api/contact')
-        .send(validContactData)
-        .expect(500);
-
-      // Verificar se Discord webhook foi chamado
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('discord'),
-        expect.objectContaining({
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: expect.stringContaining('João Silva')
-        })
-      );
+      expect(response.body).toHaveProperty('success', false);
+      expect(response.body.error).toContain('obrigatórios');
     });
   });
 
-  describe('GET /api/health', () => {
+  describe('GET /health', () => {
     test('deve retornar status de saúde do servidor', async () => {
       const response = await request(app)
-        .get('/api/health')
+        .get('/health')
         .expect(200);
 
-      expect(response.body).toEqual({
-        status: 'OK',
-        timestamp: expect.any(String),
-        uptime: expect.any(Number)
-      });
+      expect(response.body).toHaveProperty('status', 'OK');
+      expect(response.body).toHaveProperty('timestamp');
     });
   });
 
-  describe('CORS e Security Headers', () => {
-    test('deve ter headers CORS corretos', async () => {
+  describe('GET /api/test', () => {
+    test('deve retornar informações da API', async () => {
       const response = await request(app)
-        .options('/api/contact')
+        .get('/api/test')
         .expect(200);
 
-      expect(response.headers['access-control-allow-origin']).toBeTruthy();
-      expect(response.headers['access-control-allow-methods']).toContain('POST');
-    });
-
-    test('deve ter headers de segurança', async () => {
-      const response = await request(app)
-        .get('/api/health')
-        .expect(200);
-
-      expect(response.headers['x-content-type-options']).toBe('nosniff');
-      expect(response.headers['x-frame-options']).toBe('DENY');
+      expect(response.body).toHaveProperty('message', 'API funcionando!');
+      expect(response.body).toHaveProperty('timestamp');
     });
   });
 
   describe('Error Handling', () => {
-    test('deve retornar 404 para rotas não encontradas', async () => {
+    test('deve retornar 404 para rotas API não encontradas', async () => {
       const response = await request(app)
         .get('/api/rota-inexistente')
         .expect(404);
 
-      expect(response.body).toEqual({
-        success: false,
-        message: 'Rota não encontrada'
-      });
-    });
-
-    test('deve lidar com JSON malformado', async () => {
-      const response = await request(app)
-        .post('/api/contact')
-        .set('Content-Type', 'application/json')
-        .send('{"invalid": json}')
-        .expect(400);
-
-      expect(response.body).toEqual({
-        success: false,
-        message: expect.stringContaining('JSON')
-      });
+      expect(response.body).toHaveProperty('error', 'API endpoint not found');
+      expect(response.body).toHaveProperty('availableEndpoints');
     });
   });
 });

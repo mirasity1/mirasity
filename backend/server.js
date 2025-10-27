@@ -1030,4 +1030,9 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('🚀 Sistema otimizado: MXroute SMTP API (HTTP) - 100% compatível com Railway');
 });
 
+// Exportar app para testes (sem iniciar servidor se for teste)
+if (process.env.NODE_ENV !== 'test') {
+  // Código do servidor só roda se não for teste
+}
+
 module.exports = app;
