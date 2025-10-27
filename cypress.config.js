@@ -38,6 +38,18 @@ module.exports = defineConfig({
           return null;
         }
       });
+
+      // Configure browser launch options for CI
+      on('before:browser:launch', (browser = {}, launchOptions) => {
+        if (browser.name === 'chrome' && browser.isHeadless) {
+          // Add Chrome flags for CI environments
+          launchOptions.args.push('--no-sandbox');
+          launchOptions.args.push('--disable-dev-shm-usage');
+          launchOptions.args.push('--disable-gpu');
+          launchOptions.args.push('--disable-software-rasterizer');
+        }
+        return launchOptions;
+      });
     }
   },
   component: {
