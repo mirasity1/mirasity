@@ -22,6 +22,14 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "test:ci": "react-scripts test --ci --coverage --silent --watchAll=false",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test:e2e": "start-server-and-test start 3000 cypress:run",
+    "test:e2e:open": "start-server-and-test start 3000 cypress:open",
+    "test:backend": "cd backend && npm test",
+    "test:all": "npm run test:ci && npm run test:backend && npm run test:e2e",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -43,6 +51,9 @@
     ]
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.18"
+    "tailwindcss": "^3.4.18",
+    "cypress": "^13.15.0",
+    "start-server-and-test": "^2.0.8",
+    "supertest": "^7.0.0"
   }
 }
