@@ -43,7 +43,9 @@ const LoginTest = () => {
 
     try {
       // Chamar API que sempre falha (para testes)
-      const response = await fetch('/api/login', {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+      console.log('API URL being used:', API_URL); // Debug log
+      const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,18 +53,11 @@ const LoginTest = () => {
         body: JSON.stringify(formData)
       });
 
-      // Verificar se a resposta é JSON válida
-      const contentType = response.headers.get('content-type');
-      let data;
-      
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
-      } else {
-        // Se não for JSON, tratar como erro de conectividade
-        throw new Error('Erro de conectividade com o servidor');
-      }
+      // Parse da resposta JSON
+      const data = await response.json();
 
       if (!response.ok) {
+        // Usar a mensagem de erro específica do backend
         throw new Error(data.error || data.message || 'Erro ao fazer login');
       }
 
@@ -70,9 +65,9 @@ const LoginTest = () => {
       console.log('Login bem-sucedido:', data);
       
     } catch (err) {
-      // Verificar se o erro é de parsing JSON
-      if (err.message.includes('Unexpected token')) {
-        setError('Palavra-passe incorreta. Tente novamente.');
+      // Verificar se o erro é de rede (fetch failure)
+      if (err.name === 'TypeError' || err.message.includes('fetch')) {
+        setError('Erro de conectividade com o servidor');
       } else {
         setError(err.message || 'Erro de conectividade. Tente novamente.');
       }

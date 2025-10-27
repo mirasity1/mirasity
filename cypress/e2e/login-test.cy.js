@@ -1,10 +1,12 @@
 describe('Login Test Page', () => {
   beforeEach(() => {
+    // Interceptar todas as requisições para debug
+    cy.intercept('POST', '**/api/login').as('loginAPI');
     cy.visit('/admin-test');
   });
 
   it('should display the login form', () => {
-    cy.contains('Login de Teste');
+    cy.contains('Login de Teste'); // Este título está fixo em português
     cy.contains('Página escondida para testar autenticação');
     cy.get('input[name="username"]').should('be.visible');
     cy.get('input[name="password"]').should('be.visible');
@@ -25,48 +27,28 @@ describe('Login Test Page', () => {
   });
 
   it('should show error for wrong password', () => {
-    // Intercept the API call
-    cy.intercept('POST', '/api/login', {
-      statusCode: 401,
-      body: {
-        success: false,
-        error: 'Palavra-passe incorreta',
-        message: 'A palavra-passe que inseriu está incorreta. Tente novamente.',
-        code: 'WRONG_PASSWORD'
-      }
-    }).as('loginRequest');
-
     cy.get('input[name="username"]').type('testuser');
     cy.get('input[name="password"]').type('wrongpass');
     cy.get('button[type="submit"]').click();
 
-    // Check loading state
-    cy.contains('A fazer login...');
+    // Check loading state primeiro
+    cy.contains('A fazer login...', { timeout: 3000 }).should('be.visible');
     cy.get('button[type="submit"]').should('be.disabled');
 
-    // Wait for request and check error
-    cy.wait('@loginRequest');
-    cy.contains('Palavra-passe incorreta');
+    // Aguardar mensagem de erro específica (Palavra-passe incorreta)
+    cy.contains('Palavra-passe incorreta', { timeout: 10000 }).should('be.visible');
   });
 
   it('should show different error for correct password', () => {
-    // Intercept the API call for correct password
-    cy.intercept('POST', '/api/login', {
-      statusCode: 401,
-      body: {
-        success: false,
-        error: 'Login desabilitado',
-        message: 'Esta é uma página de teste - login está desabilitado para demonstrar error handling',
-        code: 'LOGIN_DISABLED_FOR_TESTING'
-      }
-    }).as('loginRequest');
-
     cy.get('input[name="username"]').type('testuser');
-    cy.get('input[name="password"]').type('123456');
+    cy.get('input[name="password"]').type('123456'); // Password correta
     cy.get('button[type="submit"]').click();
 
-    cy.wait('@loginRequest');
-    cy.contains('Login desabilitado');
+    // Aguardar loading state
+    cy.contains('A fazer login...', { timeout: 3000 }).should('be.visible');
+
+    // Aguardar mensagem de erro específica (Login desabilitado)
+    cy.contains('Login desabilitado', { timeout: 10000 }).should('be.visible');
   });
 
   it('should toggle password visibility', () => {
@@ -105,15 +87,17 @@ describe('Login Test Page', () => {
   });
 
   it('should handle network errors gracefully', () => {
-    // Simulate network error
-    cy.intercept('POST', '/api/login', { forceNetworkError: true }).as('loginRequest');
+    // Simular erro de rede interceptando a chamada
+    cy.intercept('POST', '**/api/login', { forceNetworkError: true }).as('loginRequest');
 
     cy.get('input[name="username"]').type('testuser');
     cy.get('input[name="password"]').type('123456');
     cy.get('button[type="submit"]').click();
 
     cy.wait('@loginRequest');
-    cy.contains('conectividade', { matchCase: false });
+    
+    // Procurar por mensagem específica de erro de conectividade
+    cy.contains('Erro de conectividade com o servidor', { timeout: 8000 }).should('be.visible');
   });
 
   it('should be responsive on mobile viewport', () => {

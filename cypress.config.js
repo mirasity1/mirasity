@@ -12,7 +12,8 @@ module.exports = defineConfig({
     requestTimeout: 10000,
     responseTimeout: 10000,
     env: {
-      apiUrl: "http://localhost:5000"
+      apiUrl: "http://localhost:3001",
+      DEMO_MODE: false  // Ativado via CYPRESS_DEMO_MODE=true
     },
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
     excludeSpecPattern: ["**/1-getting-started/*", "**/2-advanced-examples/*"],

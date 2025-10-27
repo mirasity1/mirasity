@@ -1,12 +1,94 @@
-// ***********************************************************
-// This example support/commands.js shows you how to
+// ***********************************************
+// This example commands.js shows you how to
 // create various custom commands and overwrite
 // existing commands.
 //
 // For more comprehensive examples of custom
 // commands please read more here:
 // https://on.cypress.io/custom-commands
-// ***********************************************************
+// ***********************************************
+
+// Custom command for tab navigation
+Cypress.Commands.add('tab', () => {
+  cy.focused().trigger('keydown', { keyCode: 9 });
+});
+
+// Custom command for improved waiting with timeout
+Cypress.Commands.add('waitForElement', (selector, timeout = 10000) => {
+  cy.get(selector, { timeout }).should('be.visible');
+});
+
+// Custom command for filling forms with math verification
+Cypress.Commands.add('fillContactForm', (data) => {
+  if (data.name) cy.get('input[name="name"]').type(data.name);
+  if (data.email) cy.get('input[name="email"]').type(data.email);
+  if (data.subject) cy.get('input[name="subject"]').type(data.subject);
+  if (data.message) cy.get('textarea[name="message"]').type(data.message);
+  
+  // Handle math verification (anti-bot check) - always present
+  cy.get('input[type="number"]').should('be.visible').then(($input) => {
+    cy.get($input).parent().find('span').invoke('text').then((text) => {
+      console.log('Math question found:', text);
+      const match = text.match(/(\d+)\s*\+\s*(\d+)/);
+      if (match) {
+        const answer = parseInt(match[1]) + parseInt(match[2]);
+        console.log(`Solving: ${match[1]} + ${match[2]} = ${answer}`);
+        cy.get('input[type="number"]').clear().type(answer.toString());
+      } else {
+        console.log('Could not parse math question, using fallback');
+        cy.get('input[type="number"]').clear().type('5');
+      }
+    });
+  });
+});
+
+// Custom command for solving math verification specifically
+Cypress.Commands.add('solveMathVerification', () => {
+  cy.get('input[type="number"]').should('be.visible').then(($input) => {
+    cy.get($input).parent().find('span').invoke('text').then((text) => {
+      const match = text.match(/(\d+)\s*\+\s*(\d+)/);
+      if (match) {
+        const answer = parseInt(match[1]) + parseInt(match[2]);
+        cy.get('input[type="number"]').clear().type(answer.toString());
+      } else {
+        // Try to get it from a different structure
+        cy.get('body').then(($body) => {
+          const questionText = $body.find('span:contains("+")').text();
+          const numMatch = questionText.match(/(\d+)\s*\+\s*(\d+)/);
+          if (numMatch) {
+            const answer = parseInt(numMatch[1]) + parseInt(numMatch[2]);
+            cy.get('input[type="number"]').clear().type(answer.toString());
+          } else {
+            cy.get('input[type="number"]').clear().type('5'); // fallback
+          }
+        });
+      }
+    });
+  });
+});
+
+// Custom command for handling loading states
+Cypress.Commands.add('expectLoadingThenContent', (loadingText, successText) => {
+  cy.contains(loadingText, { timeout: 3000 }).should('be.visible');
+  cy.contains(successText, { timeout: 10000 }).should('be.visible');
+});
+
+// Example of custom command
+//
+// -- This is a parent command --
+// Cypress.Commands.add('login', (email, password) => { ... })
+//
+//
+// -- This is a child command --
+// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
+//
+//
+// -- This is a dual command --
+// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
+//
+//
+// -- This will overwrite an existing command --
+// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // Custom command to fill contact form
 Cypress.Commands.add('fillContactForm', (formData = {}) => {

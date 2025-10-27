@@ -1,0 +1,41 @@
+// cypress/e2e/api-test.cy.js
+describe('API Connectivity Test', () => {
+  it('should be able to call backend API directly', () => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:3001/api/login',
+      body: {
+        username: 'testuser',
+        password: 'wrongpass'
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(401);
+      expect(response.body).to.have.property('error');
+      expect(response.body.error).to.include('Palavra-passe incorreta');
+    });
+  });
+
+  it('should get correct error for right password', () => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:3001/api/login',
+      body: {
+        username: 'testuser',
+        password: '123456'
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(401);
+      expect(response.body).to.have.property('error');
+      expect(response.body.error).to.include('Login desabilitado');
+    });
+  });
+
+  it('should verify health endpoint', () => {
+    cy.request('http://localhost:3001/health').then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.have.property('status', 'OK');
+    });
+  });
+});
