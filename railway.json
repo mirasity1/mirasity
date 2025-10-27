@@ -1,9 +1,10 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "buildCommand": "cd backend && npm ci --only=production"
+    "buildCommand": "npm ci --only=production",
+    "watchPatterns": ["backend/**"]
   },
   "deploy": {
-    "startCommand": "cd backend && npm run railway:start"
+    "startCommand": "npm start"
   }
 }

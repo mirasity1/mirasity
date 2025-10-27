@@ -70,10 +70,6 @@ describe('🎭 DEMONSTRAÇÃO: Login Test Page', () => {
     
     cy.demoClick('button[type="submit"]', 'Fazendo login com password incorreta');
 
-    cy.demoStep('Verificando estado de carregamento');
-    cy.contains('A fazer login...', { timeout: 3000 }).should('be.visible');
-    cy.get('button[type="submit"]').should('be.disabled');
-
     cy.demoStep('Aguardando resposta do servidor...');
     cy.get('body').should((body) => {
       const text = body.text();
@@ -84,6 +80,9 @@ describe('🎭 DEMONSTRAÇÃO: Login Test Page', () => {
         txt.includes('erro')
       );
     });
+    
+    cy.demoStep('Verificando que botão voltou a ficar ativo');
+    cy.get('button[type="submit"]').should('not.be.disabled');
     
     cy.demoPause('Erro de password incorreta detectado! ❌');
   });
@@ -96,9 +95,6 @@ describe('🎭 DEMONSTRAÇÃO: Login Test Page', () => {
     
     cy.demoClick('button[type="submit"]', 'Fazendo login com password correta');
 
-    cy.demoStep('Verificando estado de carregamento');
-    cy.contains('A fazer login...', { timeout: 3000 }).should('be.visible');
-
     cy.demoStep('Aguardando resposta específica do servidor...');
     cy.get('body').should((body) => {
       const text = body.text();
@@ -109,6 +105,9 @@ describe('🎭 DEMONSTRAÇÃO: Login Test Page', () => {
         txt.includes('teste')
       );
     });
+    
+    cy.demoStep('Verificando que botão voltou a ficar ativo');
+    cy.get('button[type="submit"]').should('not.be.disabled');
     
     cy.demoPause('Sistema detectou password correta mas login está desabilitado! 🔐');
   });

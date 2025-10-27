@@ -1,9 +1,11 @@
 // cypress/e2e/api-test.cy.js
 describe('API Connectivity Test', () => {
+  const apiUrl = Cypress.env('apiUrl') || 'http://localhost:3001';
+
   it('should be able to call backend API directly', () => {
     cy.request({
       method: 'POST',
-      url: 'http://localhost:3001/api/login',
+      url: `${apiUrl}/api/login`,
       body: {
         username: 'testuser',
         password: 'wrongpass'
@@ -19,7 +21,7 @@ describe('API Connectivity Test', () => {
   it('should get correct error for right password', () => {
     cy.request({
       method: 'POST',
-      url: 'http://localhost:3001/api/login',
+      url: `${apiUrl}/api/login`,
       body: {
         username: 'testuser',
         password: '123456'
@@ -33,7 +35,7 @@ describe('API Connectivity Test', () => {
   });
 
   it('should verify health endpoint', () => {
-    cy.request('http://localhost:3001/health').then((response) => {
+    cy.request(`${apiUrl}/health`).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('status', 'OK');
     });

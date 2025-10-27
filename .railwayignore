@@ -4,9 +4,8 @@
 public/
 src/
 build/
-node_modules/
 
-# Testes e development
+# Testes e development (manter só em development)
 cypress/
 coverage/
 __tests__/
@@ -18,19 +17,15 @@ __tests__/
 .env.development
 .env.example
 
-# Documentation
+# Documentation  
 *.md
-DEMO_MODE.md
-DISCORD_WEBHOOK.md
-GOOGLE_ANALYTICS_EVENTS.md
-LOGIN_TEST_GUIDE.md
-PLANO_TESTES_ACADEMICO.md
-SEO_ANALYTICS_SETUP.md
-TESTING_GUIDE.md
+!README.md
 
 # Scripts de demo e testes
 demo-*.sh
 test-*.sh
+run-all-tests.sh
+scripts/
 
 # Configurações de desenvolvimento
 cypress.config.js
@@ -43,4 +38,8 @@ tailwind.config.js
 *.tmp
 
 # HTML templates
-*.html
+gmail-signature*.html
+
+# Git files
+.git/
+.gitignore

@@ -3,7 +3,8 @@
 
 export const DEMO_CONFIG = {
   // Flag para ativar modo de apresentação (mais lento e visual)
-  isDemoMode: Cypress.env('DEMO_MODE') === 'true' || false,
+  // ATENÇÃO: Só ativado quando DEMO_MODE=true explicitamente definido
+  isDemoMode: Cypress.env('DEMO_MODE') === 'true',
   
   // Delays para apresentação (em milissegundos)
   delays: {
@@ -27,10 +28,16 @@ Cypress.Commands.add('demoStep', (description) => {
     cy.log(`🎯 PASSO: ${description}`);
     cy.wait(DEMO_CONFIG.delays.shortPause);
   }
+  // Se não estiver em modo demo, apenas log rápido
+  if (!DEMO_CONFIG.isDemoMode) {
+    cy.log(description);
+  }
 });
 
 Cypress.Commands.add('demoType', (selector, text, options = {}) => {
-  cy.demoStep(`Digitando "${text}" no campo ${selector}`);
+  if (DEMO_CONFIG.isDemoMode) {
+    cy.demoStep(`Digitando "${text}" no campo ${selector}`);
+  }
   
   if (DEMO_CONFIG.isDemoMode && DEMO_CONFIG.visual.slowTyping) {
     // Digitar character por character para efeito visual
@@ -42,22 +49,26 @@ Cypress.Commands.add('demoType', (selector, text, options = {}) => {
     }
     cy.wait(DEMO_CONFIG.delays.shortPause);
   } else {
+    // Modo normal - rápido
     cy.get(selector).type(text, options);
   }
 });
 
 Cypress.Commands.add('demoClick', (selector, description = null) => {
   const desc = description || `Clicando em ${selector}`;
-  cy.demoStep(desc);
   
-  if (DEMO_CONFIG.isDemoMode && DEMO_CONFIG.visual.highlightElements) {
-    // Destacar elemento antes de clicar
-    cy.get(selector).scrollIntoView();
-    cy.get(selector).then($el => {
-      $el.css('outline', '3px solid #ff6b6b');
-      $el.css('outline-offset', '2px');
-    });
-    cy.wait(DEMO_CONFIG.delays.mediumPause);
+  if (DEMO_CONFIG.isDemoMode) {
+    cy.demoStep(desc);
+    
+    if (DEMO_CONFIG.visual.highlightElements) {
+      // Destacar elemento antes de clicar
+      cy.get(selector).scrollIntoView();
+      cy.get(selector).then($el => {
+        $el.css('outline', '3px solid #ff6b6b');
+        $el.css('outline-offset', '2px');
+      });
+      cy.wait(DEMO_CONFIG.delays.mediumPause);
+    }
   }
   
   cy.get(selector).click();
@@ -69,7 +80,10 @@ Cypress.Commands.add('demoClick', (selector, description = null) => {
 
 Cypress.Commands.add('demoAssert', (selector, assertion, description = null) => {
   const desc = description || `Verificando ${assertion} em ${selector}`;
-  cy.demoStep(desc);
+  
+  if (DEMO_CONFIG.isDemoMode) {
+    cy.demoStep(desc);
+  }
   
   cy.get(selector).should(assertion);
   
@@ -97,7 +111,10 @@ Cypress.Commands.add('demoPause', (reason = 'Pausa para observação') => {
 
 Cypress.Commands.add('demoVisit', (url, description = null) => {
   const desc = description || `Navegando para ${url}`;
-  cy.demoStep(desc);
+  
+  if (DEMO_CONFIG.isDemoMode) {
+    cy.demoStep(desc);
+  }
   
   cy.visit(url);
   

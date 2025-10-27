@@ -237,7 +237,7 @@ const Contact = () => {
           className="max-w-6xl mx-auto"
         >
           <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4" data-cy="contact-title">
               {t.contact.title} <span className="text-blue-400">{t.contact.subtitle}</span>
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-6"></div>
@@ -467,13 +467,14 @@ const Contact = () => {
                       {t.contact?.form?.mathVerification || 'Verificação de Segurança'} *
                     </label>
                     <div className="flex items-center space-x-3">
-                      <span className="text-white text-lg font-semibold bg-gray-700 px-3 py-2 rounded">
+                      <span className="text-white text-lg font-semibold bg-gray-700 px-3 py-2 rounded" data-cy="math-question">
                         {mathQuestion.num1} + {mathQuestion.num2} = ?
                       </span>
                       <motion.input
                         whileFocus={{ scale: 1.02 }}
                         type="number"
                         id="mathVerification"
+                        name="mathAnswer"
                         value={userMathAnswer}
                         onChange={(e) => setUserMathAnswer(e.target.value)}
                         required

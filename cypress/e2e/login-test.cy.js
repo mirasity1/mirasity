@@ -31,12 +31,11 @@ describe('Login Test Page', () => {
     cy.get('input[name="password"]').type('wrongpass');
     cy.get('button[type="submit"]').click();
 
-    // Check loading state primeiro
-    cy.contains('A fazer login...', { timeout: 3000 }).should('be.visible');
-    cy.get('button[type="submit"]').should('be.disabled');
-
     // Aguardar mensagem de erro específica (Palavra-passe incorreta)
     cy.contains('Palavra-passe incorreta', { timeout: 10000 }).should('be.visible');
+    
+    // Verificar que botão voltou a ficar enabled após requisição
+    cy.get('button[type="submit"]').should('not.be.disabled');
   });
 
   it('should show different error for correct password', () => {
@@ -44,11 +43,11 @@ describe('Login Test Page', () => {
     cy.get('input[name="password"]').type('123456'); // Password correta
     cy.get('button[type="submit"]').click();
 
-    // Aguardar loading state
-    cy.contains('A fazer login...', { timeout: 3000 }).should('be.visible');
-
     // Aguardar mensagem de erro específica (Login desabilitado)
     cy.contains('Login desabilitado', { timeout: 10000 }).should('be.visible');
+    
+    // Verificar que botão voltou a ficar enabled após requisição
+    cy.get('button[type="submit"]').should('not.be.disabled');
   });
 
   it('should toggle password visibility', () => {

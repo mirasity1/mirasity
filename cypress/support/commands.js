@@ -10,12 +10,121 @@
 
 // Custom command for tab navigation
 Cypress.Commands.add('tab', () => {
-  cy.focused().trigger('keydown', { keyCode: 9 });
+  cy.focused().tab();
 });
 
 // Custom command for improved waiting with timeout
 Cypress.Commands.add('waitForElement', (selector, timeout = 10000) => {
   cy.get(selector, { timeout }).should('be.visible');
+});
+
+// Custom command to set language for tests  
+Cypress.Commands.add('setLanguage', (language = 'en') => {
+  cy.window().then((win) => {
+    // Mock navigator.language to control language detection
+    Object.defineProperty(win.navigator, 'language', {
+      writable: true,
+      configurable: true,
+      value: language === 'pt' ? 'pt-PT' : 'en-US'
+    });
+    
+    Object.defineProperty(win.navigator, 'languages', {
+      writable: true,
+      configurable: true,
+      value: language === 'pt' ? ['pt-PT', 'pt'] : ['en-US', 'en']
+    });
+    
+    // Force page reload to apply language change
+    win.location.reload();
+  });
+});
+
+// Custom command to visit with language preset
+Cypress.Commands.add('visitWithLanguage', (url, language = 'en') => {
+  cy.visit(url, {
+    onBeforeLoad: (win) => {
+      // Set language before page loads
+      Object.defineProperty(win.navigator, 'language', {
+        writable: true,
+        configurable: true,
+        value: language === 'pt' ? 'pt-PT' : 'en-US'
+      });
+      
+      Object.defineProperty(win.navigator, 'languages', {
+        writable: true,
+        configurable: true,
+        value: language === 'pt' ? ['pt-PT', 'pt'] : ['en-US', 'en']
+      });
+    }
+  });
+});
+
+// Custom command to solve math verification
+Cypress.Commands.add('solveMathVerification', () => {
+  cy.get('[data-cy="math-question"]').invoke('text').then((questionText) => {
+    const match = questionText.match(/(\d+)\s*\+\s*(\d+)/);
+    if (match) {
+      const num1 = parseInt(match[1]);
+      const num2 = parseInt(match[2]);
+      const answer = num1 + num2;
+      cy.get('input[type="number"]').clear().type(answer.toString());
+    } else {
+      // Fallback
+      cy.get('input[type="number"]').clear().type('5');
+    }
+  });
+});
+
+// Demo-specific commands for slower, visual testing
+Cypress.Commands.add('demoVisit', (url, description) => {
+  if (Cypress.env('DEMO_MODE')) {
+    cy.log(`🎭 DEMO: ${description}`);
+    cy.wait(500); // Pause para demonstração
+  }
+  
+  // Visit with Portuguese language preset
+  cy.visitWithLanguage(url, 'pt');
+  
+  if (Cypress.env('DEMO_MODE')) {
+    cy.wait(1000); // Aguardar carregamento visual
+  }
+});
+
+Cypress.Commands.add('demoStep', (message) => {
+  if (Cypress.env('DEMO_MODE')) {
+    cy.log(`📋 ${message}`);
+    cy.wait(800); // Pausa entre passos
+  }
+});
+
+Cypress.Commands.add('demoPause', (message) => {
+  if (Cypress.env('DEMO_MODE')) {
+    cy.log(`⏸️ ${message}`);
+    cy.wait(2000); // Pausa longa para demonstração
+  }
+});
+
+Cypress.Commands.add('demoType', (selector, text, options = {}) => {
+  cy.get(selector).should('be.visible');
+  
+  if (Cypress.env('DEMO_MODE')) {
+    cy.get(selector).type(text, { delay: 100, ...options });
+    cy.wait(500);
+  } else {
+    cy.get(selector).type(text, options);
+  }
+});
+
+Cypress.Commands.add('demoClick', (selector, description = '') => {
+  if (Cypress.env('DEMO_MODE') && description) {
+    cy.log(`🖱️ ${description}`);
+  }
+  
+  cy.get(selector).should('be.visible').click();
+  
+  if (Cypress.env('DEMO_MODE')) {
+    cy.wait(1000); // Pausa após clique
+  }
 });
 
 // Custom command for filling forms with math verification
