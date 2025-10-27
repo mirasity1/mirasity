@@ -27,9 +27,18 @@ describe('Login Test Page', () => {
   });
 
   it('should show error for wrong password', () => {
+    // Mock da API para simular erro de password incorreta
+    cy.intercept('POST', '**/api/login', {
+      statusCode: 401,
+      body: { error: 'Palavra-passe incorreta' }
+    }).as('loginWrongPassword');
+
     cy.get('input[name="username"]').type('testuser');
     cy.get('input[name="password"]').type('wrongpass');
     cy.get('button[type="submit"]').click();
+
+    // Aguardar chamada da API
+    cy.wait('@loginWrongPassword');
 
     // Aguardar mensagem de erro específica (Palavra-passe incorreta)
     cy.contains('Palavra-passe incorreta', { timeout: 10000 }).should('be.visible');
@@ -39,9 +48,18 @@ describe('Login Test Page', () => {
   });
 
   it('should show different error for correct password', () => {
+    // Mock da API para simular login desabilitado
+    cy.intercept('POST', '**/api/login', {
+      statusCode: 401,
+      body: { error: 'Login desabilitado para testes' }
+    }).as('loginDisabled');
+
     cy.get('input[name="username"]').type('testuser');
     cy.get('input[name="password"]').type('123456'); // Password correta
     cy.get('button[type="submit"]').click();
+
+    // Aguardar chamada da API
+    cy.wait('@loginDisabled');
 
     // Aguardar mensagem de erro específica (Login desabilitado)
     cy.contains('Login desabilitado', { timeout: 10000 }).should('be.visible');

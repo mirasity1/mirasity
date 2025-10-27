@@ -84,42 +84,19 @@ jobs:
     - name: Install frontend dependencies
       run: npm install
     
-    - name: Install backend dependencies
-      run: |
-        cd backend
-        npm install
-    
-    - name: Start backend server
-      run: |
-        cd backend
-        npm start &
-        sleep 10
-      env:
-        NODE_ENV: test
-        PORT: 3001
-        SMTP_HOST: heracles.mxrouting.net
-        SMTP_PORT: 587
-        SMTP_USER: no-reply@mirasity.pt
-        SMTP_PASS: ${{ secrets.SMTP_PASS }}
-        SMTP_PROVIDER: mxrouting
-        FRONTEND_URL: http://localhost:3000
-    
-    - name: Check servers connectivity
-      run: |
-        chmod +x ./scripts/check-servers.sh
-        ./scripts/check-servers.sh
-
     - name: Cypress run
       uses: cypress-io/github-action@v6
       with:
         start: npm start
-        wait-on: 'http://localhost:3000, http://localhost:3001/health'
+        wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
         browser: chrome
         record: false
         config: baseUrl=http://localhost:3000
       env:
         CYPRESS_apiUrl: http://localhost:3001
+        CYPRESS_CI: true
+        CYPRESS_GITHUB_ACTIONS: true
     
     - name: Upload Cypress screenshots
       uses: actions/upload-artifact@v3

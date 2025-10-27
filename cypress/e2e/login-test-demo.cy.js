@@ -65,12 +65,20 @@ describe('🎭 DEMONSTRAÇÃO: Login Test Page', () => {
   it('❌ Deve mostrar erro para palavra-passe incorreta', () => {
     cy.log('🚫 TESTE: Login com palavra-passe incorreta');
     
+    // Mock da API para simular erro de password incorreta
+    cy.intercept('POST', '**/api/login', {
+      statusCode: 401,
+      body: { error: 'Palavra-passe incorreta' }
+    }).as('loginWrongPassword');
+    
     cy.demoType('input[name="username"]', 'testuser');
     cy.demoType('input[name="password"]', 'wrongpass');
     
     cy.demoClick('button[type="submit"]', 'Fazendo login com password incorreta');
 
     cy.demoStep('Aguardando resposta do servidor...');
+    cy.wait('@loginWrongPassword');
+    
     cy.get('body').should((body) => {
       const text = body.text();
       expect(text).to.satisfy((txt) => 
@@ -90,12 +98,20 @@ describe('🎭 DEMONSTRAÇÃO: Login Test Page', () => {
   it('🔐 Deve mostrar erro diferente para palavra-passe correta', () => {
     cy.log('🧪 TESTE: Login com palavra-passe correta (mas login desabilitado)');
     
+    // Mock da API para simular login desabilitado
+    cy.intercept('POST', '**/api/login', {
+      statusCode: 401,
+      body: { error: 'Login desabilitado para testes' }
+    }).as('loginDisabled');
+    
     cy.demoType('input[name="username"]', 'testuser');
     cy.demoType('input[name="password"]', '123456'); // Password correta
     
     cy.demoClick('button[type="submit"]', 'Fazendo login com password correta');
 
     cy.demoStep('Aguardando resposta específica do servidor...');
+    cy.wait('@loginDisabled');
+    
     cy.get('body').should((body) => {
       const text = body.text();
       expect(text).to.satisfy((txt) => 

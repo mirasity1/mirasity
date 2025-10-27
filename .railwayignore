@@ -1,11 +1,9 @@
-# Railway ignore file - otimizar deployment do backend
+# Railway ignore file - otimizar deployment do frontend
 
-# Frontend files (não necessários no backend)
-public/
-src/
-build/
+# Backend files (não necessários no frontend)
+backend/
 
-# Testes e development (manter só em development)
+# Testes e development (reduzir tamanho do build)
 cypress/
 coverage/
 __tests__/
@@ -25,12 +23,11 @@ __tests__/
 demo-*.sh
 test-*.sh
 run-all-tests.sh
-scripts/
+scripts/check-servers.sh
 
 # Configurações de desenvolvimento
 cypress.config.js
 jest.config.json
-tailwind.config.js
 
 # Arquivos temporários
 *.log
