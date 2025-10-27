@@ -19,6 +19,12 @@ module.exports = defineConfig({
     excludeSpecPattern: ["**/1-getting-started/*", "**/2-advanced-examples/*"],
     setupNodeEvents(on, config) {
       // implement node event listeners here
+      on('task', {
+        log(message) {
+          console.log(message);
+          return null;
+        }
+      });
     }
   },
   component: {

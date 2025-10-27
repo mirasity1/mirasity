@@ -4,12 +4,14 @@ describe('API Connectivity Test', () => {
   // Skip API tests em ambiente CI pois não há backend
   const skipInCI = Cypress.env('CI') || Cypress.env('GITHUB_ACTIONS');
 
-  it('should be able to call backend API directly', () => {
+  // Use beforeEach to conditionally skip all tests
+  beforeEach(() => {
     if (skipInCI) {
-      cy.log('🚫 Skipped in CI - requires running backend');
-      return;
+      cy.log('🚫 Skipping API tests in CI environment - requires running backend');
     }
-    
+  });
+
+  (skipInCI ? it.skip : it)('should be able to call backend API directly', () => {
     cy.request({
       method: 'POST',
       url: `${apiUrl}/api/login`,
@@ -25,12 +27,7 @@ describe('API Connectivity Test', () => {
     });
   });
 
-  it('should get correct error for right password', () => {
-    if (skipInCI) {
-      cy.log('🚫 Skipped in CI - requires running backend');
-      return;
-    }
-    
+  (skipInCI ? it.skip : it)('should get correct error for right password', () => {
     cy.request({
       method: 'POST',
       url: `${apiUrl}/api/login`,
@@ -46,12 +43,7 @@ describe('API Connectivity Test', () => {
     });
   });
 
-  it('should verify health endpoint', () => {
-    if (skipInCI) {
-      cy.log('🚫 Skipped in CI - requires running backend');
-      return;
-    }
-    
+  (skipInCI ? it.skip : it)('should verify health endpoint', () => {
     cy.request(`${apiUrl}/health`).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('status', 'OK');
