@@ -1,0 +1,46 @@
+{
+  "users": {
+    "testUser": {
+      "username": "testuser",
+      "email": "test@example.com",
+      "correctPassword": "123456",
+      "wrongPassword": "wrongpass"
+    }
+  },
+  "contactForm": {
+    "validData": {
+      "name": "João Silva",
+      "email": "joao@example.com", 
+      "subject": "Teste E2E",
+      "message": "Esta é uma mensagem de teste end-to-end."
+    },
+    "invalidData": {
+      "name": "",
+      "email": "invalid-email",
+      "subject": "",
+      "message": ""
+    }
+  },
+  "apiResponses": {
+    "contactSuccess": {
+      "success": true,
+      "message": "Email enviado com sucesso!"
+    },
+    "contactError": {
+      "success": false,
+      "message": "Erro interno do servidor"
+    },
+    "loginWrongPassword": {
+      "success": false,
+      "error": "Palavra-passe incorreta",
+      "message": "A palavra-passe que inseriu está incorreta. Tente novamente.",
+      "code": "WRONG_PASSWORD"
+    },
+    "loginDisabled": {
+      "success": false,
+      "error": "Login desabilitado",
+      "message": "Esta é uma página de teste - login está desabilitado para demonstrar error handling",
+      "code": "LOGIN_DISABLED_FOR_TESTING"
+    }
+  }
+}
