@@ -1,3 +1,31 @@
+// named export for easier mocking in tests
+export async function sendEmail(formData) {
+  try {
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+
+    const response = await fetch(`${API_URL}/api/send-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Failed to send email');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
+  }
+}
+
 // Email service configuration
 class EmailService {
   constructor() {
@@ -12,36 +40,10 @@ class EmailService {
     };
   }
 
-  // Método para enviar email usando fetch para seu backend
-  async sendEmail(formData) {
-    try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      
-      const response = await fetch(`${API_URL}/api/send-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to send email');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error sending email:', error);
-      throw error;
-    }
+  // delegate to the named function
+  sendEmail(formData) {
+    return sendEmail(formData);
   }
-
 
   // Método usando Netlify Functions (se usar Netlify)
   async sendEmailWithNetlify(formData) {

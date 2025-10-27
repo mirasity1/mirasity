@@ -3,8 +3,8 @@ const request = require('supertest');
 // Mock do nodemailer
 jest.mock('nodemailer', () => ({
   createTransport: jest.fn(() => ({
-    sendMail: jest.fn(),
-    verify: jest.fn()
+    sendMail: jest.fn().mockResolvedValue({ messageId: 'mock-msg-id', response: '250 OK' }),
+    verify: jest.fn().mockResolvedValue(true)
   }))
 }));
 
